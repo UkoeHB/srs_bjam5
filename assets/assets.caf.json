@@ -1,0 +1,14 @@
+{
+"#import": {
+    "constants.caf.json": ""
+},
+
+"#commands": {
+    "LoadImages": [[
+    ]],
+    "LoadSpriteAnimations": [[
+    ]],
+    "LoadAudio": [[
+    ]]
+}
+}

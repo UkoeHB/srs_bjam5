@@ -1,0 +1,7 @@
+{
+"#manifest": {
+    "assets.caf.json": "assets",
+    "constants.caf.json": "constants",
+    "ui.caf.json": "ui"
+}
+}
