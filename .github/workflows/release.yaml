@@ -13,6 +13,15 @@ on:
         description: "Version number in the format `v1.2.3`"
         required: true
         type: string
+      tmate:
+        description: "Enable tmate"
+        required: true
+        default: "never"
+        type: choice
+        options:
+          - "never"
+          - "always"
+          - "on failure"
 
 # Configure constants for this workflow.
 env:
@@ -223,6 +232,9 @@ jobs:
           tag: ${{ env.VERSION }}
           overwrite: true
 
+      - name: Setup tmate session
+        if: ${{ inputs.tmate == 'always' }} && (${{ inputs.tmate == 'on failure' }} && ${{ failure() }})
+        uses: mxschmitt/action-tmate@v3
   # Get itch.io target from env, because the `env` context can't be used in the `if:` condition of a job.
   # See: https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability
   get-itch-target:
