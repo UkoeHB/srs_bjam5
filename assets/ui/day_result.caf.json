@@ -3,11 +3,110 @@
     "constants.caf.json": ""
 },
 
+"#c: TODO: convert to a spec for reuse w/ success scene":0,
 "failure_scene": {
+    "FlexStyle": {
+        "dims": {"width": {"Vw": 100.0}, "height": {"Vh": 100.0}},
+        "content": {
+            "flex_direction": "Column",
+            "justify_main": "Center",
+            "justify_cross": "Center",
+            "padding": {"top": {"Px": 50.0}, "bottom": {"Px": 50.0}, "left": {"Px": 50.0}, "right": {"Px": 50.0}}
+        }
+    },
 
+    "window": {
+        "FlexStyle": {
+            "dims": {"width": {"Percent": 100.0}, "height": {"Percent": 100.0}},
+            "content": {"flex_direction": "Column", "justify_main": "Center", "justify_cross": "Center"}
+        },
+        "BgColor": [{"Hsla": {"hue": 111.0, "saturation": 0.30, "lightness": 0.30, "alpha": 1.0}}],
+
+        "title": {
+            "FlexStyle": {
+                "content": {"justify_main": "Center", "justify_cross": "Center"},
+                "flex": {"margin": {"bottom": {"Px": 40}}}
+            },
+            "TextLine": {"text": "YOU DIED..."}
+        },
+
+        "today_again_button": {
+            "FlexStyle": {
+                "dims": {"min_width": {"Px": 200.0}},
+                "content": {"justify_main": "Center", "justify_cross": "Center"}
+            },
+            "BgColor": [{"Hsla": {"hue": 150.0, "saturation": 0.40, "lightness": 0.40, "alpha": 1.0}}],
+            "Interactive": [],
+
+            "text": {
+                "FlexStyle": {
+                    "flex": {"margin": {"top": {"Px": 17.0}, "bottom": {"Px": 17.0}, "left": {"Px": 10.0}, "right": {"Px": 10.0}}}
+                },
+                "TextLine": {"text": "Today Again"}
+            }
+        }
+    }
 },
 
 "success_scene": {
+    "FlexStyle": {
+        "dims": {"width": {"Vw": 100.0}, "height": {"Vh": 100.0}},
+        "content": {
+            "flex_direction": "Column",
+            "justify_main": "Center",
+            "justify_cross": "Center",
+            "padding": {"top": {"Px": 50.0}, "bottom": {"Px": 50.0}, "left": {"Px": 50.0}, "right": {"Px": 50.0}}
+        }
+    },
+
+    "window": {
+        "FlexStyle": {
+            "dims": {"width": {"Percent": 100.0}, "height": {"Percent": 100.0}},
+            "content": {"flex_direction": "Column", "justify_main": "Center", "justify_cross": "Center"}
+        },
+        "BgColor": [{"Hsla": {"hue": 111.0, "saturation": 0.30, "lightness": 0.30, "alpha": 1.0}}],
+
+        "title": {
+            "FlexStyle": {
+                "content": {"justify_main": "Center", "justify_cross": "Center"},
+                "flex": {"margin": {"bottom": {"Px": 40}}}
+            },
+            "TextLine": {"text": "YOU SURVIVED!"}
+        },
+
+        "tomorrow_button": {
+            "FlexStyle": {
+                "dims": {"min_width": {"Px": 200.0}},
+                "content": {"justify_main": "Center", "justify_cross": "Center"},
+                "flex": {"margin": {"bottom": {"Px": 20}}}
+            },
+            "BgColor": [{"Hsla": {"hue": 150.0, "saturation": 0.40, "lightness": 0.40, "alpha": 1.0}}],
+            "Interactive": [],
+
+            "text": {
+                "FlexStyle": {
+                    "flex": {"margin": {"top": {"Px": 17.0}, "bottom": {"Px": 17.0}, "left": {"Px": 10.0}, "right": {"Px": 10.0}}}
+                },
+                "TextLine": {"text": "Tomorrow"}
+            }
+        },
+
+        "today_again_button": {
+            "FlexStyle": {
+                "dims": {"min_width": {"Px": 200.0}},
+                "content": {"justify_main": "Center", "justify_cross": "Center"}
+            },
+            "BgColor": [{"Hsla": {"hue": 150.0, "saturation": 0.40, "lightness": 0.40, "alpha": 1.0}}],
+            "Interactive": [],
+
+            "text": {
+                "FlexStyle": {
+                    "flex": {"margin": {"top": {"Px": 17.0}, "bottom": {"Px": 17.0}, "left": {"Px": 10.0}, "right": {"Px": 10.0}}}
+                },
+                "TextLine": {"text": "Today Again"}
+            }
+        }
+    }
 
 }
 }

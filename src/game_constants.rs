@@ -9,8 +9,8 @@ use serde::{Deserialize, Serialize};
 #[derive(ReactResource, Reflect, Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct GameConstants
 {
-    day_length_secs: usize,
-    player_base_hp: usize,
+    pub day_length_secs: usize,
+    pub player_base_hp: usize,
 }
 
 impl Command for GameConstants

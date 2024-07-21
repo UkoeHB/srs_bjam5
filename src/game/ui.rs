@@ -49,9 +49,11 @@ fn spawn_day_failed_ui(mut c: Commands, mut s: ResMut<SceneLoader>)
     c.ui_builder(UiRoot).load_scene(&mut s, scene, |l| {
         l.despawn_on_broadcast::<GameDayStart>();
 
-        // todo: display "YOU DIED"
-
-        // todo: button 'Today Again'
+        l.edit("window::today_again_button", |l| {
+            l.on_pressed(|mut c: Commands| {
+                c.react().broadcast(GameDayStart);
+            });
+        });
     });
 }
 
@@ -63,12 +65,18 @@ fn spawn_day_survived_ui(mut c: Commands, mut s: ResMut<SceneLoader>)
     c.ui_builder(UiRoot).load_scene(&mut s, scene, |l| {
         l.despawn_on_broadcast::<GameDayStart>();
 
-        // todo: display "YOU SURVIVED!"
+        // todo: Increment the day resource here so it is ready immediately w/out race conditions.
+        l.edit("window::tomorrow_button", |l| {
+            l.on_pressed(|mut c: Commands| {
+                c.react().broadcast(GameDayStart);
+            });
+        });
 
-        // todo: button 'Tomorrow'
-        // - Increment the day resource here so it is ready immediately w/out race conditions.
-
-        // todo: button 'Today Again'
+        l.edit("window::today_again_button", |l| {
+            l.on_pressed(|mut c: Commands| {
+                c.react().broadcast(GameDayStart);
+            });
+        });
     });
 }
 
@@ -83,7 +91,7 @@ impl Plugin for GameUiPlugin
         app.react(|rc| rc.on_persistent(broadcast::<GamePlay>(), spawn_game_hud))
             .react(|rc| rc.on_persistent(broadcast::<PlayerLevelUp>(), spawn_power_up_ui))
             .react(|rc| rc.on_persistent(broadcast::<PlayerDied>(), spawn_day_failed_ui))
-            .react(|rc| rc.on_persistent(broadcast::<DayEnded>(), spawn_day_survived_ui));
+            .react(|rc| rc.on_persistent(broadcast::<PlayerSurvived>(), spawn_day_survived_ui));
     }
 }
 

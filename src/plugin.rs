@@ -1,3 +1,5 @@
+use std::fmt::Debug;
+
 use bevy::asset::AssetMetaCheck;
 use bevy::prelude::*;
 use bevy::state::state::FreelyMutableState;
@@ -12,9 +14,10 @@ use crate::*;
 
 //-------------------------------------------------------------------------------------------------------------------
 
-fn set_state<T: FreelyMutableState>(state: T) -> impl FnMut(ResMut<NextState<T>>)
+fn set_state<T: FreelyMutableState + Debug>(state: T) -> impl FnMut(ResMut<NextState<T>>)
 {
     move |mut next: ResMut<NextState<T>>| {
+        tracing::info!("entering state {:?}", state);
         next.set(state.clone());
     }
 }
@@ -35,6 +38,7 @@ pub enum GameState
     Loading,
     DayStart,
     Play,
+    DayOver,
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -93,7 +97,8 @@ impl Plugin for AppPlugin
         .add_systems(Startup, setup_camera)
         .add_systems(OnEnter(LoadState::Done), handle_loading_done)
         .react(|rc| rc.on_persistent(broadcast::<GameDayStart>(), set_state(GameState::DayStart)))
-        .react(|rc| rc.on_persistent(broadcast::<GamePlay>(), set_state(GameState::Play)));
+        .react(|rc| rc.on_persistent(broadcast::<GamePlay>(), set_state(GameState::Play)))
+        .react(|rc| rc.on_persistent(broadcast::<GameDayOver>(), set_state(GameState::DayOver)));
     }
 }
 

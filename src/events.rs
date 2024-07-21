@@ -10,6 +10,10 @@ pub struct GameDayStart;
 #[derive(Default)]
 pub struct GamePlay;
 
+/// Reactive event emitted when entering `GameState::DayOver`.
+#[derive(Default)]
+pub struct GameDayOver;
+
 //-------------------------------------------------------------------------------------------------------------------
 
 /// Reactive event for toggling the settings display between on/off.
@@ -30,6 +34,6 @@ pub struct PlayerLevelUp;
 pub struct PlayerDied;
 
 /// Reactive event emitted when the day ends without the player dying.
-pub struct DayEnded;
+pub struct PlayerSurvived;
 
 //-------------------------------------------------------------------------------------------------------------------
