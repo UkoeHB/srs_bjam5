@@ -26,9 +26,9 @@ on:
 # Configure constants for this workflow.
 env:
   # The base filename of the binary produced by `cargo build`.
-  BINARY: src_bjam5
+  BINARY: srs_bjam5
   # The name to use for the packaged application produced by this workflow.
-  PACKAGE_NAME: src_bjam5
+  PACKAGE_NAME: srs_bjam5
   # The itch.io page to upload to, in the format: `user-name/project-name`.
   # Comment this out to disable.
   ITCH_TARGET: snowy-road-studios/surviving-today
