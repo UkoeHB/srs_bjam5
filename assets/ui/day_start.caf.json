@@ -4,9 +4,57 @@
 },
 
 "scene": {
+    "FlexStyle": {
+        "dims": {"width": {"Vw": 100.0}, "height": {"Vh": 100.0}},
+        "content": {"flex_direction": "Column", "justify_main": "Center", "justify_cross": "Center"}
+    },
+    "BgColor": [{"Hsla": {"hue": 30.0, "saturation": 0.09, "lightness": 0.72, "alpha": 1.0}}],
 
-    "start_button": {
-        
+    "header": {
+        "FlexStyle": {
+            "dims": {"min_height": {"Percent": 20.0}},
+            "content": {"justify_main": "Center", "justify_cross": "Center"}
+        },
+
+        "temp_text": {
+            "TextLine": {"text": "[TEMP] Day Start Page"}
+        }
+    },
+
+    "content": {
+        "FlexStyle": {
+            "flex": {"flex_grow": 1.0}
+        }
+    },
+
+    "footer": {
+        "FlexStyle": {
+            "dims": {"min_height": {"Percent": 20.0}, "width": {"Percent": 100.0}},
+            "content": {"flex_direction": "Row", "justify_main": "Center", "justify_cross": "FlexEnd"}
+        },
+
+        "fill": {
+            "FlexStyle": {
+                "flex": {"flex_grow": 1.0}
+            }
+        },
+
+        "start_button": {
+            "FlexStyle": {
+                "dims": {"min_width": {"Px": 200.0}},
+                "content": {"justify_main": "Center", "justify_cross": "Center"},
+                "flex": {"margin": {"bottom": {"Px": 40.0}, "right": {"Px": 40.0}}}
+            },
+            "BgColor": [{"Hsla": {"hue": 150.0, "saturation": 0.40, "lightness": 0.40, "alpha": 1.0}}],
+            "Interactive": [],
+
+            "text": {
+                "FlexStyle": {
+                    "flex": {"margin": {"top": {"Px": 17.0}, "bottom": {"Px": 17.0}, "left": {"Px": 10.0}, "right": {"Px": 10.0}}}
+                },
+                "TextLine": {"text": "Start Day"}
+            }
+        }
     }
 }
 }

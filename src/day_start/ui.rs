@@ -21,7 +21,7 @@ fn spawn_day_start_ui(mut c: Commands, mut s: ResMut<SceneLoader>)
 
         // todo: display upgrades (as info cards/buttons in a scroll-view)
 
-        l.edit("start_button", |l| {
+        l.edit("footer::start_button", |l| {
             l.on_pressed(|mut c: Commands| {
                 c.react().broadcast(GamePlay);
             });
