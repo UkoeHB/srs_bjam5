@@ -88,7 +88,7 @@ jobs:
     steps:
       - name: Set up environment
         run: |
-          echo 'PACKAGE=${{ env.PACKAGE_NAME }}-${{ matrix.platform }}' >> "${GITHUB_ENV}"
+          echo 'PACKAGE=${{ env.PACKAGE_NAME }}' >> "${GITHUB_ENV}"
           echo 'OUT_DIR=tmp/package/${{ env.PACKAGE_NAME }}${{ matrix.out_dir_suffix }}' >> "${GITHUB_ENV}"
           if [ '${{ matrix.platform }}' == 'macos' ]; then
             echo 'MACOSX_DEPLOYMENT_TARGET=11.0' >> "${GITHUB_ENV}" # MacOS 11.0 Big Sur is the first version to support universal binaries.
