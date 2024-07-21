@@ -111,22 +111,23 @@ jobs:
       # - name: Install dependencies (Linux)
       #   if: ${{ matrix.platform == 'linux' }}
       #   run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
-      - name: Install WASM dependencies
-        if: ${{ matrix.platform == 'web' }}
-        run: sudo apt-get update; sudo apt-get install librust-wasm-bindgen-dev binaryen
 
       - name: Prepare output directories
         run: rm -rf tmp; mkdir -p tmp/binary '${{ env.OUT_DIR }}'
 
-      # - name: Install cargo-binstall (Web)
-      #   if: ${{ matrix.platform == 'web' }}
-      #   uses: cargo-bins/cargo-binstall@v1.7.4
+      - name: Install cargo-binstall (Web)
+        if: ${{ matrix.platform == 'web' }}
+        uses: cargo-bins/cargo-binstall@v1.7.4
 
       # - name: Install and run trunk (Web)
       #   if: ${{ matrix.platform == 'web' }}
       #   run: |
       #     cargo binstall trunk --no-confirm
       #     trunk build --release --dist '${{ env.OUT_DIR }}'
+
+      - name: Install WASM dependencies
+        if: ${{ matrix.platform == 'web' }}
+        run: cargo binstall wasm-bindgen-cli wasm-opt
 
       - name: Run WASM build script
         if: ${{ matrix.platform == 'web' }}
