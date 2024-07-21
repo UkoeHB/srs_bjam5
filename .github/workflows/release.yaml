@@ -127,7 +127,7 @@ jobs:
 
       - name: Install WASM dependencies
         if: ${{ matrix.platform == 'web' }}
-        run: cargo binstall wasm-bindgen-cli wasm-opt
+        run: cargo binstall wasm-bindgen-cli wasm-opt --no-confirm
 
       - name: Run WASM build script
         if: ${{ matrix.platform == 'web' }}
