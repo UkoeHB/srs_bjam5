@@ -188,16 +188,16 @@ jobs:
       #       </plist>
       #     EOF
 
-      - name: Finish package (non-Windows)
-        if: ${{ matrix.platform != 'windows' }}
-        working-directory: tmp/package
-        run: |
-          if [ '${{ matrix.platform }}' == 'macos' ]; then
-            ln -s /Applications .
-            hdiutil create -fs HFS+ -volname '${{ env.PACKAGE_NAME }}' -srcfolder . '${{ env.PACKAGE }}${{ matrix.package_ext }}'
-          else
-            zip --recurse-paths '${{ env.PACKAGE }}${{ matrix.package_ext }}' '${{ env.PACKAGE_NAME }}'
-          fi
+      # - name: Finish package (non-Windows)
+      #   if: ${{ matrix.platform != 'windows' }}
+      #   working-directory: tmp/package
+      #   run: |
+      #     if [ '${{ matrix.platform }}' == 'macos' ]; then
+      #       ln -s /Applications .
+      #       hdiutil create -fs HFS+ -volname '${{ env.PACKAGE_NAME }}' -srcfolder . '${{ env.PACKAGE }}${{ matrix.package_ext }}'
+      #     else
+      #       zip --recurse-paths '${{ env.PACKAGE }}${{ matrix.package_ext }}' '${{ env.PACKAGE_NAME }}'
+      #     fi
 
       # - name: Finish package (Windows)
       #   if: ${{ matrix.platform == 'windows' }}
