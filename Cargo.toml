@@ -20,7 +20,7 @@ rustdoc-args = ["--cfg", "docsrs"]
 [features]
 default = []
 
-dev = ["bevy_cobweb_ui/dev"]
+dev = ["bevy_cobweb_ui/dev", "bevy/dynamic_linking"]
 
 [dependencies]
 bevy = { version = "0.14", default-features = true, features = ["mp3"] }

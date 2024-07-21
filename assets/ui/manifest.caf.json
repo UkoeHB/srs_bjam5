@@ -1,0 +1,9 @@
+{
+"#manifest": {
+    "ui/day_result.caf.json": "ui.day_result",
+    "ui/day_start.caf.json": "ui.day_start",
+    "ui/game_hud.caf.json": "ui.game_hud",
+    "ui/power_up.caf.json": "ui.power_up",
+    "ui/settings.caf.json": "ui.settings"
+}
+}

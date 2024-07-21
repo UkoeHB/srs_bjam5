@@ -1,7 +1,8 @@
 use bevy::asset::AssetMetaCheck;
 use bevy::prelude::*;
+use bevy::state::state::FreelyMutableState;
 use bevy::window::WindowTheme;
-use bevy_cobweb::react::ReactPlugin;
+use bevy_cobweb::prelude::*;
 use bevy_cobweb_ui::prelude::*;
 use bevy_cobweb_ui::sickle::SickleUiPlugin;
 use bevy_mod_picking::DefaultPickingPlugins;
@@ -11,9 +12,18 @@ use crate::*;
 
 //-------------------------------------------------------------------------------------------------------------------
 
-fn enter_play_state(mut next: ResMut<NextState<GameState>>)
+fn set_state<T: FreelyMutableState>(state: T) -> impl FnMut(ResMut<NextState<T>>)
 {
-    next.set(GameState::Play);
+    move |mut next: ResMut<NextState<T>>| {
+        next.set(state.clone());
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
+fn handle_loading_done(mut c: Commands)
+{
+    c.react().broadcast(GameDayStart);
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -23,8 +33,8 @@ pub enum GameState
 {
     #[default]
     Loading,
+    DayStart,
     Play,
-    GameOver,
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -45,14 +55,17 @@ fn setup_camera(mut c: Commands)
 
 //-------------------------------------------------------------------------------------------------------------------
 
-pub fn run_app()
+pub struct AppPlugin;
+
+impl Plugin for AppPlugin
 {
-    App::new()
-        .add_plugins(
+    fn build(&self, app: &mut App)
+    {
+        app.add_plugins(
             DefaultPlugins
                 .set(WindowPlugin {
                     primary_window: Some(Window {
-                        title: "SRS Bevy Jam 5".to_string(),
+                        title: "Surviving Today".to_string(),
                         window_theme: Some(WindowTheme::Dark),
                         ..default()
                     }),
@@ -62,16 +75,15 @@ pub fn run_app()
                 .set(AssetPlugin { meta_check: AssetMetaCheck::Never, ..default() }),
         )
         // Dependencies
-        .add_plugins(DefaultPickingPlugins)
+        .add_plugins(DefaultPickingPlugins) //todo: need this?
         .add_plugins(SpritesheetAnimationPlugin)
         .add_plugins(ReactPlugin)
         .add_plugins(SickleUiPlugin)
         .add_plugins(CobwebUiPlugin)
-        // Tools (todo: move to bevy_cobweb_ui)
-        .add_plugins(AssetsPlugin) // must be added after CobwebUiPlugin
-        .add_plugins(ModPickingExtPlugin)
+        // Utils
+        .add_plugins(UtilsPlugin) // must be added after CobwebUiPlugin
         // Game content
-        .add_plugins(UiPlugin)
+        .add_plugins(DayStartPlugin)
         .add_plugins(GamePlugin)
         .add_plugins(GameConstantsPlugin)
         // Load all assets
@@ -79,8 +91,10 @@ pub fn run_app()
         // Misc setup and game management
         .init_state::<GameState>()
         .add_systems(Startup, setup_camera)
-        .add_systems(OnEnter(LoadState::Done), enter_play_state)
-        .run();
+        .add_systems(OnEnter(LoadState::Done), handle_loading_done)
+        .react(|rc| rc.on_persistent(broadcast::<GameDayStart>(), set_state(GameState::DayStart)))
+        .react(|rc| rc.on_persistent(broadcast::<GamePlay>(), set_state(GameState::Play)));
+    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------

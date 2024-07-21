@@ -4,15 +4,13 @@ use crate::*;
 
 //-------------------------------------------------------------------------------------------------------------------
 
-pub struct GamePlugin;
+pub struct DayStartPlugin;
 
-impl Plugin for GamePlugin
+impl Plugin for DayStartPlugin
 {
     fn build(&self, app: &mut App)
     {
-        app.add_plugins(GameSetupPlugin)
-            .add_plugins(SpriteLayersPlugin)
-            .add_plugins(GameUiPlugin);
+        app.add_plugins(SettingsPlugin).add_plugins(StartUiPlugin);
     }
 }
 

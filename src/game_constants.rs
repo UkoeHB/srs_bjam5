@@ -7,7 +7,11 @@ use serde::{Deserialize, Serialize};
 //-------------------------------------------------------------------------------------------------------------------
 
 #[derive(ReactResource, Reflect, Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct GameConstants {}
+pub struct GameConstants
+{
+    day_length_secs: usize,
+    player_base_hp: usize,
+}
 
 impl Command for GameConstants
 {

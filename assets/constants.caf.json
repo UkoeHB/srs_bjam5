@@ -5,7 +5,8 @@
 
 "#commands": {
     "GameConstants": {
-        
+        "day_length_secs": 5,
+        "player_base_hp": 1
     }
 }
 }

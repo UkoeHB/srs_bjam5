@@ -1,20 +1,20 @@
 #![allow(clippy::too_many_arguments)]
 
-mod assets;
+mod day_start;
+mod events;
 mod game;
 mod game_constants;
-mod mod_picking_ext;
-mod run_app;
-mod ui;
+mod plugin;
+mod utils;
 
-pub use assets::*;
+pub use day_start::*;
+pub use events::*;
 pub use game::*;
 pub use game_constants::*;
-pub use mod_picking_ext::*;
-pub use run_app::*;
-pub use ui::*;
+pub use plugin::*;
+pub use utils::*;
 
 fn main()
 {
-    run_app();
+    bevy::app::App::new().add_plugins(AppPlugin).run();
 }

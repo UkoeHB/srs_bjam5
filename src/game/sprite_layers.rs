@@ -9,8 +9,10 @@ use extol_sprite_layer::{LayerIndex, SpriteLayerPlugin};
 pub enum SpriteLayer
 {
     Background,
+    GroundEffect,
     DyingEnemy,
-    Enemy,
+    /// Includes: player, enemies, player and enemy projectiles
+    Objects,
 }
 
 impl LayerIndex for SpriteLayer
@@ -20,8 +22,9 @@ impl LayerIndex for SpriteLayer
         use SpriteLayer::*;
         match *self {
             Background => 0.,
-            DyingEnemy => 1.,
-            Enemy => 2.,
+            GroundEffect => 1.,
+            DyingEnemy => 2.,
+            Objects => 3.,
         }
     }
 }

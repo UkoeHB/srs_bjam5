@@ -1,0 +1,14 @@
+{
+"#import": {
+    "constants.caf.json": ""
+},
+
+"scene": {
+    "window": {
+
+        "close_button": {
+
+        }
+    }
+}
+}

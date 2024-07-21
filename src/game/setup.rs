@@ -4,6 +4,11 @@ use crate::*;
 
 //-------------------------------------------------------------------------------------------------------------------
 
+// todo: game map
+// todo: display controls on ground at starting location
+
+//-------------------------------------------------------------------------------------------------------------------
+
 fn reset_game(mut c: Commands, sounds: Query<Entity, With<Handle<AudioSource>>>)
 {
     for entity in sounds.iter() {
