@@ -10,6 +10,7 @@ use crate::*;
 
 //-------------------------------------------------------------------------------------------------------------------
 
+/// Forwards game day end conditions as GameDayOver.
 fn send_day_over(mut c: Commands)
 {
     c.react().broadcast(GameDayOver);
@@ -17,6 +18,7 @@ fn send_day_over(mut c: Commands)
 
 //-------------------------------------------------------------------------------------------------------------------
 
+//todo: use state scoped entities for audio instead?
 fn reset_game(mut c: Commands, sounds: Query<Entity, With<Handle<AudioSource>>>)
 {
     for entity in sounds.iter() {
@@ -26,13 +28,23 @@ fn reset_game(mut c: Commands, sounds: Query<Entity, With<Handle<AudioSource>>>)
 
 //-------------------------------------------------------------------------------------------------------------------
 
-fn check_death_condition(mut c: Commands, constants: ReactRes<GameConstants>)
+fn check_end_condition(
+    mut c: Commands,
+    player: Query<&Player>,
+    constants: ReactRes<GameConstants>,
+    game_clock: Res<GameClock>,
+)
 {
-    // todo: actually check the death condition
-    if constants.player_base_hp > 0 {
+    // Condition: time ran out
+    if game_clock.elapsed_secs() >= constants.day_length_secs {
         c.react().broadcast(PlayerSurvived);
-    } else {
+        return;
+    }
+
+    // Condition: player health
+    if player.single().health == 0 {
         c.react().broadcast(PlayerDied);
+        return;
     }
 }
 
@@ -51,7 +63,7 @@ impl Plugin for GameSetupPlugin
             )
         })
         .add_systems(OnEnter(GameState::Play), reset_game)
-        .add_systems(Update, check_death_condition.run_if(in_state(GameState::Play)));
+        .add_systems(Update, check_end_condition.run_if(in_state(GameState::Play)));
     }
 }
 

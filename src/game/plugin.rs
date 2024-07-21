@@ -12,7 +12,9 @@ impl Plugin for GamePlugin
     {
         app.add_plugins(GameSetupPlugin)
             .add_plugins(SpriteLayersPlugin)
-            .add_plugins(GameUiPlugin);
+            .add_plugins(PlayerPlugin)
+            .add_plugins(GameUiPlugin)
+            .add_plugins(GameClockPlugin);
     }
 }
 

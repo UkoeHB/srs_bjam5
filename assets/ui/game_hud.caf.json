@@ -4,6 +4,32 @@
 },
 
 "scene": {
+    "FlexStyle": {
+        "dims": {"width": {"Vw": 100.0}, "height": {"Vh": 100.0}},
+        "content": {
+            "flex_direction": "Column",
+            "justify_main": "Center",
+            "justify_cross": "Center"
+        }
+    },
 
+    "header": {
+        "FlexStyle": {
+            "dims": {"width": {"Percent": 100.0}},
+            "content": {
+                "flex_direction": "Row",
+                "justify_main": "Center",
+                "justify_cross": "FlexStart"
+            }
+        },
+
+        "clock": {
+            "TextLine": {}
+        }
+    },
+
+    "fill": {
+        "FlexStyle": {"flex": {"flex_grow": 1.0}}
+    }
 }
 }

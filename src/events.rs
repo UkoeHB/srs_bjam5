@@ -16,6 +16,11 @@ pub struct GameDayOver;
 
 //-------------------------------------------------------------------------------------------------------------------
 
+/// Reactive event emitted when `GameClock` increments by one second. Used for updating the clock display.
+pub struct GameClockIncremented;
+
+//-------------------------------------------------------------------------------------------------------------------
+
 /// Reactive event for toggling the settings display between on/off.
 pub struct ToggleSettings;
 

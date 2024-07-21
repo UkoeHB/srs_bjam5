@@ -15,7 +15,15 @@ fn spawn_game_hud(mut c: Commands, mut s: ResMut<SceneLoader>)
 
         // todo: current day
 
-        // todo: current game time
+        l.edit("header::clock", |l| {
+            l.update_on(broadcast::<GameClockIncremented>(), |id| {
+                move |mut e: TextEditor, clock: Res<GameClock>| {
+                    let secs = clock.elapsed_secs() % 60;
+                    let mins = (clock.elapsed_secs() / 60) % 60;
+                    write_text!(e, id, "{:0>1}:{:0>2}", mins, secs);
+                }
+            });
+        });
 
         // todo: settings button
 

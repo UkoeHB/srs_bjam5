@@ -94,6 +94,7 @@ impl Plugin for AppPlugin
         .load("manifest.caf.json")
         // Misc setup and game management
         .init_state::<GameState>()
+        .enable_state_scoped_entities::<GameState>()
         .add_systems(Startup, setup_camera)
         .add_systems(OnEnter(LoadState::Done), handle_loading_done)
         .react(|rc| rc.on_persistent(broadcast::<GameDayStart>(), set_state(GameState::DayStart)))
