@@ -5,22 +5,28 @@ use crate::*;
 
 //-------------------------------------------------------------------------------------------------------------------
 
-#[derive(Component, Debug)]
-pub struct Player
+fn spawn_player(mut c: Commands, constants: ReactRes<GameConstants>, animations: Res<SpriteAnimations>)
 {
-    pub health: usize,
+    c.spawn((
+        Player { health: constants.player_base_hp },
+        SpatialBundle::from_transform(Transform::default()),
+        SpriteLayer::Objects,
+        //PlayerDirection::Up,
+        //Action::Standing,
+        //AabbSize(constants.player_size),
+        //todo: scoping to GameState::Play means the player despawns on entering GameState::DayOver, even though
+        // we may want to continue displaying the player in the background
+        StateScoped(GameState::Play),
+    ))
+    .set_sprite_animation(&animations, &constants.player_standing_animation);
 }
 
 //-------------------------------------------------------------------------------------------------------------------
 
-fn spawn_player(mut c: Commands, constants: ReactRes<GameConstants>)
+#[derive(Component, Debug)]
+pub struct Player
 {
-    //todo: scoping to GameState::Play means the player despawns on entering GameState::DayOver, even though we
-    // may want to continue displaying the player in the background
-    c.spawn((
-        Player { health: constants.player_base_hp },
-        StateScoped(GameState::Play),
-    ));
+    pub health: usize,
 }
 
 //-------------------------------------------------------------------------------------------------------------------

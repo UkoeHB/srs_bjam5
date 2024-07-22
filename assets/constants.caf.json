@@ -1,12 +1,17 @@
 {
 "#constants": {
-
+    "$player_standing_animation": "player_standing_animation",
+    "$player_standing_texture": "sprites/player_standing_256_256.png",
+    "$player_sprite_size": {"x": 256, "y": 256}
 },
 
 "#commands": {
     "GameConstants": {
         "day_length_secs": 5,
-        "player_base_hp": 0
+
+        "player_standing_animation": "$player_standing_animation",
+
+        "player_base_hp": 1
     }
 }
 }

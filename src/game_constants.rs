@@ -10,6 +10,9 @@ use serde::{Deserialize, Serialize};
 pub struct GameConstants
 {
     pub day_length_secs: u64,
+
+    pub player_standing_animation: String,
+
     pub player_base_hp: usize,
 }
 

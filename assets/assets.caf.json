@@ -7,6 +7,16 @@
     "LoadImages": [[
     ]],
     "LoadSpriteAnimations": [[
+        {
+            "name": "$player_standing_animation",
+            "image": "$player_standing_texture",
+            "size": "$player_sprite_size",
+            "columns": 1,
+            "rows": 1,
+            "frame_time": 10000,
+            "loops": 0,
+            "clips": [{"frames": {"Frame": 0}}]
+        }
     ]],
     "LoadAudio": [[
     ]]
