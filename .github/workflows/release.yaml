@@ -13,13 +13,22 @@ on:
         description: "Version number in the format `v1.2.3`"
         required: true
         type: string
+      tmate:
+        description: "Enable tmate"
+        required: true
+        default: "never"
+        type: choice
+        options:
+          - "never"
+          - "always"
+          - "on failure"
 
 # Configure constants for this workflow.
 env:
   # The base filename of the binary produced by `cargo build`.
-  BINARY: src_bjam5
+  BINARY: srs_bjam5
   # The name to use for the packaged application produced by this workflow.
-  PACKAGE_NAME: src_bjam5
+  PACKAGE_NAME: srs_bjam5
   # The itch.io page to upload to, in the format: `user-name/project-name`.
   # Comment this out to disable.
   ITCH_TARGET: snowy-road-studios/surviving-today
@@ -88,8 +97,8 @@ jobs:
     steps:
       - name: Set up environment
         run: |
-          echo 'PACKAGE=${{ env.PACKAGE_NAME }}-${{ matrix.platform }}' >> "${GITHUB_ENV}"
-          echo 'OUT_DIR=tmp/package/${{ env.PACKAGE_NAME }}${{ matrix.out_dir_suffix }}' >> "${GITHUB_ENV}"
+          echo 'PACKAGE=${{ env.PACKAGE_NAME }}' >> "${GITHUB_ENV}"
+          echo 'OUT_DIR=${{ env.PACKAGE_NAME }}${{ matrix.out_dir_suffix }}' >> "${GITHUB_ENV}"
           if [ '${{ matrix.platform }}' == 'macos' ]; then
             echo 'MACOSX_DEPLOYMENT_TARGET=11.0' >> "${GITHUB_ENV}" # MacOS 11.0 Big Sur is the first version to support universal binaries.
             echo "SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> "${GITHUB_ENV}"
@@ -112,8 +121,8 @@ jobs:
       #   if: ${{ matrix.platform == 'linux' }}
       #   run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
 
-      - name: Prepare output directories
-        run: rm -rf tmp; mkdir -p tmp/binary '${{ env.OUT_DIR }}'
+      # - name: Prepare output directories
+      #   run: rm -rf tmp; mkdir -p tmp/binary '${{ env.OUT_DIR }}'
 
       - name: Install cargo-binstall (Web)
         if: ${{ matrix.platform == 'web' }}
@@ -208,7 +217,7 @@ jobs:
       - name: Upload package to artifacts
         uses: actions/upload-artifact@v4
         with:
-          path: tmp/package/${{ env.PACKAGE }}${{ matrix.package_ext }}
+          path: ${{ env.PACKAGE }}${{ matrix.package_ext }}
           name: package-${{ matrix.platform }}
           retention-days: 1
 
@@ -217,12 +226,15 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: tmp/package/${{ env.PACKAGE }}${{ matrix.package_ext }}
+          file: ${{ env.PACKAGE }}${{ matrix.package_ext }}
           asset_name: ${{ env.PACKAGE }}${{ matrix.package_ext }}
           release_name: ${{ env.VERSION }}
           tag: ${{ env.VERSION }}
           overwrite: true
 
+      - name: Setup tmate session
+        if: ${{ inputs.tmate == 'always' }} && (${{ inputs.tmate == 'on failure' }} && ${{ failure() }})
+        uses: mxschmitt/action-tmate@v3
   # Get itch.io target from env, because the `env` context can't be used in the `if:` condition of a job.
   # See: https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability
   get-itch-target:
