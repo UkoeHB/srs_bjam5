@@ -50,7 +50,8 @@ fn check_end_condition(
 
 //--------------------------------------------------------------------------------------------------------------------
 
-fn check_entity_health(mut c: Commands, entities: Query<(Entity, &Health), Changed<Health>>) {
+fn check_entity_health(mut c: Commands, entities: Query<(Entity, &Health), Changed<Health>>)
+{
     for (id, health) in entities.iter() {
         // dead if health is 0 (can't be less)
         if health.current == 0 {
