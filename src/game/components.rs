@@ -31,7 +31,7 @@ impl Health
         Self { current: max, max }
     }
 
-    pub fn set_health(&mut self, new: usize)
+    pub fn set_current(&mut self, new: usize)
     {
         self.current = new.min(self.max)
     }
