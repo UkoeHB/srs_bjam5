@@ -288,7 +288,7 @@ fn spawn_player(mut c: Commands, constants: ReactRes<GameConstants>, animations:
         StateScoped(GameState::Play),
     ))
     .set_sprite_animation(&animations, &constants.player_standing_animation)
-    .observe(|trigger: Trigger<EntityDeath>, mut c: Commands| c.react().broadcast(PlayerDied));
+    .observe(|_: Trigger<EntityDeath>, mut c: Commands| c.react().broadcast(PlayerDied));
 }
 
 //-------------------------------------------------------------------------------------------------------------------

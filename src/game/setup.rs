@@ -28,17 +28,11 @@ fn reset_game(mut c: Commands, sounds: Query<Entity, With<Handle<AudioSource>>>)
 
 //-------------------------------------------------------------------------------------------------------------------
 
-fn check_end_condition(
-    mut c: Commands,
-    player: Query<&Player>,
-    constants: ReactRes<GameConstants>,
-    game_clock: Res<GameClock>,
-)
+fn check_day_end_condition(mut c: Commands, constants: ReactRes<GameConstants>, game_clock: Res<GameClock>)
 {
     // Condition: time ran out
     if game_clock.elapsed_secs() >= constants.day_length_secs {
         c.react().broadcast(PlayerSurvived);
-        return;
     }
 }
 
@@ -70,9 +64,11 @@ impl Plugin for GameSetupPlugin
                 send_day_over,
             )
         });
-        app.add_systems(OnEnter(GameState::Play), reset_game);
-        // app.add_systems(Update, check_end_condition.run_if(in_state(GameState::Play)));
-        app.add_systems(Update, check_entity_health.run_if(in_state(GameState::Play)));
+        app.add_systems(OnEnter(GameState::Play), reset_game)
+            .add_systems(
+                Update,
+                (check_entity_health, check_day_end_condition).run_if(in_state(GameState::Play)),
+            );
     }
 }
 
