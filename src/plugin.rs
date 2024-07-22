@@ -91,6 +91,7 @@ impl Plugin for AppPlugin
         // Game content
         .add_plugins(ControlsPlugin)
         .add_plugins(GameConstantsPlugin)
+        .add_plugins(MetaPlugin)
         .add_plugins(DayStartPlugin)
         .add_plugins(GamePlugin)
         // Load all assets

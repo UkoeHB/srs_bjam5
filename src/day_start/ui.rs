@@ -13,9 +13,21 @@ fn spawn_day_start_ui(mut c: Commands, mut s: ResMut<SceneLoader>)
     c.ui_builder(UiRoot).load_scene(&mut s, scene, |l| {
         l.despawn_on_broadcast::<GamePlay>();
 
-        // todo: display current day
+        l.edit("header::day::text", |l| {
+            l.update_on(resource_mutation::<Day>(), |id| {
+                move |mut e: TextEditor, day: ReactRes<Day>| {
+                    write_text!(e, id, "Day {}", day.get());
+                }
+            });
+        });
 
-        // todo: display current Karma
+        l.edit("header::karma::text", |l| {
+            l.update_on(resource_mutation::<Karma>(), |id| {
+                move |mut e: TextEditor, karma: ReactRes<Karma>| {
+                    write_text!(e, id, "Karma {}", karma.total());
+                }
+            });
+        });
 
         // todo: display settings button
 

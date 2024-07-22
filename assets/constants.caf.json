@@ -37,10 +37,10 @@
         "boundary_length": "$boundary_length"
     },
     "Controls": {
-        "move_up": ["KeyW"],
-        "move_down": ["KeyS"],
-        "move_left": ["KeyA"],
-        "move_right": ["KeyD"]
+        "move_up": ["ArrowUp"],
+        "move_down": ["ArrowDown"],
+        "move_left": ["ArrowLeft"],
+        "move_right": ["ArrowRight"]
     }
 }
 }

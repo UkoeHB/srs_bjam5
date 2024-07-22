@@ -12,12 +12,32 @@
 
     "header": {
         "FlexStyle": {
-            "dims": {"min_height": {"Percent": 20.0}},
-            "content": {"justify_main": "Center", "justify_cross": "Center"}
+            "dims": {"width": {"Percent": 100.0}, "min_height": {"Percent": 20.0}},
+            "content": {"flex_direction": "Row", "justify_main": "Center", "justify_cross": "Center"}
         },
 
-        "temp_text": {
-            "TextLine": {"text": "[TEMP] Day Start Page"}
+        "day": {
+            "text": {
+                "TextLine": {"size": 50.0}
+            }
+        },
+
+        "karma": {
+            "AbsoluteStyle": {
+                "dims": {
+                    "width": {"Percent": 100.0},
+                    "height": {"Percent": 100.0},
+                    "top": "Auto",
+                    "bottom": "Auto",
+                    "left": "Auto",
+                    "right": "Auto"
+                },
+                "content": {"justify_main": "FlexEnd", "justify_cross": "FlexStart"}
+            },
+
+            "text": {
+                "TextLine": {}
+            }
         }
     },
 

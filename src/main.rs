@@ -6,6 +6,7 @@ mod dev;
 mod events;
 mod game;
 mod game_constants;
+mod meta;
 mod plugin;
 mod utils;
 
@@ -15,6 +16,7 @@ pub use day_start::*;
 pub use events::*;
 pub use game::*;
 pub use game_constants::*;
+pub use meta::*;
 pub use plugin::*;
 pub use utils::*;
 
