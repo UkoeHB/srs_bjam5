@@ -40,12 +40,6 @@ fn check_end_condition(
         c.react().broadcast(PlayerSurvived);
         return;
     }
-
-    // Condition: player health
-    // if player.single().health == 0 {
-    //     c.react().broadcast(PlayerDied);
-    //     return;
-    // }
 }
 
 //--------------------------------------------------------------------------------------------------------------------
