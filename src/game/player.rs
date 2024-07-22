@@ -276,26 +276,25 @@ fn update_player_animation(
 fn spawn_player(mut c: Commands, constants: ReactRes<GameConstants>, animations: Res<SpriteAnimations>)
 {
     c.spawn((
-        Player { health: constants.player_base_hp },
+        Player,
         SpatialBundle::from_transform(Transform::default()),
         SpriteLayer::Objects,
         PlayerDirection::Up,
         Action::Standing,
         AabbSize(constants.player_size),
+        Health::from_max(constants.player_base_hp),
         //todo: scoping to GameState::Play means the player despawns on entering GameState::DayOver, even though
         // we may want to continue displaying the player in the background
         StateScoped(GameState::Play),
     ))
-    .set_sprite_animation(&animations, &constants.player_standing_animation);
+    .set_sprite_animation(&animations, &constants.player_standing_animation)
+    .observe(|trigger: Trigger<EntityDeath>, mut c: Commands| c.react().broadcast(PlayerDied));
 }
 
 //-------------------------------------------------------------------------------------------------------------------
 
 #[derive(Component, Debug)]
-pub struct Player
-{
-    pub health: usize,
-}
+pub struct Player;
 
 //-------------------------------------------------------------------------------------------------------------------
 

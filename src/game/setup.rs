@@ -40,11 +40,19 @@ fn check_end_condition(
         c.react().broadcast(PlayerSurvived);
         return;
     }
+}
 
-    // Condition: player health
-    if player.single().health == 0 {
-        c.react().broadcast(PlayerDied);
-        return;
+//--------------------------------------------------------------------------------------------------------------------
+
+fn check_entity_health(mut c: Commands, entities: Query<(Entity, &Health), Changed<Health>>)
+{
+    for (id, health) in entities.iter() {
+        // dead if health is 0 (can't be less)
+        if health.current == 0 {
+            c.trigger_targets(EntityDeath, id);
+            // removes component because otherwise it would keep detecting it as dead
+            c.entity(id).remove::<Health>();
+        }
     }
 }
 
@@ -61,9 +69,10 @@ impl Plugin for GameSetupPlugin
                 (broadcast::<PlayerDied>(), broadcast::<PlayerSurvived>()),
                 send_day_over,
             )
-        })
-        .add_systems(OnEnter(GameState::Play), reset_game)
-        .add_systems(Update, check_end_condition.run_if(in_state(GameState::Play)));
+        });
+        app.add_systems(OnEnter(GameState::Play), reset_game);
+        // app.add_systems(Update, check_end_condition.run_if(in_state(GameState::Play)));
+        app.add_systems(Update, check_entity_health.run_if(in_state(GameState::Play)));
     }
 }
 
