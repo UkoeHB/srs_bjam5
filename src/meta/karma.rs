@@ -1,9 +1,14 @@
 use bevy::prelude::*;
 use bevy_cobweb::prelude::*;
 
-//use crate::*;
+use crate::*;
 
-//todo: consolidate on exiting GameDayEnd
+//-------------------------------------------------------------------------------------------------------------------
+
+fn consolidate_karma(mut c: Commands, mut karma: ReactResMut<Karma>)
+{
+    karma.get_mut(&mut c).consolidate();
+}
 
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -59,7 +64,8 @@ impl Plugin for KarmaPlugin
 {
     fn build(&self, app: &mut App)
     {
-        app.init_react_resource::<Karma>();
+        app.init_react_resource::<Karma>()
+            .add_systems(OnEnter(GameState::DayStart), consolidate_karma);
     }
 }
 

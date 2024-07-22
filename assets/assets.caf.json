@@ -7,7 +7,8 @@
     "LoadImages": [[
         {"image": "$background_tile_texture"},
         {"image": "$boundary_side_texture"},
-        {"image": "$boundary_corner_texture"}
+        {"image": "$boundary_corner_texture"},
+        {"image": "$controls_texture"}
     ]],
     "LoadSpriteAnimations": [[
         {

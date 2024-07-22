@@ -2,6 +2,7 @@ use core::f32::consts::PI;
 use std::f32::consts::FRAC_PI_2;
 
 use bevy::prelude::*;
+use bevy::sprite::Anchor;
 use bevy_cobweb::prelude::*;
 use bevy_cobweb_ui::prelude::*;
 use bevy_ecs_tilemap::prelude::*;
@@ -177,6 +178,21 @@ fn setup_map_boundary(
 
 //-------------------------------------------------------------------------------------------------------------------
 
+fn spawn_map_controls(mut c: Commands, constants: ReactRes<GameConstants>, images: Res<ImageMap>)
+{
+    c.spawn((
+        SpriteBundle {
+            texture: images.get(&constants.controls_texture),
+            sprite: Sprite { anchor: Anchor::BottomCenter, ..default() },
+            transform: Transform { scale: Vec2::splat(0.5).extend(0.), ..default() },
+            ..default()
+        },
+        SpriteLayer::BackgroundBillboard,
+    ));
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
 pub fn map_area_size(constants: &GameConstants) -> Vec2
 {
     Vec2 {
@@ -216,7 +232,10 @@ impl Plugin for MapPlugin
 {
     fn build(&self, app: &mut App)
     {
-        app.add_systems(OnEnter(GameState::Play), (spawn_map, setup_map_boundary).chain());
+        app.add_systems(
+            OnEnter(GameState::Play),
+            (spawn_map, setup_map_boundary, spawn_map_controls).chain(),
+        );
     }
 }
 

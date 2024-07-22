@@ -27,6 +27,8 @@ pub struct GameConstants
     /// The size of each map tile.
     pub map_tile_size: Vec2,
 
+    pub controls_texture: String,
+
     pub boundary_side_texture: String,
     pub boundary_corner_texture: String,
     pub boundary_width: f32,

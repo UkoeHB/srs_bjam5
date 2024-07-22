@@ -10,6 +10,9 @@
     ],
     "$background_tile_size": {"x": 32, "y": 32},
 
+    "$controls_texture": "images/controls_300_200.png",
+    "$controls_texture_size": {"x": 300, "y": 200},
+
     "$boundary_side_texture": "images/boundary_side.png",
     "$boundary_corner_texture": "images/boundary_corner.png",
     "$boundary_width": 16.0,
@@ -30,6 +33,8 @@
         "background_tile_configs": "$background_tile_configs",
         "map_size": {"x": 22, "y": 22},
         "map_tile_size": "$background_tile_size",
+
+        "controls_texture": "$controls_texture",
 
         "boundary_side_texture": "$boundary_side_texture",
         "boundary_corner_texture": "$boundary_corner_texture",
