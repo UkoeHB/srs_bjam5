@@ -48,8 +48,8 @@ impl Plugin for GameClockPlugin
     fn build(&self, app: &mut App)
     {
         app.init_resource::<GameClock>()
-            .add_systems(OnExit(GameState::DayOver), reset_game_clock)
-            .add_systems(PreUpdate, update_game_clock.run_if(in_state(GameState::Play)));
+            .add_systems(OnExit(GameState::Play), reset_game_clock)
+            .add_systems(PreUpdate, update_game_clock.run_if(in_state(PlayState::Day)));
     }
 }
 

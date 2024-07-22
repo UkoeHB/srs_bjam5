@@ -23,8 +23,44 @@
             }
         },
 
+        "day": {
+            "AbsoluteStyle": {
+                "dims": {
+                    "width": {"Percent": 100.0},
+                    "height": {"Percent": 100.0},
+                    "top": "Auto",
+                    "bottom": "Auto",
+                    "left": "Auto",
+                    "right": "Auto"
+                },
+                "content": {"justify_main": "FlexStart", "justify_cross": "FlexStart"}
+            },
+
+            "text": {
+                "TextLine": {}
+            }
+        },
+
         "clock": {
             "TextLine": {}
+        },
+
+        "karma": {
+            "AbsoluteStyle": {
+                "dims": {
+                    "width": {"Percent": 100.0},
+                    "height": {"Percent": 100.0},
+                    "top": "Auto",
+                    "bottom": "Auto",
+                    "left": "Auto",
+                    "right": "Auto"
+                },
+                "content": {"justify_main": "FlexEnd", "justify_cross": "FlexStart"}
+            },
+
+            "text": {
+                "TextLine": {}
+            }
         }
     },
 

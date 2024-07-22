@@ -10,20 +10,10 @@ use crate::*;
 
 //-------------------------------------------------------------------------------------------------------------------
 
-/// Forwards game day end conditions as GameDayOver.
+// Forwards game day end conditions as GameDayOver.
 fn send_day_over(mut c: Commands)
 {
     c.react().broadcast(GameDayOver);
-}
-
-//-------------------------------------------------------------------------------------------------------------------
-
-//todo: use state scoped entities for audio instead?
-fn reset_game(mut c: Commands, sounds: Query<Entity, With<Handle<AudioSource>>>)
-{
-    for entity in sounds.iter() {
-        c.entity(entity).despawn_recursive();
-    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -64,11 +54,10 @@ impl Plugin for GameSetupPlugin
                 send_day_over,
             )
         });
-        app.add_systems(OnEnter(GameState::Play), reset_game)
-            .add_systems(
-                Update,
-                (check_entity_health, check_day_end_condition).run_if(in_state(GameState::Play)),
-            );
+        app.add_systems(
+            Update,
+            (check_entity_health, check_day_end_condition).run_if(in_state(PlayState::Day)),
+        );
     }
 }
 

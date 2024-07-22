@@ -39,6 +39,18 @@ pub enum GameState
     Loading,
     DayStart,
     Play,
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
+/// We use substates for Day/DayOver so we can scope entities to GameState::Play. This way they stay alive even
+/// after the day result screen pops up.
+#[derive(SubStates, Default, Debug, Copy, Clone, Eq, PartialEq, Hash)]
+#[source(GameState = GameState::Play)]
+pub enum PlayState
+{
+    #[default]
+    Day,
     DayOver,
 }
 
@@ -98,12 +110,13 @@ impl Plugin for AppPlugin
         .load("manifest.caf.json")
         // Misc setup and game management
         .init_state::<GameState>()
+        .add_sub_state::<PlayState>()
         .enable_state_scoped_entities::<GameState>()
         .add_systems(Startup, setup_camera)
         .add_systems(OnEnter(LoadState::Done), handle_loading_done)
         .react(|rc| rc.on_persistent(broadcast::<GameDayStart>(), set_state(GameState::DayStart)))
         .react(|rc| rc.on_persistent(broadcast::<GamePlay>(), set_state(GameState::Play)))
-        .react(|rc| rc.on_persistent(broadcast::<GameDayOver>(), set_state(GameState::DayOver)));
+        .react(|rc| rc.on_persistent(broadcast::<GameDayOver>(), set_state(PlayState::DayOver)));
     }
 }
 

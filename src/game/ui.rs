@@ -13,7 +13,13 @@ fn spawn_game_hud(mut c: Commands, mut s: ResMut<SceneLoader>)
     c.ui_builder(UiRoot).load_scene(&mut s, scene, |l| {
         l.despawn_on_broadcast::<GameDayStart>();
 
-        // todo: current day
+        l.edit("header::day::text", |l| {
+            l.update_on((), |id| {
+                move |mut e: TextEditor, day: ReactRes<Day>| {
+                    write_text!(e, id, "Day {}", day.get());
+                }
+            });
+        });
 
         l.edit("header::clock", |l| {
             l.update_on(broadcast::<GameClockIncremented>(), |id| {
@@ -21,6 +27,14 @@ fn spawn_game_hud(mut c: Commands, mut s: ResMut<SceneLoader>)
                     let secs = clock.elapsed_secs() % 60;
                     let mins = (clock.elapsed_secs() / 60) % 60;
                     write_text!(e, id, "{:0>1}:{:0>2}", mins, secs);
+                }
+            });
+        });
+
+        l.edit("header::karma::text", |l| {
+            l.update_on(resource_mutation::<Karma>(), |id| {
+                move |mut e: TextEditor, karma: ReactRes<Karma>| {
+                    write_text!(e, id, "Karma {}", karma.day_collected());
                 }
             });
         });
@@ -73,9 +87,9 @@ fn spawn_day_survived_ui(mut c: Commands, mut s: ResMut<SceneLoader>)
     c.ui_builder(UiRoot).load_scene(&mut s, scene, |l| {
         l.despawn_on_broadcast::<GameDayStart>();
 
-        // todo: Increment the day resource here so it is ready immediately w/out race conditions.
         l.edit("window::tomorrow_button", |l| {
-            l.on_pressed(|mut c: Commands| {
+            l.on_pressed(|mut c: Commands, mut day: ReactResMut<Day>| {
+                day.get_mut(&mut c).increment();
                 c.react().broadcast(GameDayStart);
             });
         });
