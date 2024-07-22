@@ -16,7 +16,13 @@ impl Plugin for GamePlugin
             .add_plugins(PlayerPlugin)
             .add_plugins(GameUiPlugin)
             .add_plugins(GameClockPlugin)
-            .configure_sets(Update, (PlayerUpdateSet,).chain().run_if(in_state(GameState::Play)));
+            .add_plugins(GameCameraPlugin)
+            .configure_sets(
+                Update,
+                (PlayerUpdateSet, CameraUpdateSet)
+                    .chain()
+                    .run_if(in_state(GameState::Play)),
+            );
     }
 }
 

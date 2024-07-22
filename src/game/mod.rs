@@ -1,3 +1,4 @@
+mod camera;
 mod components;
 mod game_clock;
 mod intersections;
@@ -8,6 +9,7 @@ mod setup;
 mod sprite_layers;
 mod ui;
 
+pub use camera::*;
 pub use components::*;
 pub use game_clock::*;
 pub use intersections::*;
