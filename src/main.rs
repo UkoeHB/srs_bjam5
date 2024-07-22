@@ -1,5 +1,6 @@
 #![allow(clippy::too_many_arguments)]
 
+mod controls;
 mod day_start;
 mod dev;
 mod events;
@@ -8,6 +9,7 @@ mod game_constants;
 mod plugin;
 mod utils;
 
+pub use controls::*;
 pub use day_start::*;
 //pub use dev::*;
 pub use events::*;

@@ -9,9 +9,20 @@
     "GameConstants": {
         "day_length_secs": 5,
 
+        "player_size": "$player_sprite_size",
         "player_standing_animation": "$player_standing_animation",
 
-        "player_base_hp": 1
+        "player_run_speed_tps": 90.0,
+        "player_base_hp": 1,
+
+        "map_size": {"x": 100.0, "y": 100.0},
+        "map_tile_size": {"x": 20.0, "y": 20.0}
+    },
+    "Controls": {
+        "move_up": ["KeyW"],
+        "move_down": ["KeyS"],
+        "move_left": ["KeyA"],
+        "move_right": ["KeyD"]
     }
 }
 }

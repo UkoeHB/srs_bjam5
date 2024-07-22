@@ -87,9 +87,10 @@ impl Plugin for AppPlugin
         // Utils
         .add_plugins(UtilsPlugin) // must be added after CobwebUiPlugin
         // Game content
+        .add_plugins(ControlsPlugin)
+        .add_plugins(GameConstantsPlugin)
         .add_plugins(DayStartPlugin)
         .add_plugins(GamePlugin)
-        .add_plugins(GameConstantsPlugin)
         // Load all assets
         .load("manifest.caf.json")
         // Misc setup and game management

@@ -11,9 +11,17 @@ pub struct GameConstants
 {
     pub day_length_secs: u64,
 
+    pub player_size: Vec2,
     pub player_standing_animation: String,
 
+    /// Player run speed in transform units per second.
+    pub player_run_speed_tps: f32,
     pub player_base_hp: usize,
+
+    /// The total map area in number of tiles (rectangular). todo: consider making this programmatic per-day?
+    pub map_size: Vec2,
+    /// The size of each map tile.
+    pub map_tile_size: Vec2,
 }
 
 impl Command for GameConstants
