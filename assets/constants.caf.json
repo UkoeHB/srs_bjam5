@@ -1,22 +1,40 @@
 {
 "#constants": {
     "$player_standing_animation": "player_standing_animation",
-    "$player_standing_texture": "sprites/player_standing_256_256.png",
-    "$player_sprite_size": {"x": 256, "y": 256}
+    "$player_standing_texture": "sprites/player_standing_146_210.png",
+    "$player_sprite_size": {"x": 146, "y": 210},
+
+    "$background_tile_texture": "images/background_tile_32_32.png",
+    "$background_tile_configs": [
+        {"frequency": 1.0}
+    ],
+    "$background_tile_size": {"x": 32, "y": 32},
+
+    "$boundary_side_texture": "images/boundary_side.png",
+    "$boundary_corner_texture": "images/boundary_corner.png",
+    "$boundary_width": 16.0,
+    "$boundary_length": 32.0
 },
 
 "#commands": {
     "GameConstants": {
-        "day_length_secs": 5,
+        "day_length_secs": 10,
 
         "player_size": "$player_sprite_size",
         "player_standing_animation": "$player_standing_animation",
 
-        "player_run_speed_tps": 90.0,
+        "player_run_speed_tps": 111.0,
         "player_base_hp": 1,
 
-        "map_size": {"x": 100.0, "y": 100.0},
-        "map_tile_size": {"x": 20.0, "y": 20.0}
+        "background_tile_texture": "$background_tile_texture",
+        "background_tile_configs": "$background_tile_configs",
+        "map_size": {"x": 20, "y": 20},
+        "map_tile_size": "$background_tile_size",
+
+        "boundary_side_texture": "$boundary_side_texture",
+        "boundary_corner_texture": "$boundary_corner_texture",
+        "boundary_width": "$boundary_width",
+        "boundary_length": "$boundary_length"
     },
     "Controls": {
         "move_up": ["KeyW"],

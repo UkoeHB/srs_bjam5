@@ -5,6 +5,9 @@
 
 "#commands": {
     "LoadImages": [[
+        {"image": "$background_tile_texture"},
+        {"image": "$boundary_side_texture"},
+        {"image": "$boundary_corner_texture"}
     ]],
     "LoadSpriteAnimations": [[
         {
