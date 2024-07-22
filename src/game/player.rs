@@ -180,7 +180,7 @@ fn update_player_transform_from_tick(
     barriers: Query<(&Transform, &AabbSize), (With<Barrier>, Without<Player>)>,
 )
 {
-    let (mut transform, direction, action, player_size) = player.single_mut();
+    let (mut player_transform, direction, action, player_size) = player.single_mut();
     let delta = time.delta();
 
     let translation_magnitude = match *action {
@@ -189,29 +189,52 @@ fn update_player_transform_from_tick(
     };
 
     let translation_direction = direction.to_unit_vector();
-    let translation = translation_direction * translation_magnitude;
-    let target_translation = transform.translation.truncate() + translation;
+    let mut translation = translation_direction * translation_magnitude;
+
+    // Give up if no translation is possible.
+    if translation == Vec2::default() {
+        return;
+    }
 
     // Check if transform is valid.
-    let player_bb = Aabb2d::new(target_translation, **player_size / 2.);
+    // - Allow the player to move in x or y only if possible (hack that only works right with horizontal/vertical
+    //   barriers).
+    let target_translation = player_transform.translation.truncate() + translation;
+    let target_translation_in_x = player_transform.translation.truncate() + translation.with_y(0.);
+    let target_translation_in_y = player_transform.translation.truncate() + translation.with_x(0.);
+    let player_full_movement_bb = Aabb2d::new(target_translation, **player_size / 2.);
+    let player_x_movement_bb = Aabb2d::new(target_translation_in_x, **player_size / 2.);
+    let player_y_movement_bb = Aabb2d::new(target_translation_in_y, **player_size / 2.);
 
     for (transform, size) in barriers.iter() {
         let entity_aabb = Aabb2d::new(transform.translation.truncate(), **size / 2.);
-        if entity_aabb.intersects(&player_bb) {
-            // Reject player movement if movement will intersect with a barrier.
-            // NOTE: This is a hacky solution because exactly where a player 'stops' depends on their framerate.
+        if !entity_aabb.intersects(&player_full_movement_bb) {
+            continue;
+        }
+
+        if entity_aabb.intersects(&player_x_movement_bb) {
+            translation = translation.with_x(0.);
+        }
+
+        if entity_aabb.intersects(&player_y_movement_bb) {
+            translation = translation.with_y(0.);
+        }
+
+        // Give up if no translation is possible.
+        if translation == Vec2::default() {
             return;
         }
     }
 
     // Check if the transform moves the player outside the map area.
+    let player_bb = Aabb2d::new(target_translation, **player_size / 2.);
     let map_bb = Aabb2d::new(Vec2::default(), map_area_half_size(&constants));
     if !player_bb.intersects(&map_bb) {
         return;
     }
 
     // Apply transform.
-    transform.translation += translation.extend(0.);
+    player_transform.translation += translation.extend(0.);
 }
 
 //-------------------------------------------------------------------------------------------------------------------

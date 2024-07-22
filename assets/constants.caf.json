@@ -28,7 +28,7 @@
 
         "background_tile_texture": "$background_tile_texture",
         "background_tile_configs": "$background_tile_configs",
-        "map_size": {"x": 20, "y": 20},
+        "map_size": {"x": 22, "y": 22},
         "map_tile_size": "$background_tile_size",
 
         "boundary_side_texture": "$boundary_side_texture",

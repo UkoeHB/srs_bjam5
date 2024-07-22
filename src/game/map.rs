@@ -101,9 +101,10 @@ fn setup_map_boundary(
     let horizontal_sz = Vec2 { x: constants.boundary_length, y: constants.boundary_width };
 
     // Correction to tile placement.
-    // - Tile positions are calculated relative to the transform origin, not the map's origin...
-    let upper_left = TilePos { x: map_size.x - 1, y: map_size.y - 1 };
-    let tile_correction = upper_left.center_in_world(bg_grid_size, bg_tilemap_type) / 2.;
+    // - Tile positions are calculated relative to first tile, NOT the transform origin which aligns with the
+    //   center tile.
+    let upper_right = TilePos { x: map_size.x - 1, y: map_size.y - 1 };
+    let tile_correction = upper_right.center_in_world(bg_grid_size, bg_tilemap_type) / 2.;
 
     let add_tile = |c: &mut Commands, texture: Handle<Image>, x: u32, y: u32, size: Vec2, rotation: f32| {
         let tile_pos = TilePos { x, y };
