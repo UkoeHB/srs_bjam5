@@ -1,8 +1,8 @@
 {
 "#constants": {
     "$player_standing_animation": "player_standing_animation",
-    "$player_standing_texture": "sprites/player_standing_146_210.png",
-    "$player_sprite_size": {"x": 146, "y": 210},
+    "$player_standing_texture": "sprites/hillbilly_bill_50_70.png",
+    "$player_sprite_size": {"x": 50, "y": 70},
 
     "$background_tile_texture": "images/background_tile_32_32.png",
     "$background_tile_configs": [
