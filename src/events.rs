@@ -32,8 +32,9 @@ pub struct ToggleSettingsOff;
 
 //-------------------------------------------------------------------------------------------------------------------
 
-/// Reactive event emitted when the player levels up.
-pub struct PlayerLevelUp;
+/// Reactive event emitted when the player gains a power-up.
+/// - This event indicates a power-up needs to be handled in the [`BufferedPowerUps`] resource.
+pub struct PlayerPowerUp;
 
 /// Reactive event emitted when the player dies.
 pub struct PlayerDied;

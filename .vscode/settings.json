@@ -1,0 +1,5 @@
+{
+    //"rust-analyzer.cargo.targetDir": true,
+    "rust-analyzer.showUnlinkedFileNotification": false,
+    "rust-analyzer.cargo.allFeatures": true,
+}

@@ -117,6 +117,11 @@ impl Plugin for AppPlugin
         .react(|rc| rc.on_persistent(broadcast::<GameDayStart>(), set_state(GameState::DayStart)))
         .react(|rc| rc.on_persistent(broadcast::<GamePlay>(), set_state(GameState::Play)))
         .react(|rc| rc.on_persistent(broadcast::<GameDayOver>(), set_state(PlayState::DayOver)));
+
+        #[cfg(feature = "dev")]
+        {
+            app.add_plugins(DevPlugin);
+        }
     }
 }
 

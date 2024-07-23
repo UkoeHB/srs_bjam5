@@ -50,14 +50,24 @@ fn spawn_game_hud(mut c: Commands, mut s: ResMut<SceneLoader>)
 //-------------------------------------------------------------------------------------------------------------------
 
 // todo: freeze time on PlayerLevelUp, then unfreeze when option selected
-fn spawn_power_up_ui(mut c: Commands, mut s: ResMut<SceneLoader>)
+fn spawn_power_up_ui(mut c: Commands, mut s: ResMut<SceneLoader>, mut powerups: ResMut<BufferedPowerUps>)
 {
+    let Some(_powerup_source) = powerups.current_powerup() else {
+        tracing::error!("powerup source missing in spawn_power_up_ui");
+        powerups.end_handling_powerup();
+        return;
+    };
+
     // todo: select power-up options
+    // - on level-up, at minimum 1 option should be 'new' if there are open slots; other slots are selected at
+    // random proportional to number of open slots / total slots
 
     let scene = LoadableRef::new("ui.power_up", "scene");
     c.ui_builder(UiRoot).load_scene(&mut s, scene, |l| {
         let _scene_id = l.id();
         // todo: despawn scene when an option is selected
+
+        // todo: update the power-up buffer on option select
 
         // todo: display power-up options (each is a button)
     });
@@ -111,7 +121,7 @@ impl Plugin for GameUiPlugin
     fn build(&self, app: &mut App)
     {
         app.react(|rc| rc.on_persistent(broadcast::<GamePlay>(), spawn_game_hud))
-            .react(|rc| rc.on_persistent(broadcast::<PlayerLevelUp>(), spawn_power_up_ui))
+            .react(|rc| rc.on_persistent(broadcast::<PlayerPowerUp>(), spawn_power_up_ui))
             .react(|rc| rc.on_persistent(broadcast::<PlayerDied>(), spawn_day_failed_ui))
             .react(|rc| rc.on_persistent(broadcast::<PlayerSurvived>(), spawn_day_survived_ui));
     }

@@ -19,6 +19,8 @@ pub struct GameConstants
     /// Player run speed in transform units per second.
     pub player_run_speed_tps: f32,
     pub player_base_hp: usize,
+    pub player_exp_start: usize,
+    pub player_exp_rate: usize,
 
     pub background_tile_texture: String,
     pub background_tile_configs: Vec<TileConfig>,

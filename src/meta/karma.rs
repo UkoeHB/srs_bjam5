@@ -37,6 +37,8 @@ impl Karma
     /// Tries to spend `amount`.
     pub fn spend(&mut self, amount: usize) -> bool
     {
+        self.consolidate(); // in case of dev commands
+
         if amount > self.total {
             return false;
         }
@@ -52,7 +54,7 @@ impl Karma
 
     pub fn total(&self) -> usize
     {
-        self.day_collected
+        self.total + self.day_collected
     }
 }
 
@@ -65,7 +67,9 @@ impl Plugin for KarmaPlugin
     fn build(&self, app: &mut App)
     {
         app.init_react_resource::<Karma>()
-            .add_systems(OnEnter(GameState::DayStart), consolidate_karma);
+            .add_systems(OnEnter(GameState::DayStart), consolidate_karma)
+            // consolidate in case of dev commands that added karma
+            .add_systems(OnEnter(GameState::Play), consolidate_karma);
     }
 }
 

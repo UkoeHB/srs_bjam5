@@ -1,6 +1,7 @@
 //! Components shared by different kinds of entities.
 
 use bevy::prelude::*;
+//use bevy_cobweb::prelude::*;
 
 //use crate::*;
 
@@ -35,6 +36,74 @@ impl Health
     {
         self.current = new.min(self.max)
     }
+
+    pub fn add(&mut self, add: usize)
+    {
+        self.current += add;
+        self.current = self.current.max(self.max);
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
+#[derive(Debug, Component)]
+pub struct Level
+{
+    level: usize,
+    exp: usize,
+
+    starting_exp_req: usize,
+    /// Additional exp required per level.
+    //todo: currently linear, more sophisticated?
+    exp_gain_rate: usize,
+}
+
+impl Level
+{
+    pub fn new(starting_exp_req: usize, exp_gain_rate: usize) -> Self
+    {
+        Self { level: 1, exp: 0, starting_exp_req, exp_gain_rate }
+    }
+
+    /// Returns a vec of newly gained levels.
+    pub fn add_exp(&mut self, exp: usize) -> Vec<usize>
+    {
+        self.exp += exp;
+
+        let mut levels = Vec::default();
+        while self.exp > self.exp_required() {
+            self.exp -= self.exp_required();
+            self.level += 1;
+            levels.push(self.level);
+        }
+        levels
+    }
+
+    pub fn level(&self) -> usize
+    {
+        self.level
+    }
+
+    pub fn exp(&self) -> usize
+    {
+        self.exp
+    }
+
+    pub fn exp_required(&self) -> usize
+    {
+        self.starting_exp_req + (self.level - 1) * self.exp_gain_rate
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
+/// Item that can be collected by the player.
+#[derive(Component)]
+pub enum Collectable
+{
+    Exp(usize),
+    Karma(usize),
+    HealthPack(usize),
 }
 
 //-------------------------------------------------------------------------------------------------------------------

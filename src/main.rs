@@ -2,6 +2,7 @@
 
 mod controls;
 mod day_start;
+#[cfg(feature = "dev")]
 mod dev;
 mod events;
 mod game;
@@ -12,7 +13,8 @@ mod utils;
 
 pub use controls::*;
 pub use day_start::*;
-//pub use dev::*;
+#[cfg(feature = "dev")]
+pub use dev::*;
 pub use events::*;
 pub use game::*;
 pub use game_constants::*;

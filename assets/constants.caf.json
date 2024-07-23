@@ -28,6 +28,8 @@
 
         "player_run_speed_tps": 111.0,
         "player_base_hp": 1,
+        "player_exp_start": 4,
+        "player_exp_rate": 3,
 
         "background_tile_texture": "$background_tile_texture",
         "background_tile_configs": "$background_tile_configs",
