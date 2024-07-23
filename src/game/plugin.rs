@@ -19,7 +19,8 @@ impl Plugin for GamePlugin
             .add_plugins(GameUiPlugin)
             .add_plugins(GameClockPlugin)
             .add_plugins(GameCameraPlugin)
-            .add_plugins(LightPlugin)
+            //todo: re-enable once webgl is supported
+            //.add_plugins(LightPlugin)
             .configure_sets(
                 Update,
                 (PlayerUpdateSet, CameraUpdateSet, PowerUpUpdateSet)
