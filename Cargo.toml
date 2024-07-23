@@ -35,7 +35,7 @@ rand_chacha = { version = "0.3" }
 serde = { version = "1.0" }
 tracing = { version = "0.1" }
 wasm-timer = { version = "0.2" }
-bevy_lit = { git= "https://github.com/malbernaz/bevy_lit" }
+bevy_light_2d = { version = "0.2" }
 
 # Profile for WASM release builds only.
 [profile.release]
