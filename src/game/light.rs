@@ -35,6 +35,6 @@ fn setup_light(mut c: Commands)
 
 fn update_light(mut light: ResMut<AmbientLight2d>, clock: Res<GameClock>, constants: ReactRes<GameConstants>)
 {
-    let brightness = clock.elapsed_secs() as f32 / constants.day_length_secs as f32;
-    light.brightness = brightness.clamp(0.1, 1.);
+    let day_progress = clock.elapsed_secs() as f32 / constants.day_length_secs as f32;
+    light.brightness = 1.0 - day_progress;
 }
