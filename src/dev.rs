@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use bevy::prelude::*;
 use bevy_cobweb::prelude::*;
 use bevy_cobweb_ui::prelude::*;
@@ -62,6 +64,8 @@ fn display_dev_controls(mut c: Commands, controls: Res<DevControls>)
 //-------------------------------------------------------------------------------------------------------------------
 
 fn check_dev_commands(
+    mut last_command: Local<Duration>,
+    time: Res<Time>,
     mut c: Commands,
     button_input: Res<ButtonInput<KeyCode>>,
     controls: Res<DevControls>,
@@ -69,19 +73,27 @@ fn check_dev_commands(
     mut powerups: ResMut<BufferedPowerUps>,
 )
 {
+    if *last_command + Duration::from_millis(150) > time.elapsed() {
+        return;
+    }
+
     for pressed in button_input.get_pressed() {
         if *pressed == controls.survive_immediately {
             c.react().broadcast(PlayerSurvived);
         } else if *pressed == controls.die_immediately {
             c.react().broadcast(PlayerDied);
         } else if *pressed == controls.add_karma {
-            karma.get_mut(&mut c).add(10);
+            karma.get_mut(&mut c).add(25);
         } else if *pressed == controls.get_power_up {
             if powerups.is_handling_powerup() {
                 continue;
             }
             powerups.insert([PowerUpSource::LevelUp]);
+        } else {
+            continue;
         }
+
+        *last_command = time.elapsed();
     }
 }
 
