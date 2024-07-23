@@ -42,6 +42,11 @@ impl Health
         self.current += add;
         self.current = self.current.max(self.max);
     }
+
+    pub fn subtract(&mut self, sub: usize)
+    {
+        self.current = self.current.saturating_sub(sub);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -66,6 +71,7 @@ impl Level
     }
 
     /// Returns a vec of newly gained levels.
+    #[must_use]
     pub fn add_exp(&mut self, exp: usize) -> Vec<usize>
     {
         self.exp += exp;

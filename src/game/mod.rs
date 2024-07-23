@@ -1,3 +1,4 @@
+mod billboard_cache;
 mod camera;
 mod components;
 mod game_clock;
@@ -11,6 +12,7 @@ mod setup;
 mod sprite_layers;
 mod ui;
 
+pub use billboard_cache::*;
 pub use camera::*;
 pub use components::*;
 pub use game_clock::*;

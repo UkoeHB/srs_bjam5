@@ -1,9 +1,35 @@
 use bevy::math::bounding::{Aabb2d, IntersectsVolume};
+use bevy::math::vec3;
+use bevy::prelude::TransformSystem::TransformPropagate;
 use bevy::prelude::*;
+use bevy::sprite::{Anchor, MaterialMesh2dBundle};
 use bevy_cobweb::prelude::*;
 use bevy_lit::prelude::LightOccluder2d;
+use bevy_cobweb_ui::prelude::*;
 
 use crate::*;
+
+//-------------------------------------------------------------------------------------------------------------------
+
+#[derive(Component, Debug)]
+struct BillboardEntities
+{
+    tag: Entity,
+    hp: Entity,
+    exp: Entity,
+}
+
+impl Default for BillboardEntities
+{
+    fn default() -> Self
+    {
+        Self {
+            tag: Entity::PLACEHOLDER,
+            hp: Entity::PLACEHOLDER,
+            exp: Entity::PLACEHOLDER,
+        }
+    }
+}
 
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -282,7 +308,7 @@ fn handle_collectable_collisions(
     mut powerups: ResMut<BufferedPowerUps>,
 )
 {
-    let (mut level, mut health, player_transform, player_size) = player.single_mut();
+    let Ok((mut level, mut health, player_transform, player_size)) = player.get_single_mut() else { return };
     let player_aabb = Aabb2d::new(player_transform.translation.truncate(), **player_size / 2.);
 
     for (entity, collectable, collectable_transform, collectable_size) in collectables.iter() {
@@ -313,8 +339,44 @@ fn handle_collectable_collisions(
 
 //-------------------------------------------------------------------------------------------------------------------
 
-fn spawn_player(mut c: Commands, constants: ReactRes<GameConstants>, animations: Res<SpriteAnimations>)
+fn update_player_billboard(
+    constants: ReactRes<GameConstants>,
+    mut e: TextEditor,
+    player: Query<(&Health, &Level, &BillboardEntities), With<Player>>,
+    mut transforms: Query<&mut Transform>,
+)
 {
+    let Ok((hp, level, billboard)) = player.get_single() else { return };
+
+    // Update level tag
+    write_text!(e, billboard.tag, "{}", level.level());
+
+    // Update exp bar
+    if let Ok(mut transform) = transforms.get_mut(billboard.exp) {
+        let scale = (level.exp() as f32) / (level.exp_required().max(1) as f32);
+        transform.scale.x = scale;
+        transform.translation.x = -(1. - scale) * constants.exp_bar_size.x / 2.;
+    }
+
+    // Update hp bar
+    if let Ok(mut transform) = transforms.get_mut(billboard.hp) {
+        let scale = (hp.current as f32) / (hp.max.max(1) as f32);
+        transform.scale.x = scale;
+        transform.translation.x = -(1. - scale) * constants.hp_bar_size.x / 2.;
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
+fn spawn_player(
+    mut c: Commands,
+    constants: ReactRes<GameConstants>,
+    animations: Res<SpriteAnimations>,
+    billboard_cache: Res<BillboardCache>,
+    fonts: Res<FontMap>,
+)
+{
+    let mut billboard_entities = BillboardEntities::default();
     c.spawn((
         Player,
         SpatialBundle::from_transform(Transform::default()),
@@ -325,12 +387,95 @@ fn spawn_player(mut c: Commands, constants: ReactRes<GameConstants>, animations:
         AabbSize(constants.player_size),
         Health::from_max(constants.player_base_hp),
         Level::new(constants.player_exp_start, constants.player_exp_rate),
-        //todo: scoping to GameState::Play means the player despawns on entering GameState::DayOver, even though
-        // we may want to continue displaying the player in the background
         StateScoped(GameState::Play),
     ))
     .set_sprite_animation(&animations, &constants.player_standing_animation)
-    .observe(|_: Trigger<EntityDeath>, mut c: Commands| c.react().broadcast(PlayerDied));
+    .observe(|_: Trigger<EntityDeath>, mut c: Commands| c.react().broadcast(PlayerDied))
+    .with_children(|cb| {
+        // Player level
+        let tag_translation = vec3(
+            -(constants.hp_bar_size.x / 2.) + constants.level_tag_offset.x,
+            constants.player_size.y / 2. + constants.level_tag_offset.y,
+            0.,
+        );
+        billboard_entities.tag = cb
+            .spawn((
+                Text2dBundle {
+                    text: Text::from_section(
+                        "1",
+                        TextStyle {
+                            font: fonts.get(&constants.level_tag_font),
+                            font_size: constants.level_tag_font_size,
+                            color: constants.level_tag_color,
+                        },
+                    ),
+                    text_anchor: Anchor::CenterLeft,
+                    transform: Transform { translation: tag_translation, scale: Vec3::ONE, ..default() },
+                    ..default()
+                },
+                SpriteLayer::PlayerBillboardLv1,
+            ))
+            .id();
+
+        // Player exp bar
+        let exp_bar_translation = vec3(0., constants.player_size.y / 2. + constants.exp_bar_offset, 0.);
+        cb.spawn((
+            MaterialMesh2dBundle {
+                mesh: billboard_cache.exp_bar_mesh().into(),
+                material: billboard_cache.exp_bar_empty_color(),
+                transform: Transform { translation: exp_bar_translation, ..default() },
+                ..default()
+            },
+            SpriteLayer::PlayerBillboardLv1,
+        ))
+        .with_children(|cb| {
+            billboard_entities.exp = cb
+                .spawn((
+                    MaterialMesh2dBundle {
+                        mesh: billboard_cache.exp_bar_mesh().into(),
+                        material: billboard_cache.exp_bar_filled_color(),
+                        transform: Transform { scale: vec3(0., 1., 1.), ..default() },
+                        ..default()
+                    },
+                    Anchor::CenterRight,
+                    SpriteLayer::PlayerBillboardLv2,
+                ))
+                .id();
+        });
+
+        // Player health on top of exp bar
+        let hp_bar_translation = vec3(
+            0.,
+            constants.player_size.y / 2.
+                + constants.exp_bar_offset
+                + constants.exp_bar_size.y
+                + constants.hp_bar_offset,
+            0.,
+        );
+        cb.spawn((
+            MaterialMesh2dBundle {
+                mesh: billboard_cache.hp_bar_mesh().into(),
+                material: billboard_cache.hp_bar_empty_color(),
+                transform: Transform { translation: hp_bar_translation, ..default() },
+                ..default()
+            },
+            SpriteLayer::PlayerBillboardLv1,
+        ))
+        .with_children(|cb| {
+            billboard_entities.hp = cb
+                .spawn((
+                    MaterialMesh2dBundle {
+                        mesh: billboard_cache.hp_bar_mesh().into(),
+                        material: billboard_cache.hp_bar_filled_color(),
+                        transform: Transform { scale: Vec3::ONE, ..default() },
+                        ..default()
+                    },
+                    SpriteLayer::PlayerBillboardLv2,
+                ))
+                .id();
+        });
+    })
+    .insert(billboard_entities);
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -362,6 +507,12 @@ impl Plugin for PlayerPlugin
                 )
                     .chain()
                     .in_set(PlayerUpdateSet),
+            )
+            .add_systems(
+                PostUpdate,
+                update_player_billboard
+                    .before(TransformPropagate)
+                    .run_if(in_state(PlayState::Day)),
             );
     }
 }

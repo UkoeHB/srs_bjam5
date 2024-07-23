@@ -10,7 +10,8 @@ impl Plugin for GamePlugin
 {
     fn build(&self, app: &mut App)
     {
-        app.add_plugins(GameSetupPlugin)
+        app.add_plugins(BillboardCachePlugin)
+            .add_plugins(GameSetupPlugin)
             .add_plugins(SpriteLayersPlugin)
             .add_plugins(MapPlugin)
             .add_plugins(PlayerPlugin)
