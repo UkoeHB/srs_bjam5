@@ -47,7 +47,6 @@ fn spawn_map(mut c: Commands, mut rng: ResMut<GameRng>, constants: ReactRes<Game
             LightOccluder2d {
                 half_size: constants.map_size.as_vec2() * constants.map_tile_size,
             },
-            StateScoped(GameState::Play),
         ))
         .id();
 
@@ -68,7 +67,6 @@ fn spawn_map(mut c: Commands, mut rng: ResMut<GameRng>, constants: ReactRes<Game
                         texture_index: TileTextureIndex(texture_index as u32),
                         ..Default::default()
                     },
-                    StateScoped(GameState::Play),
                     SpriteLayer::Background,
                 ))
                 .id();
@@ -126,7 +124,6 @@ fn setup_map_boundary(
             Barrier,
             AabbSize(size),
             SpriteLayer::Objects,
-            StateScoped(GameState::Play),
         ));
     };
 
@@ -240,7 +237,8 @@ impl Plugin for MapPlugin
     fn build(&self, app: &mut App)
     {
         app.add_systems(
-            OnEnter(GameState::Play),
+            // Run all these systems on startup so the map does need to be regenerated every time.
+            OnExit(LoadState::Loading),
             (spawn_map, setup_map_boundary, spawn_map_controls).chain(),
         );
     }
