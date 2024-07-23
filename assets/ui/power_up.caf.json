@@ -4,6 +4,42 @@
 },
 
 "scene": {
+    "FlexStyle": {
+        "dims": {"width": {"Vw": 100.0}, "height": {"Vh": 100.0}},
+        "content": {
+            "flex_direction": "Row",
+            "justify_main": "SpaceEvenly",
+            "justify_cross": "Center",
+            "padding": {"left": {"Percent": 15.0}, "right": {"Percent": 15.0}}
+        }
+    },
+    "BgColor": [{"Hsla": {"hue": 0.0, "saturation": 0.80, "lightness": 0.0, "alpha": 0.5}}]
+},
 
+"powerup_frame_scene": {
+    "FlexStyle": {
+        "dims": {
+            "width": {"Px": 250.0},
+            "height": {"Px": 300.0}
+        },
+        "content": {
+            "flex_direction": "Column",
+            "justify_main": "SpaceEvenly",
+            "justify_cross": "Center"
+        }
+    },
+    "Splat<Border>": [{"Px": 4.0}],
+    "BgColor": [{"Hsla": {"hue": 120.0, "saturation": 0.7, "lightness": 0.28, "alpha": 1.0}}],
+    "BrColor": [{"Hsla": {"hue": 120.0, "saturation": 0.85, "lightness": 0.10, "alpha": 1.0}}],
+    "BrRadius": [{"Px": 30.0}],
+    "Interactive": []
+},
+
+"powerup_scene": {
+    "TextLine": {"text": "Power Up (TODO)"}
+},
+
+"filler_scene": {
+    "TextLine": {"text": "Filler (TODO)"}
 }
 }

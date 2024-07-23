@@ -20,6 +20,21 @@ fn handle_buffered_powerups(mut c: Commands, mut buffer: ResMut<BufferedPowerUps
 
 //-------------------------------------------------------------------------------------------------------------------
 
+pub fn get_powerup_options(
+    _rng: &mut GameRng,
+    _source: PowerUpSource,
+    _player_powerups: &PlayerPowerUps,
+    _powerup_bank: &PowerUpBank,
+) -> Vec<PowerUpConfig>
+{
+    // todo:
+    // - on level-up, at minimum 1 option should be 'new' if there are open slots; other slots are selected at
+    // random proportional to number of open slots / total slots
+    vec![PowerUpConfig::Filler, PowerUpConfig::Filler]
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
 /// Types of power-up sources.
 #[derive(Default, Debug, Copy, Clone, Eq, PartialEq)]
 pub enum PowerUpSource
@@ -79,6 +94,29 @@ impl BufferedPowerUps
 
 //-------------------------------------------------------------------------------------------------------------------
 
+#[derive(ReactResource, Debug, Default)]
+pub struct PlayerPowerUps {
+    // todo
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
+#[derive(Resource, Debug, Default)]
+pub struct PowerUpBank {
+    // todo: load from file
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
+#[derive(Debug)]
+pub enum PowerUpConfig
+{
+    PowerUp,
+    Filler,
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
 #[derive(SystemSet, Hash, Eq, PartialEq, Debug, Copy, Clone)]
 pub struct PowerUpUpdateSet;
 
@@ -91,6 +129,8 @@ impl Plugin for PowerUpPlugin
     fn build(&self, app: &mut App)
     {
         app.init_resource::<BufferedPowerUps>()
+            .init_react_resource::<PlayerPowerUps>()
+            .init_resource::<PowerUpBank>()
             .add_systems(Update, handle_buffered_powerups.in_set(PowerUpUpdateSet));
     }
 }

@@ -7,16 +7,16 @@ use crate::*;
 
 // button to add exp
 // button to take dmg
-// button to level up
-// button to survive automatically
-// button to immediately die
 
 //-------------------------------------------------------------------------------------------------------------------
 
 #[derive(Resource, Debug, Clone)]
 struct DevControls
 {
+    survive_immediately: KeyCode,
+    die_immediately: KeyCode,
     add_karma: KeyCode,
+    get_power_up: KeyCode,
 }
 
 impl DevControls
@@ -24,7 +24,7 @@ impl DevControls
     fn display(&self) -> String
     {
         // How to get this from the fields of self? Kind of a pain..
-        format!("DEV: +Karma(K)")
+        format!("DEV: Survive(S), Die(D), +Karma(K), +PowerUp(P)")
     }
 }
 
@@ -32,7 +32,12 @@ impl Default for DevControls
 {
     fn default() -> Self
     {
-        Self { add_karma: KeyCode::KeyK }
+        Self {
+            survive_immediately: KeyCode::KeyS,
+            die_immediately: KeyCode::KeyD,
+            add_karma: KeyCode::KeyK,
+            get_power_up: KeyCode::KeyP,
+        }
     }
 }
 
@@ -63,11 +68,21 @@ fn check_dev_commands(
     button_input: Res<ButtonInput<KeyCode>>,
     controls: Res<DevControls>,
     mut karma: ReactResMut<Karma>,
+    mut powerups: ResMut<BufferedPowerUps>,
 )
 {
     for pressed in button_input.get_pressed() {
-        if *pressed == controls.add_karma {
+        if *pressed == controls.survive_immediately {
+            c.react().broadcast(PlayerSurvived);
+        } else if *pressed == controls.die_immediately {
+            c.react().broadcast(PlayerDied);
+        } else if *pressed == controls.add_karma {
             karma.get_mut(&mut c).add(10);
+        } else if *pressed == controls.get_power_up {
+            if powerups.is_handling_powerup() {
+                continue;
+            }
+            powerups.insert([PowerUpSource::LevelUp]);
         }
     }
 }

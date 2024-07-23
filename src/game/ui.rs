@@ -49,27 +49,68 @@ fn spawn_game_hud(mut c: Commands, mut s: ResMut<SceneLoader>)
 
 //-------------------------------------------------------------------------------------------------------------------
 
-// todo: freeze time on PlayerLevelUp, then unfreeze when option selected
-fn spawn_power_up_ui(mut c: Commands, mut s: ResMut<SceneLoader>, mut powerups: ResMut<BufferedPowerUps>)
+fn spawn_power_up_ui(
+    mut c: Commands,
+    mut time: ResMut<Time<Virtual>>,
+    mut rng: ResMut<GameRng>,
+    player_powerups: ReactRes<PlayerPowerUps>,
+    powerup_bank: Res<PowerUpBank>,
+    mut s: ResMut<SceneLoader>,
+    mut powerups: ResMut<BufferedPowerUps>,
+)
 {
-    let Some(_powerup_source) = powerups.current_powerup() else {
+    let Some(powerup_source) = powerups.current_powerup() else {
         tracing::error!("powerup source missing in spawn_power_up_ui");
         powerups.end_handling_powerup();
         return;
     };
 
-    // todo: select power-up options
-    // - on level-up, at minimum 1 option should be 'new' if there are open slots; other slots are selected at
-    // random proportional to number of open slots / total slots
+    // Pause time now that we're spawning a power-up sequence.
+    time.pause();
 
-    let scene = LoadableRef::new("ui.power_up", "scene");
+    // Generate power-up options for the player.
+    let options = get_powerup_options(&mut rng, powerup_source, &player_powerups, &powerup_bank);
+    debug_assert!(options.len() > 0);
+
+    let file = LoadableRef::from_file("ui.power_up");
+    let scene = file.e("scene");
     c.ui_builder(UiRoot).load_scene(&mut s, scene, |l| {
-        let _scene_id = l.id();
-        // todo: despawn scene when an option is selected
+        let scene_id = l.id();
 
-        // todo: update the power-up buffer on option select
+        for option in options {
+            l.load_scene(file.e("powerup_frame_scene"), |l| {
+                // Add behavior all buttons need.
+                l.on_pressed(
+                    move |mut c: Commands,
+                          mut buffer: ResMut<BufferedPowerUps>,
+                          mut time: ResMut<Time<Virtual>>| {
+                        c.entity(scene_id).despawn_recursive();
+                        buffer.end_handling_powerup();
 
-        // todo: display power-up options (each is a button)
+                        // Unpause time now that the power-up sequence is done.
+                        time.unpause();
+                    },
+                );
+
+                // Add custom behavior and styling for the specific power-up.
+                match option {
+                    PowerUpConfig::PowerUp => {
+                        l.load_scene(file.e("powerup_scene"), |l| {
+                            l.commands().ui_builder(scene_id).on_pressed(move || {
+                                //todo: apply the power up
+                            });
+                        });
+                    }
+                    PowerUpConfig::Filler => {
+                        l.load_scene(file.e("filler_scene"), |l| {
+                            l.commands().ui_builder(scene_id).on_pressed(move || {
+                                //todo: apply the filler effect
+                            });
+                        });
+                    }
+                }
+            });
+        }
     });
 }
 

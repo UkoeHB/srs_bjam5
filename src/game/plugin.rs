@@ -22,7 +22,7 @@ impl Plugin for GamePlugin
                 Update,
                 (PlayerUpdateSet, CameraUpdateSet, PowerUpUpdateSet)
                     .chain()
-                    .run_if(in_state(GameState::Play)),
+                    .run_if(in_state(PlayState::Day)),
             );
     }
 }
