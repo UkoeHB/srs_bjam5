@@ -6,6 +6,7 @@ use bevy::sprite::Anchor;
 use bevy_cobweb::prelude::*;
 use bevy_cobweb_ui::prelude::*;
 use bevy_ecs_tilemap::prelude::*;
+use bevy_lit::prelude::LightOccluder2d;
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 
@@ -41,7 +42,13 @@ fn spawn_map(mut c: Commands, mut rng: ResMut<GameRng>, constants: ReactRes<Game
 
     // Background tilemap entity.
     let bg_tilemap_entity = c
-        .spawn((BackgroundTilemap, StateScoped(GameState::Play)))
+        .spawn((
+            BackgroundTilemap,
+            LightOccluder2d {
+                half_size: constants.map_size.as_vec2() * constants.map_tile_size,
+            },
+            StateScoped(GameState::Play),
+        ))
         .id();
 
     // Spawn the elements of the tilemap.
