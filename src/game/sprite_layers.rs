@@ -14,6 +14,8 @@ pub enum SpriteLayer
     DyingEnemy,
     /// Includes: player, enemies, player and enemy projectiles
     Objects,
+    PlayerBillboardLv1,
+    PlayerBillboardLv2,
 }
 
 impl LayerIndex for SpriteLayer
@@ -27,6 +29,8 @@ impl LayerIndex for SpriteLayer
             GroundEffect => 2.,
             DyingEnemy => 3.,
             Objects => 4.,
+            PlayerBillboardLv1 => 5.,
+            PlayerBillboardLv2 => 6.,
         }
     }
 }

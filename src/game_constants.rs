@@ -22,6 +22,21 @@ pub struct GameConstants
     pub player_exp_start: usize,
     pub player_exp_rate: usize,
 
+    pub level_tag_font: String,
+    pub level_tag_color: Color,
+    pub level_tag_font_size: f32,
+    pub level_tag_offset: Vec2,
+
+    pub exp_bar_size: Vec2,
+    pub exp_bar_offset: f32,
+    pub exp_bar_filled_color: Color,
+    pub exp_bar_empty_color: Color,
+
+    pub hp_bar_size: Vec2,
+    pub hp_bar_offset: f32,
+    pub hp_bar_filled_color: Color,
+    pub hp_bar_empty_color: Color,
+
     pub background_tile_texture: String,
     pub background_tile_configs: Vec<TileConfig>,
     /// The total map area in number of tiles (rectangular). todo: consider making this programmatic per-day?

@@ -31,6 +31,21 @@
         "player_exp_start": 4,
         "player_exp_rate": 3,
 
+        "level_tag_font": "embedded://sickle_ui/fonts/FiraSans-Medium.ttf",
+        "level_tag_color": {"Hsla": {"hue": 0.0, "saturation": 0.0, "lightness": 1.0, "alpha": 1.0}},
+        "level_tag_font_size": 10.0,
+        "level_tag_offset": {"x": -6.0, "y": 7.0},
+
+        "exp_bar_size": {"x": 50.0, "y": 3.0},
+        "exp_bar_offset": 4.0,
+        "exp_bar_filled_color": {"Hsla": {"hue": 240.0, "saturation": 1.0, "lightness": 0.49, "alpha": 1.0}},
+        "exp_bar_empty_color": {"Hsla": {"hue": 240.0, "saturation": 0.7, "lightness": 0.6, "alpha": 0.7}},
+
+        "hp_bar_size": {"x": 50.0, "y": 4.0},
+        "hp_bar_offset": 2.0,
+        "hp_bar_filled_color": {"Hsla": {"hue": 98.0, "saturation": 1.0, "lightness": 0.49, "alpha": 1.0}},
+        "hp_bar_empty_color": {"Hsla": {"hue": 0.0, "saturation": 1.0, "lightness": 0.49, "alpha": 1.0}},
+
         "background_tile_texture": "$background_tile_texture",
         "background_tile_configs": "$background_tile_configs",
         "map_size": {"x": 22, "y": 22},

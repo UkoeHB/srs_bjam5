@@ -45,8 +45,6 @@ impl Default for DevControls
 
 fn display_dev_controls(mut c: Commands, controls: Res<DevControls>)
 {
-    tracing::error!("dev controls");
-
     c.ui_builder(UiRoot).container(NodeBundle::default(), |ui| {
         ui.despawn_on_broadcast::<GameDayStart>();
 
