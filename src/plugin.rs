@@ -106,7 +106,6 @@ impl Plugin for AppPlugin
         .add_plugins(MetaPlugin)
         .add_plugins(DayStartPlugin)
         .add_plugins(GamePlugin)
-        .add_plugins(LightPlugin)
         // Load all assets
         .load("manifest.caf.json")
         // Misc setup and game management

@@ -4,8 +4,8 @@ use bevy::prelude::TransformSystem::TransformPropagate;
 use bevy::prelude::*;
 use bevy::sprite::{Anchor, MaterialMesh2dBundle};
 use bevy_cobweb::prelude::*;
-use bevy_lit::prelude::LightOccluder2d;
 use bevy_cobweb_ui::prelude::*;
+use bevy_lit::prelude::LightOccluder2d;
 
 use crate::*;
 
