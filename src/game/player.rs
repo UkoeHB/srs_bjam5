@@ -1,6 +1,7 @@
 use bevy::math::bounding::{Aabb2d, IntersectsVolume};
 use bevy::prelude::*;
 use bevy_cobweb::prelude::*;
+use bevy_lit::prelude::LightOccluder2d;
 
 use crate::*;
 
@@ -317,6 +318,7 @@ fn spawn_player(mut c: Commands, constants: ReactRes<GameConstants>, animations:
     c.spawn((
         Player,
         SpatialBundle::from_transform(Transform::default()),
+        LightOccluder2d { half_size: constants.player_size / 2.0 },
         SpriteLayer::Objects,
         PlayerDirection::Up,
         Action::Standing,
