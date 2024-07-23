@@ -339,6 +339,7 @@ fn handle_collectable_collisions(
 //-------------------------------------------------------------------------------------------------------------------
 
 fn update_player_billboard(
+    constants: ReactRes<GameConstants>,
     mut e: TextEditor,
     player: Query<(&Health, &Level, &BillboardEntities), With<Player>>,
     mut transforms: Query<&mut Transform>,
@@ -349,14 +350,18 @@ fn update_player_billboard(
     // Update level tag
     write_text!(e, billboard.tag, "{}", level.level());
 
-    // Update hp bar
-    if let Ok(mut transform) = transforms.get_mut(billboard.hp) {
-        transform.scale.x = (hp.current as f32) / (hp.max.max(1) as f32);
-    }
-
     // Update exp bar
     if let Ok(mut transform) = transforms.get_mut(billboard.exp) {
-        transform.scale.x = (level.exp() as f32) / (level.exp_required().max(1) as f32);
+        let scale = (level.exp() as f32) / (level.exp_required().max(1) as f32);
+        transform.scale.x = scale;
+        transform.translation.x = -(1. - scale) * constants.exp_bar_size.x / 2.;
+    }
+
+    // Update hp bar
+    if let Ok(mut transform) = transforms.get_mut(billboard.hp) {
+        let scale = (hp.current as f32) / (hp.max.max(1) as f32);
+        transform.scale.x = scale;
+        transform.translation.x = -(1. - scale) * constants.hp_bar_size.x / 2.;
     }
 }
 
@@ -430,6 +435,7 @@ fn spawn_player(
                         transform: Transform { scale: vec3(0., 1., 1.), ..default() },
                         ..default()
                     },
+                    Anchor::CenterRight,
                     SpriteLayer::PlayerBillboardLv2,
                 ))
                 .id();

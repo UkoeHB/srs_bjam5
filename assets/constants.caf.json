@@ -27,7 +27,7 @@
         "player_standing_animation": "$player_standing_animation",
 
         "player_run_speed_tps": 111.0,
-        "player_base_hp": 1,
+        "player_base_hp": 10,
         "player_exp_start": 4,
         "player_exp_rate": 3,
 

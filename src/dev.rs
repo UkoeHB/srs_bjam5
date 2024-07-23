@@ -19,6 +19,8 @@ struct DevControls
     die_immediately: KeyCode,
     add_karma: KeyCode,
     get_power_up: KeyCode,
+    add_exp: KeyCode,
+    apply_damage: KeyCode,
 }
 
 impl DevControls
@@ -26,7 +28,7 @@ impl DevControls
     fn display(&self) -> String
     {
         // How to get this from the fields of self? Kind of a pain..
-        format!("DEV: Survive(S), Die(D), +Karma(K), +PowerUp(P)")
+        format!("DEV: Survive(S), Die(D), +Karma(K), +PowerUp(P), +Exp(E), -Hp(A)")
     }
 }
 
@@ -39,6 +41,8 @@ impl Default for DevControls
             die_immediately: KeyCode::KeyD,
             add_karma: KeyCode::KeyK,
             get_power_up: KeyCode::KeyP,
+            add_exp: KeyCode::KeyE,
+            apply_damage: KeyCode::KeyA,
         }
     }
 }
@@ -71,6 +75,7 @@ fn check_dev_commands(
     controls: Res<DevControls>,
     mut karma: ReactResMut<Karma>,
     mut powerups: ResMut<BufferedPowerUps>,
+    mut player: Query<(&mut Level, &mut Health)>,
 )
 {
     if *last_command + Duration::from_millis(150) > time.elapsed() {
@@ -89,6 +94,15 @@ fn check_dev_commands(
                 continue;
             }
             powerups.insert([PowerUpSource::LevelUp]);
+        } else if *pressed == controls.add_exp {
+            let Ok((mut level, _)) = player.get_single_mut() else { continue };
+            let required = level.exp_required();
+            let levels = level.add_exp(required / 3 + 1);
+            powerups.insert(levels.iter().map(|_| PowerUpSource::LevelUp));
+        } else if *pressed == controls.apply_damage {
+            let Ok((_, mut health)) = player.get_single_mut() else { continue };
+            let max = health.max;
+            health.subtract(max / 5 + 1);
         } else {
             continue;
         }
