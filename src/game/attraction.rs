@@ -66,17 +66,16 @@ fn update_enemy_target_offsets(
     let max_offset_length = 75.;
     let precise_follow_dist = 75.; // when they will start following the player more precisely
     for (mut attraction, transform) in enemies.iter_mut() {
+        let distance = (player_transform.translation - transform.translation).length();
         // randomize offset, and clamp it to a set length
-        attraction.target_offset =
-            if (player_transform.translation - transform.translation).length() >= precise_follow_dist {
-                Vec2::new(
-                    rng.gen_range(-max_offset_length..=max_offset_length),
-                    rng.gen_range(-max_offset_length..=max_offset_length),
-                )
-                .clamp_length_max(max_offset_length as f32)
-            } else {
-                Vec2::ZERO
-            };
+        attraction.target_offset = if distance > precise_follow_dist {
+            Vec2::new(
+                rng.gen_range(-max_offset_length..=max_offset_length),
+                rng.gen_range(-max_offset_length..=max_offset_length),
+            )
+        } else {
+            Vec2::ZERO
+        };
     }
 }
 
