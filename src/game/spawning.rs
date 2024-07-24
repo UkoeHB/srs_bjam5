@@ -147,6 +147,7 @@ fn spawn_mobs(
                     AabbSize(mob_data.hitbox),
                     Health::from_max(mob_data.base_health),
                     Attraction::new(player_entity, mob_data.base_speed_tps, 0.), //no accel, start full-speed
+                    Mob,
                     StateScoped(GameState::Play),
                 ))
                 .set_sprite_animation(&animations, &mob_data.animation);
