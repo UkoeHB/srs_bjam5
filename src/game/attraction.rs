@@ -36,12 +36,14 @@ fn update_transforms_for_attraction(
             continue;
         };
 
+        let vector = target_transform.translation - transform.translation + attraction.target_offset.extend(0.);
+        if vector.length() <= attraction.stop_distance {
+            continue;
+        }
+
         // Move the entity toward its attraction source.
         let distance = attraction.update_and_get_distance(delta);
-        let direction =
-            Dir3::new(target_transform.translation - transform.translation + attraction.target_offset.extend(0.))
-                .map(|d| d.as_vec3())
-                .unwrap_or_default();
+        let direction = vector.normalize();
         let movement = direction * distance;
         transform.translation += movement;
     }
@@ -99,11 +101,14 @@ pub struct Attraction
 
     // offset to make movement more random and bunch up less
     target_offset: Vec2,
+
+    // how close to get before stopping, prevents jitter
+    stop_distance: f32,
 }
 
 impl Attraction
 {
-    pub fn new(target: Entity, max_velocity_tps: f32, acceleration: f32) -> Self
+    pub fn new(target: Entity, max_velocity_tps: f32, acceleration: f32, stop_distance: f32) -> Self
     {
         let current_vel = match acceleration {
             0. => max_velocity_tps,
@@ -115,6 +120,7 @@ impl Attraction
             acceleration,
             current_vel,
             target_offset: Vec2::ZERO,
+            stop_distance,
         }
     }
 
