@@ -2,6 +2,8 @@
 "#manifest": {
     "assets.caf.json": "assets",
     "constants.caf.json": "constants",
+    "mob_data.caf.json": "mob_data",
+    "spawn_schedule.caf.json": "spawn_schedule",
     "ui/manifest.caf.json": "ui"
 }
 }

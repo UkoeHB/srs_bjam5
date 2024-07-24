@@ -5,7 +5,7 @@ use bevy_cobweb::prelude::*;
 
 //-------------------------------------------------------------------------------------------------------------------
 
-#[derive(ReactResource, Default, Debug)]
+#[derive(ReactResource, Debug)]
 pub struct Day
 {
     current: usize,
@@ -37,7 +37,7 @@ impl Plugin for DayPlugin
 {
     fn build(&self, app: &mut App)
     {
-        app.init_react_resource::<Day>();
+        app.insert_react_resource(Day { current: 1 });
     }
 }
 

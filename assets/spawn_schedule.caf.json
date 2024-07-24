@@ -1,0 +1,26 @@
+{
+"#import": {
+    "constants.caf.json": ""
+},
+
+"#constants": {
+},
+
+"#commands": {
+    "SpawnSchedule": {"schedule": [
+        {
+            "day": 1,
+            "sequence": [
+                {
+                    "mob_name": "mob_imp",
+                    "start_time_secs": 2,
+                    "duration_secs": 20,
+                    "ramp_up_fraction": 0.3,
+                    "total_quantity": 100,
+                    "max_clump_size": 3
+                }
+            ]
+        }
+    ]}
+}
+}

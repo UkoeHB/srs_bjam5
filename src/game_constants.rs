@@ -13,6 +13,12 @@ pub struct GameConstants
 {
     pub day_length_secs: u64,
 
+    pub spawn_point_cadence_secs: usize,
+    /// Additional space to add to spawn circle.
+    pub spawn_radius_buffer: f32,
+    /// Half-size of square around spawn location where spawns are randomly placed.
+    pub spawn_adjustment_size: f32,
+
     pub player_size: Vec2,
     pub player_standing_animation: String,
 

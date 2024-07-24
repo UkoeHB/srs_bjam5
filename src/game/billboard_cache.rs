@@ -80,6 +80,7 @@ impl Plugin for BillboardCachePlugin
     fn build(&self, app: &mut App)
     {
         app.add_systems(OnExit(LoadState::Loading), insert_billboard_cache)
+            //todo: why is the OnExit one needed? ordering issue?
             .react(|rc| rc.on_persistent(resource_mutation::<GameConstants>(), insert_billboard_cache));
     }
 }

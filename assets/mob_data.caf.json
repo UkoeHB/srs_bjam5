@@ -1,0 +1,35 @@
+{
+"#import": {
+    "constants.caf.json": ""
+},
+
+"#constants": {
+    "$mob_animation_imp": "sprites/mob_imp_50_50.png",
+    "$mob_size_imp": {"x": 50, "y": 50}
+},
+
+"#commands": {
+    "LoadSpriteAnimations": [[
+        {
+            "name": "mob_imp",
+            "image": "$mob_animation_imp",
+            "size": "$mob_size_imp",
+            "columns": 2,
+            "rows": 1,
+            "frame_time": 415,
+            "clips": [{"frames": {"Row": 0}}]
+        }
+    ]],
+
+    "MobDatabase": [{
+        "mob_imp": {
+            "animation": "mob_imp",
+            "hitbox": "$mob_size_imp",
+            "base_health": 10,
+            "base_armor": 1,
+            "base_speed_tps": 80.0,
+            "mob_type": {"Collider": {"base_damage": 10, "base_cooldown_millis": 500}}
+        }
+    }]
+}
+}

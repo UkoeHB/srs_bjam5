@@ -21,15 +21,8 @@ fn update_camera(
     let player_transform = player.single();
 
     // Get starting position of camera.
-    let window_dims = Vec2 { x: window.width(), y: window.height() };
-
     let cam_translation = &mut camera_transform.translation;
-    let cam_upper_right = camera
-        .viewport_to_world_2d(cam_global, Vec2 { x: window_dims.x, y: 0. })
-        .unwrap();
-    let cam_lower_left = camera
-        .viewport_to_world_2d(cam_global, Vec2 { x: 0., y: window_dims.y })
-        .unwrap();
+    let (cam_lower_left, cam_upper_right) = get_camera_corners(&camera, &cam_global, &window);
 
     // Get boundaries of map.
     let tile_radius = constants.map_tile_size.x / 2.;
@@ -49,6 +42,23 @@ fn update_camera(
 
     // Save result
     *cam_translation += to_translate;
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
+/// Returns `(lower left, upper right)` corners.
+pub fn get_camera_corners(camera: &Camera, cam_global: &GlobalTransform, window: &Window) -> (Vec2, Vec2)
+{
+    let window_dims = Vec2 { x: window.width(), y: window.height() };
+
+    let cam_upper_right = camera
+        .viewport_to_world_2d(cam_global, Vec2 { x: window_dims.x, y: 0. })
+        .unwrap();
+    let cam_lower_left = camera
+        .viewport_to_world_2d(cam_global, Vec2 { x: 0., y: window_dims.y })
+        .unwrap();
+
+    (cam_lower_left, cam_upper_right)
 }
 
 //-------------------------------------------------------------------------------------------------------------------

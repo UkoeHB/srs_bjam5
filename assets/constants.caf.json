@@ -21,7 +21,11 @@
 
 "#commands": {
     "GameConstants": {
-        "day_length_secs": 10,
+        "day_length_secs": 60,
+
+        "spawn_point_cadence_secs": 1,
+        "spawn_radius_buffer": 0.0,
+        "spawn_adjustment_size": 20.0,
 
         "player_size": "$player_sprite_size",
         "player_standing_animation": "$player_standing_animation",
