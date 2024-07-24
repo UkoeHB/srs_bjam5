@@ -27,6 +27,11 @@
         "spawn_radius_buffer": 0.0,
         "spawn_adjustment_size": 20.0,
 
+        "collectable_max_vel": 40.0,
+        "collectable_accel": 40.0,
+
+        "exp_detection_range": {"x": 60, "y": 60},
+
         "player_size": "$player_sprite_size",
         "player_standing_animation": "$player_standing_animation",
 

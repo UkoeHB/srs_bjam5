@@ -34,7 +34,7 @@ fn spawn_mobs(
     mut sequence: ResMut<SpawnSequence>,
     camera: Query<(&Camera, &GlobalTransform), With<MainCamera>>,
     window: Query<&Window, With<PrimaryWindow>>,
-    player: Query<&Transform, With<Player>>,
+    player: Query<(Entity, &Transform), With<Player>>,
 )
 {
     // Cleanup for day changeover
@@ -69,7 +69,9 @@ fn spawn_mobs(
     let spawn_radius = viewport_radius + constants.spawn_radius_buffer;
 
     // Add spawns.
+    let (player_entity, player_transform) = player.single();
     let rng = rng.rng();
+
     for ActiveSpawnEvent { event, spawn_point_size, spawned_quantity, next_spawn_point } in
         active_events.iter_mut()
     {
@@ -107,7 +109,6 @@ fn spawn_mobs(
             tracing::error!("failed accessing mob data for {:?}, discarding spawn event", event.mob_name);
             continue;
         };
-        let player_transform = player.single();
 
         while spawn_point_remaining > 0 {
             // Extract clump.
@@ -145,7 +146,7 @@ fn spawn_mobs(
                     SpriteLayer::Objects,
                     AabbSize(mob_data.hitbox),
                     Health::from_max(mob_data.base_health),
-                    //todo: add more stuff
+                    Attraction::new(player_entity, mob_data.base_speed_tps, 0.), //no accel, start full-speed
                     StateScoped(GameState::Play),
                 ))
                 .set_sprite_animation(&animations, &mob_data.animation);

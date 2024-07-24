@@ -16,6 +16,8 @@ impl Plugin for GamePlugin
             .add_plugins(MapPlugin)
             .add_plugins(MobPlugin)
             .add_plugins(PlayerPlugin)
+            .add_plugins(IntersectionsPlugin)
+            .add_plugins(AttractionPlugin)
             .add_plugins(PowerUpPlugin)
             .add_plugins(SpawningPlugin)
             .add_plugins(GameUiPlugin)
@@ -24,7 +26,13 @@ impl Plugin for GamePlugin
             .add_plugins(LightPlugin)
             .configure_sets(
                 Update,
-                (PlayerUpdateSet, CameraUpdateSet, PowerUpUpdateSet)
+                (
+                    PlayerUpdateSet,
+                    AttractionUpdateSet,
+                    IntersectionsUpdateSet,
+                    CameraUpdateSet,
+                    PowerUpUpdateSet,
+                )
                     .chain()
                     .run_if(in_state(PlayState::Day)),
             );

@@ -11,6 +11,7 @@ use crate::*;
 pub struct GameClock
 {
     pub elapsed: Duration,
+    pub delta: Duration,
 }
 
 impl GameClock
@@ -18,6 +19,12 @@ impl GameClock
     pub fn elapsed_secs(&self) -> u64
     {
         self.elapsed.as_secs()
+    }
+
+    fn update(&mut self, delta: Duration)
+    {
+        self.delta = delta;
+        self.elapsed += delta;
     }
 }
 
@@ -33,7 +40,7 @@ fn reset_game_clock(mut clock: ResMut<GameClock>)
 fn update_game_clock(mut c: Commands, time: Res<Time<Virtual>>, mut clock: ResMut<GameClock>)
 {
     let prev = clock.elapsed;
-    clock.elapsed += time.delta();
+    clock.update(time.delta());
     if prev.as_secs() < clock.elapsed.as_secs() {
         c.react().broadcast(GameClockIncremented);
     }

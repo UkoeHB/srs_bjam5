@@ -299,45 +299,6 @@ fn update_player_animation(
 
 //-------------------------------------------------------------------------------------------------------------------
 
-fn handle_collectable_collisions(
-    mut c: Commands,
-    mut player: Query<(&mut Level, &mut Health, &Transform, &AabbSize), With<Player>>,
-    mut karma: ReactResMut<Karma>,
-    collectables: Query<(Entity, &Collectable, &Transform, &AabbSize)>,
-    mut powerups: ResMut<BufferedPowerUps>,
-)
-{
-    let Ok((mut level, mut health, player_transform, player_size)) = player.get_single_mut() else { return };
-    let player_aabb = Aabb2d::new(player_transform.translation.truncate(), **player_size / 2.);
-
-    for (entity, collectable, collectable_transform, collectable_size) in collectables.iter() {
-        // Check for collision.
-        let entity_aabb = Aabb2d::new(collectable_transform.translation.truncate(), **collectable_size / 2.);
-        if !entity_aabb.intersects(&player_aabb) {
-            continue;
-        }
-
-        // Handle type.
-        match *collectable {
-            Collectable::Exp(exp) => {
-                let levels = level.add_exp(exp);
-                powerups.insert(levels.iter().map(|_| PowerUpSource::LevelUp));
-            }
-            Collectable::Karma(k) => {
-                karma.get_mut(&mut c).add(k);
-            }
-            Collectable::HealthPack(hp) => {
-                health.add(hp);
-            }
-        }
-
-        // Despawn entity now it has been collected.
-        c.entity(entity).despawn_recursive();
-    }
-}
-
-//-------------------------------------------------------------------------------------------------------------------
-
 fn update_player_billboard(
     constants: ReactRes<GameConstants>,
     mut e: TextEditor,
@@ -385,6 +346,7 @@ fn spawn_player(
         AabbSize(constants.player_size),
         Health::from_max(constants.player_base_hp),
         Level::new(constants.player_exp_start, constants.player_exp_rate),
+        AttractionSource::HighPriority,
         StateScoped(GameState::Play),
     ))
     .set_sprite_animation(&animations, &constants.player_standing_animation)
@@ -501,7 +463,6 @@ impl Plugin for PlayerPlugin
                     update_player_state_from_input,
                     update_player_transform_from_tick,
                     update_player_animation,
-                    handle_collectable_collisions,
                 )
                     .chain()
                     .in_set(PlayerUpdateSet),
