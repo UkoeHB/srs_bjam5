@@ -35,14 +35,20 @@ fn update_transforms_for_attraction(
             c.entity(entity).remove::<Attraction>();
             continue;
         };
+        let initial_vector = target_transform.translation - transform.translation;
+        let target_offset = attraction
+            .target_offset
+            .clamp_length(attraction.stop_distance, initial_vector.length() / 2.);
 
-        let vector = target_transform.translation - transform.translation + attraction.target_offset.extend(0.);
-        if vector.length() <= attraction.stop_distance {
-            continue;
-        }
+        let vector = initial_vector + target_offset.extend(0.);
+        // if vector.length() <= attraction.stop_distance {
+        //     continue;
+        // }
 
         // Move the entity toward its attraction source.
-        let distance = attraction.update_and_get_distance(delta);
+        let distance = attraction
+            .update_and_get_distance(delta)
+            .min(vector.length());
         let direction = vector.normalize();
         let movement = direction * distance;
         transform.translation += movement;
@@ -175,7 +181,7 @@ impl Plugin for AttractionPlugin
     {
         app.add_systems(
             Update,
-            (update_enemy_target_offsets, update_transforms_for_attraction)
+            (/* update_enemy_target_offsets, */update_transforms_for_attraction)
                 .chain()
                 .in_set(AttractionUpdateSet)
                 .run_if(in_state(GameState::Play)),
