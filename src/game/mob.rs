@@ -7,6 +7,11 @@ use serde::{Deserialize, Serialize};
 
 //-------------------------------------------------------------------------------------------------------------------
 
+#[derive(Debug, Component)]
+pub struct Mob;
+
+//-------------------------------------------------------------------------------------------------------------------
+
 #[derive(Reflect, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum MobOnDeathType
 {

@@ -75,6 +75,7 @@ fn handle_collectable_detection(
             player_entity,
             constants.collectable_max_vel,
             constants.collectable_accel,
+            0.,
         ));
     }
 }
