@@ -133,6 +133,12 @@ fn spawn_mobs(
                 };
                 let mut entity_transform = point_transform;
                 entity_transform.translation += adjustment.extend(0.);
+                let target_offset_dist = 200.;
+                let target_offset = Vec2::new(
+                    rng.gen_range(-target_offset_dist..=target_offset_dist),
+                    rng.gen_range(-target_offset_dist..=target_offset_dist),
+                )
+                .clamp_length_max(target_offset_dist);
 
                 // Correct so the entity stays inside the map.
                 // - Incorporates mob hit box.
@@ -146,7 +152,7 @@ fn spawn_mobs(
                     SpriteLayer::Objects,
                     AabbSize(mob_data.hitbox),
                     Health::from_max(mob_data.base_health),
-                    Attraction::new(player_entity, mob_data.base_speed_tps, 0., 15.), //no accel, start
+                    Attraction::new(player_entity, mob_data.base_speed_tps, 0., target_offset, 15.), //no accel, start
                     // full-speed
                     Mob,
                     StateScoped(GameState::Play),
