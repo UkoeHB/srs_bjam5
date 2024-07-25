@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 
 //-------------------------------------------------------------------------------------------------------------------
 
+/// Marker component for mobs.
 #[derive(Debug, Component)]
 pub struct Mob;
 
