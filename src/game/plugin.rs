@@ -22,6 +22,7 @@ impl Plugin for GamePlugin
             .add_plugins(DamagePlugin)
             .add_plugins(PowerUpPlugin)
             .add_plugins(SpawningPlugin)
+            .add_plugins(ProjectilePlugin)
             .add_plugins(GameUiPlugin)
             .add_plugins(GameClockPlugin)
             .add_plugins(GameCameraPlugin)
@@ -29,8 +30,11 @@ impl Plugin for GamePlugin
             .configure_sets(
                 Update,
                 (
+                    PrevLocationUpdateSet,
                     PlayerUpdateSet,
+                    MobUpdateSet,
                     AttractionUpdateSet,
+                    ProjectileUpdateSet,
                     IntersectionsUpdateSet,
                     DamageUpdateSet,
                     CameraUpdateSet,

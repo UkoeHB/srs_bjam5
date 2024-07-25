@@ -359,6 +359,11 @@ pub trait SpriteAnimationEntityCommandsExt
         animation_name: impl AsRef<str>,
     ) -> &mut Self;
 
+    /// Sets a spritesheet animation with default animation settings.
+    ///
+    /// The entity must have the components in [`SpatialBundle`] for this to work.
+    fn set_sprite_animation_from_id(&mut self, id: AnimationId) -> &mut Self;
+
     /// Sets a spritesheet animation with custom animation settings.
     ///
     /// The entity must have the components in [`SpatialBundle`] for this to work.
@@ -377,7 +382,12 @@ impl SpriteAnimationEntityCommandsExt for EntityCommands<'_>
             return self;
         };
 
-        let mut animation = SpritesheetAnimation::from_id(animation_id);
+        self.set_sprite_animation_from_id(animation_id)
+    }
+
+    fn set_sprite_animation_from_id(&mut self, id: AnimationId) -> &mut Self
+    {
+        let mut animation = SpritesheetAnimation::from_id(id);
         animation.playing = true;
         animation.speed_factor = 1.0;
         animation.reset();

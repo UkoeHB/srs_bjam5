@@ -2,6 +2,8 @@ use bevy::prelude::*;
 
 use crate::*;
 
+//todo: add observer to OnRemove::<Mob> for spawning drops
+
 //-------------------------------------------------------------------------------------------------------------------
 
 /// Item that can be collected by the player.

@@ -1,19 +1,22 @@
 use bevy::prelude::*;
 use extol_sprite_layer::{LayerIndex, SpriteLayerPlugin};
+use serde::{Deserialize, Serialize};
 
 //-------------------------------------------------------------------------------------------------------------------
 
 //todo: sprite layer ordering is NOT compatible with bevy_mod_picking order
 // (see https://github.com/deifactor/extol_sprite_layer/issues/6)
-#[derive(Debug, Copy, Clone, Component, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Component, PartialEq, Eq, Hash, Reflect, Default, Serialize, Deserialize)]
 pub enum SpriteLayer
 {
+    #[default]
     Background,
     BackgroundBillboard,
     GroundEffect,
     DyingEnemy,
     /// Includes: player, enemies, player and enemy projectiles
     Objects,
+    Projectiles,
     PlayerBillboardLv1,
     PlayerBillboardLv2,
 }
@@ -29,8 +32,9 @@ impl LayerIndex for SpriteLayer
             GroundEffect => 2.,
             DyingEnemy => 3.,
             Objects => 4.,
-            PlayerBillboardLv1 => 5.,
-            PlayerBillboardLv2 => 6.,
+            Projectiles => 5.,
+            PlayerBillboardLv1 => 6.,
+            PlayerBillboardLv2 => 7.,
         }
     }
 }

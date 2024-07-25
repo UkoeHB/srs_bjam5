@@ -1,9 +1,11 @@
 //! Components shared by different kinds of entities.
 
-use bevy::prelude::*;
-//use bevy_cobweb::prelude::*;
+use std::time::Duration;
 
-//use crate::*;
+use bevy::prelude::*;
+use bevy_cobweb::prelude::*;
+
+use crate::*;
 
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -119,7 +121,22 @@ impl Level
 
 //-------------------------------------------------------------------------------------------------------------------
 
-/// Component for collider mobs.
+fn apply_collider_effect_impl(
+    In((collider, target)): In<(Entity, Entity)>,
+    mut events: EventWriter<DamageEvent>,
+    colliders: Query<&Collider>,
+)
+{
+    let Ok(collider) = colliders.get(collider) else { return };
+    events.send(DamageEvent { target, damage: collider.damage });
+}
+
+pub fn apply_collider_effect(collider: Entity, target: Entity, c: &mut Commands)
+{
+    c.syscall((collider, target), apply_collider_effect_impl);
+}
+
+/// Component for collider effects.
 #[derive(Component, Debug)]
 pub struct Collider
 {
@@ -132,8 +149,36 @@ pub struct Collider
 #[derive(Component, Debug)]
 pub struct Emitter
 {
-    pub damage: usize,
-    pub cooldown: usize,
+    cooldown_ms: u64,
+    projectile: ProjectileConfig,
+
+    next_fire_time: Option<Duration>,
+}
+
+impl Emitter
+{
+    pub fn new(cooldown_ms: u64, projectile: ProjectileConfig) -> Self
+    {
+        Self { cooldown_ms, projectile, next_fire_time: None }
+    }
+
+    pub fn config(&self) -> &ProjectileConfig
+    {
+        &self.projectile
+    }
+
+    /// Returns true if the emitter should fire.
+    pub fn update_cooldown(&mut self, time: Duration) -> bool
+    {
+        if let Some(next) = self.next_fire_time {
+            if time < next {
+                return false;
+            }
+        }
+
+        self.next_fire_time = Some(time + Duration::from_millis(self.cooldown_ms));
+        true
+    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------

@@ -201,8 +201,7 @@ pub fn map_area_size(constants: &GameConstants) -> Vec2
 
 pub fn map_area_half_size(constants: &GameConstants) -> Vec2
 {
-    let map_area_size = map_area_size(constants);
-    Vec2 { x: map_area_size.x / 2., y: map_area_size.y / 2. }
+    map_area_size(constants) / 2.
 }
 
 //-------------------------------------------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 use std::marker::PhantomData;
 use std::time::Duration;
 
-use bevy::math::bounding::IntersectsVolume;
+use bevy::math::bounding::{AabbCast2d, BoundingVolume, IntersectsVolume};
 use bevy::prelude::*;
 
 //use bevy_cobweb::prelude::*;
@@ -11,14 +11,14 @@ use crate::*;
 
 fn apply_effect_zones<T: Component>(
     mut c: Commands,
-    mut zones: Query<(Entity, &mut EffectZone<T>, &AabbSize, &Transform), Without<T>>,
+    mut zones: Query<(Entity, &mut EffectZone<T>, &AabbSize, &Transform, Option<&PrevLocation>), Without<T>>,
     targets: Query<(Entity, &AabbSize, &Transform), (With<T>, Without<EffectZone<T>>)>,
     clock: Res<GameClock>,
 )
 {
     let time = clock.elapsed;
 
-    for (zone_entity, mut zone, zone_aabb, zone_transform) in zones.iter_mut() {
+    for (zone_entity, mut zone, zone_aabb, zone_transform, maybe_zone_last_pos) in zones.iter_mut() {
         // Check current core cooldown.
         if let Some(next) = zone.next_effect_time {
             if time < next {
@@ -27,8 +27,23 @@ fn apply_effect_zones<T: Component>(
         }
 
         // Apply effect zone.
+        // - We correct effect zones for their rotation, mainly so projectile intersections make more sense.
+        // - We also extend effect zones based on their position last tick, so fast-moving zones don't skip over
+        //   entities.
         zone.next_effect_time = None;
-        let entity_aabb = zone_aabb.get_2d(zone_transform);
+        let entity_aabb = zone_aabb
+            .get_2d(zone_transform)
+            .rotated_by(Quat::default().angle_between(zone_transform.rotation.normalize()));
+        let last_pos = *maybe_zone_last_pos
+            .cloned()
+            .unwrap_or(PrevLocation(zone_transform.translation.truncate()));
+        let entity_aabb = AabbCast2d::new(
+            entity_aabb,
+            last_pos,
+            Dir2::new(zone_transform.rotation.to_scaled_axis().truncate())
+                .unwrap_or(Dir2::new_unchecked(Vec2::default().with_x(1.))),
+            (zone_transform.translation.truncate() - last_pos).length(),
+        );
 
         match zone.config {
             EffectZoneConfig::Target { target, cooldown_ms } => {
@@ -45,8 +60,36 @@ fn apply_effect_zones<T: Component>(
                 // Set cooldown.
                 zone.next_effect_time = Some(time + Duration::from_millis(cooldown_ms as u64));
             }
+            EffectZoneConfig::SelfDestructSingle => {
+                // Check intersection with any targets.
+                let mut count = 0;
+                for (target, aabb, transform) in targets.iter() {
+                    // Check intersection.
+                    let target_aabb = aabb.get_2d(transform);
+                    if !entity_aabb.intersects(&target_aabb) {
+                        continue;
+                    }
+
+                    // Apply effect.
+                    (zone.callback)(zone_entity, target, &mut c);
+
+                    // Exit now that a single target has been found.
+                    count += 1;
+                    break;
+                }
+
+                if count == 0 {
+                    continue;
+                }
+
+                // Self-destruct.
+                c.entity(zone_entity).despawn_recursive();
+
+                // Set cooldown (for sanity).
+                zone.next_effect_time = Some(time + Duration::from_millis(1_000_000));
+            }
             EffectZoneConfig::SelfDestruct => {
-                // Check intersection with any target zones.
+                // Check intersection with any targets.
                 let mut count = 0;
                 for (target, aabb, transform) in targets.iter() {
                     // Check intersection.
@@ -72,7 +115,7 @@ fn apply_effect_zones<T: Component>(
                 zone.next_effect_time = Some(time + Duration::from_millis(1_000_000));
             }
             EffectZoneConfig::ApplyAndRegen { cooldown_ms } => {
-                // Check intersection with any target zones.
+                // Check intersection with any targets.
                 let mut count = 0;
                 for (target, aabb, transform) in targets.iter() {
                     // Check intersection.
@@ -95,7 +138,7 @@ fn apply_effect_zones<T: Component>(
                 zone.next_effect_time = Some(time + Duration::from_millis(cooldown_ms as u64));
             }
             EffectZoneConfig::Continuous { cooldown_ms } => {
-                // Check intersection with any target zones.
+                // Check intersection with any targets.
                 for (target, aabb, transform) in targets.iter() {
                     // Check intersection.
                     let target_aabb = aabb.get_2d(transform);
@@ -152,8 +195,12 @@ pub enum EffectZoneConfig
     /// Does not go on cooldown if no intersected target.
     Target
     {
-        target: Entity, cooldown_ms: usize
+        target: Entity, cooldown_ms: u64
     },
+    /// Applies effect to one intersected entity, then despawns self.
+    ///
+    /// Does nothing until there is at least one intersected entity.
+    SelfDestructSingle,
     /// Applies effect to intersected entities, then despawns self.
     ///
     /// Does nothing until there is at least one intersected entity.
@@ -163,7 +210,7 @@ pub enum EffectZoneConfig
     /// Does not go on cooldown if no intersected entities.
     ApplyAndRegen
     {
-        cooldown_ms: usize
+        cooldown_ms: u64
     },
     /// Applies effect to intersected entities, and tracks cooldowns per-entity.
     ///
@@ -171,7 +218,7 @@ pub enum EffectZoneConfig
     Continuous
     {
         /// Cooldown per intersected enemy.
-        cooldown_ms: usize,
+        cooldown_ms: u64,
     },
 }
 

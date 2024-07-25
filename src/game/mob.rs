@@ -3,7 +3,6 @@ use std::collections::HashMap;
 use bevy::ecs::system::EntityCommands;
 use bevy::ecs::world::Command;
 use bevy::prelude::*;
-use bevy_cobweb::prelude::*;
 use bevy_cobweb_ui::prelude::*;
 use rand::Rng;
 use rand_chacha::ChaCha8Rng;
@@ -11,25 +10,22 @@ use serde::{Deserialize, Serialize};
 
 use crate::*;
 
-//todo: emitter types should fire on cooldown when not attracted to player
-
 //-------------------------------------------------------------------------------------------------------------------
 
-fn apply_collider_effect_impl(
-    In((collider, target)): In<(Entity, Entity)>,
-    mut events: EventWriter<DamageEvent>,
-    colliders: Query<&Collider>,
-)
+fn update_emitter_mobs()
 {
-    let Ok(collider) = colliders.get(collider) else { return };
-    events.send(DamageEvent { target, damage: collider.damage });
+    //todo: emitter types should fire on cooldown when not attracted to player
 }
 
 //-------------------------------------------------------------------------------------------------------------------
 
-fn apply_collider_effect(collider: Entity, target: Entity, c: &mut Commands)
+fn despawn_mobs_on_death(event: Trigger<EntityDeath>, mut c: Commands, mobs: Query<(), With<Mob>>)
 {
-    c.syscall((collider, target), apply_collider_effect_impl);
+    let entity = event.entity();
+    if !mobs.contains(entity) {
+        return;
+    }
+    c.entity(entity).despawn_recursive();
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -70,42 +66,41 @@ pub enum MobType
     },
     Emitter
     {
-        base_damage: usize,
         base_cooldown_millis: u64,
         /// Range in transform units.
         base_fire_range: f32,
+        projectile: ProjectileConfig,
     },
     OnDeath(MobOnDeathType),
+    //todo: Spawner can spawn different mobs with an internal cooldown per mob type
 }
 
 impl MobType
 {
     //todo: can 'amplify' the mob stats here
     /// Returns the distance from the player where the entity should stop being attracted.
-    pub fn setup_in_entity(&self, constants: &GameConstants, ec: &mut EntityCommands) -> f32
+    pub fn setup_in_entity(&self, constants: &GameConstants, ec: &mut EntityCommands, start_pos: Vec2) -> f32
     {
-        match self {
+        match self.clone() {
             Self::Collider { base_damage, base_cooldown_millis } => {
                 ec.insert((
                     EffectZone::<Player>::new(
-                        EffectZoneConfig::ApplyAndRegen { cooldown_ms: *base_cooldown_millis as usize },
+                        EffectZoneConfig::ApplyAndRegen { cooldown_ms: base_cooldown_millis },
                         apply_collider_effect,
                     ),
-                    Collider { damage: *base_damage },
+                    PrevLocation(start_pos),
+                    Collider { damage: base_damage },
                 ));
                 constants.collider_mob_stop_distance
             }
-            Self::Emitter { base_damage, base_cooldown_millis, base_fire_range } => {
-                ec.insert(Emitter {
-                    damage: *base_damage,
-                    cooldown: *base_cooldown_millis as usize,
-                });
-                *base_fire_range
+            Self::Emitter { base_cooldown_millis, base_fire_range, projectile } => {
+                ec.insert(Emitter::new(base_cooldown_millis, projectile));
+                base_fire_range
             }
-            Self::OnDeath(on_death) => match on_death.clone() {
+            Self::OnDeath(on_death) => match on_death {
                 MobOnDeathType::Explode { base_damage, base_range, explosion_animation } => {
-                    // On death, try to apply damage to the player. We do this manually instead of with an
-                    // effect zone so the damage zone can be circular.
+                    // On death, try to apply damage to the player. We do this manually so the damage is applied
+                    // immediately instead of e.g. indirecting through a spawned exploder projectile.
                     let mob_entity = ec.id();
                     ec.observe(
                         move |_: Trigger<EntityDeath>,
@@ -177,7 +172,9 @@ impl MobData
             Vec2::new(rng.gen_range(-offset..=offset), rng.gen_range(-offset..=offset)).clamp_length_max(offset);
 
         let mut ec = c.spawn_empty();
-        let stop_distance = self.mob_type.setup_in_entity(constants, &mut ec);
+        let stop_distance =
+            self.mob_type
+                .setup_in_entity(constants, &mut ec, entity_transform.translation.truncate());
         ec.insert((
             Mob,
             SpatialBundle::from_transform(entity_transform),
@@ -214,6 +211,11 @@ pub struct Mob;
 
 //-------------------------------------------------------------------------------------------------------------------
 
+#[derive(SystemSet, Hash, Eq, PartialEq, Debug, Copy, Clone)]
+pub struct MobUpdateSet;
+
+//-------------------------------------------------------------------------------------------------------------------
+
 pub struct MobPlugin;
 
 impl Plugin for MobPlugin
@@ -221,7 +223,9 @@ impl Plugin for MobPlugin
     fn build(&self, app: &mut App)
     {
         app.register_command::<MobDatabase>()
-            .init_resource::<MobDatabase>();
+            .init_resource::<MobDatabase>()
+            .add_systems(Update, update_emitter_mobs.in_set(MobUpdateSet))
+            .observe(despawn_mobs_on_death);
     }
 }
 

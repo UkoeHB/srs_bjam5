@@ -6,6 +6,15 @@ use crate::*;
 
 //-------------------------------------------------------------------------------------------------------------------
 
+fn update_prev_locations(mut entities: Query<(&Transform, &mut PrevLocation)>)
+{
+    for (transform, mut prev_location) in entities.iter_mut() {
+        *prev_location = PrevLocation(transform.translation.truncate());
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
 fn handle_collectable_collisions(
     mut c: Commands,
     mut player: Query<(&mut Level, &mut Health, &Transform, &AabbSize), With<Player>>,
@@ -65,7 +74,10 @@ fn handle_collectable_detection(
         };
 
         // Check for collision with the collectable's detection range.
-        let entity_aabb = AabbSize(detection_range).get_2d(collectable_transform);
+        // - We convert to circle for collectable detection.
+        let entity_aabb = AabbSize(detection_range)
+            .get_2d(collectable_transform)
+            .bounding_circle();
         if !entity_aabb.intersects(&player_aabb) {
             continue;
         }
@@ -102,6 +114,15 @@ impl AabbSize
 
 //-------------------------------------------------------------------------------------------------------------------
 
+/// Records an entity's location in the previous frame.
+#[derive(Component, Copy, Clone, Deref, DerefMut)]
+pub struct PrevLocation(pub Vec2);
+
+//-------------------------------------------------------------------------------------------------------------------
+
+#[derive(SystemSet, Hash, Eq, PartialEq, Debug, Copy, Clone)]
+pub struct PrevLocationUpdateSet;
+
 #[derive(SystemSet, Hash, Eq, PartialEq, Debug, Copy, Clone)]
 pub struct IntersectionsUpdateSet;
 
@@ -113,12 +134,13 @@ impl Plugin for IntersectionsPlugin
 {
     fn build(&self, app: &mut App)
     {
-        app.add_systems(
-            Update,
-            (handle_collectable_collisions, handle_collectable_detection)
-                .chain()
-                .in_set(IntersectionsUpdateSet),
-        );
+        app.add_systems(Update, update_prev_locations.in_set(PrevLocationUpdateSet))
+            .add_systems(
+                Update,
+                (handle_collectable_collisions, handle_collectable_detection)
+                    .chain()
+                    .in_set(IntersectionsUpdateSet),
+            );
     }
 }
 

@@ -39,7 +39,7 @@ pub use mob::*;
 pub use player::*;
 pub use plugin::*;
 pub use power_up::*;
-//pub use projectiles::*;
+pub use projectiles::*;
 pub use spawning::*;
 pub use sprite_layers::*;
 pub use ui::*;
