@@ -28,7 +28,7 @@
             "base_health": 10,
             "base_armor": 1,
             "base_speed_tps": 80.0,
-            "mob_type": {"Collider": {"base_damage": 10, "base_cooldown_millis": 500}}
+            "mob_type": {"Collider": {"base_damage": 2, "base_cooldown_millis": 1000}}
         }
     }]
 }

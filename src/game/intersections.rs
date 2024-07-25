@@ -15,11 +15,11 @@ fn handle_collectable_collisions(
 )
 {
     let Ok((mut level, mut health, player_transform, player_size)) = player.get_single_mut() else { return };
-    let player_aabb = Aabb2d::new(player_transform.translation.truncate(), **player_size / 2.);
+    let player_aabb = player_size.get_2d(player_transform);
 
     for (entity, collectable, collectable_transform, collectable_size) in collectables.iter() {
         // Check for collision.
-        let entity_aabb = Aabb2d::new(collectable_transform.translation.truncate(), **collectable_size / 2.);
+        let entity_aabb = collectable_size.get_2d(collectable_transform);
         if !entity_aabb.intersects(&player_aabb) {
             continue;
         }
@@ -56,7 +56,7 @@ fn handle_collectable_detection(
 )
 {
     let Ok((player_entity, player_transform, player_size)) = player.get_single() else { return };
-    let player_aabb = Aabb2d::new(player_transform.translation.truncate(), **player_size / 2.);
+    let player_aabb = player_size.get_2d(player_transform);
 
     for (entity, collectable, collectable_transform, collectable_size) in collectables.iter() {
         // Get collectable's detection range if allowed.
@@ -65,7 +65,7 @@ fn handle_collectable_detection(
         };
 
         // Check for collision with the collectable's detection range.
-        let entity_aabb = Aabb2d::new(collectable_transform.translation.truncate(), detection_range / 2.);
+        let entity_aabb = AabbSize(detection_range).get_2d(collectable_transform);
         if !entity_aabb.intersects(&player_aabb) {
             continue;
         }
@@ -86,6 +86,19 @@ fn handle_collectable_detection(
 /// Component that contains an entity's size for bounding-box intersections.
 #[derive(Component, Deref, DerefMut)]
 pub struct AabbSize(pub Vec2);
+
+impl AabbSize
+{
+    pub fn get_2d(&self, transform: &Transform) -> Aabb2d
+    {
+        self.get_2d_from_vec(transform.translation.truncate())
+    }
+
+    pub fn get_2d_from_vec(&self, vec: Vec2) -> Aabb2d
+    {
+        Aabb2d::new(vec, self.0 / 2.)
+    }
+}
 
 //-------------------------------------------------------------------------------------------------------------------
 

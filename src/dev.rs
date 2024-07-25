@@ -75,7 +75,8 @@ fn check_dev_commands(
     controls: Res<DevControls>,
     mut karma: ReactResMut<Karma>,
     mut powerups: ResMut<BufferedPowerUps>,
-    mut player: Query<(&mut Level, &mut Health)>,
+    mut player: Query<(Entity, &mut Level, &Health)>,
+    mut damage: EventWriter<DamageEvent>,
 )
 {
     if *last_command + Duration::from_millis(150) > time.elapsed() {
@@ -95,14 +96,14 @@ fn check_dev_commands(
             }
             powerups.insert([PowerUpSource::LevelUp]);
         } else if *pressed == controls.add_exp {
-            let Ok((mut level, _)) = player.get_single_mut() else { continue };
+            let Ok((_, mut level, _)) = player.get_single_mut() else { continue };
             let required = level.exp_required();
             let levels = level.add_exp(required / 3 + 1);
             powerups.insert(levels.iter().map(|_| PowerUpSource::LevelUp));
         } else if *pressed == controls.apply_damage {
-            let Ok((_, mut health)) = player.get_single_mut() else { continue };
+            let Ok((entity, _, health)) = player.get_single_mut() else { continue };
             let max = health.max;
-            health.subtract(max / 5 + 1);
+            damage.send(DamageEvent { target: entity, damage: max / 5 + max / 7 + 1 });
         } else {
             continue;
         }

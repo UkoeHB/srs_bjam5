@@ -5,11 +5,6 @@ use crate::*;
 
 //-------------------------------------------------------------------------------------------------------------------
 
-// todo: game map
-// todo: display controls on ground at starting location
-
-//-------------------------------------------------------------------------------------------------------------------
-
 // Forwards game day end conditions as GameDayOver.
 fn send_day_over(mut c: Commands)
 {
@@ -26,25 +21,11 @@ fn check_day_end_condition(mut c: Commands, constants: ReactRes<GameConstants>, 
     }
 }
 
-//--------------------------------------------------------------------------------------------------------------------
-
-fn check_entity_health(mut c: Commands, entities: Query<(Entity, &Health), Changed<Health>>)
-{
-    for (id, health) in entities.iter() {
-        // dead if health is 0 (can't be less)
-        if health.current == 0 {
-            c.trigger_targets(EntityDeath, id);
-            // removes component because otherwise it would keep detecting it as dead
-            c.entity(id).remove::<Health>();
-        }
-    }
-}
-
 //-------------------------------------------------------------------------------------------------------------------
 
-pub struct GameSetupPlugin;
+pub struct DayEndPlugin;
 
-impl Plugin for GameSetupPlugin
+impl Plugin for DayEndPlugin
 {
     fn build(&self, app: &mut App)
     {
@@ -54,10 +35,7 @@ impl Plugin for GameSetupPlugin
                 send_day_over,
             )
         });
-        app.add_systems(
-            Update,
-            (check_entity_health, check_day_end_condition).run_if(in_state(PlayState::Day)),
-        );
+        app.add_systems(PreUpdate, check_day_end_condition.run_if(in_state(PlayState::Day)));
     }
 }
 

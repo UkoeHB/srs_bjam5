@@ -10,14 +10,16 @@ impl Plugin for GamePlugin
 {
     fn build(&self, app: &mut App)
     {
-        app.add_plugins(BillboardCachePlugin)
-            .add_plugins(GameSetupPlugin)
+        app.add_plugins(AnimationEventsPlugin)
+            .add_plugins(BillboardCachePlugin)
+            .add_plugins(DayEndPlugin)
             .add_plugins(SpriteLayersPlugin)
             .add_plugins(MapPlugin)
             .add_plugins(MobPlugin)
             .add_plugins(PlayerPlugin)
             .add_plugins(IntersectionsPlugin)
             .add_plugins(AttractionPlugin)
+            .add_plugins(DamagePlugin)
             .add_plugins(PowerUpPlugin)
             .add_plugins(SpawningPlugin)
             .add_plugins(GameUiPlugin)
@@ -30,12 +32,15 @@ impl Plugin for GamePlugin
                     PlayerUpdateSet,
                     AttractionUpdateSet,
                     IntersectionsUpdateSet,
+                    DamageUpdateSet,
                     CameraUpdateSet,
                     PowerUpUpdateSet,
                 )
                     .chain()
                     .run_if(in_state(PlayState::Day)),
-            );
+            )
+            .add_effect_target::<Player>()
+            .add_effect_target::<Mob>();
     }
 }
 

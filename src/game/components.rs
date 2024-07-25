@@ -43,7 +43,7 @@ impl Health
         self.current = self.current.max(self.max);
     }
 
-    pub fn subtract(&mut self, sub: usize)
+    pub fn remove(&mut self, sub: usize)
     {
         self.current = self.current.saturating_sub(sub);
     }
@@ -51,7 +51,23 @@ impl Health
 
 //-------------------------------------------------------------------------------------------------------------------
 
-#[derive(Debug, Component)]
+#[derive(Component, Debug)]
+pub struct Armor
+{
+    pub armor: usize,
+}
+
+impl Armor
+{
+    pub fn new(armor: usize) -> Self
+    {
+        Self { armor }
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
+#[derive(Component, Debug)]
 pub struct Level
 {
     level: usize,
@@ -99,6 +115,25 @@ impl Level
     {
         self.starting_exp_req + (self.level - 1) * self.exp_gain_rate
     }
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
+/// Component for collider mobs.
+#[derive(Component, Debug)]
+pub struct Collider
+{
+    pub damage: usize,
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
+/// Component for emitter mobs.
+#[derive(Component, Debug)]
+pub struct Emitter
+{
+    pub damage: usize,
+    pub cooldown: usize,
 }
 
 //-------------------------------------------------------------------------------------------------------------------

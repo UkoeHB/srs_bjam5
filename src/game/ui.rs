@@ -54,7 +54,7 @@ fn spawn_power_up_ui(
     mut time: ResMut<Time<Virtual>>,
     mut rng: ResMut<GameRng>,
     player_powerups: ReactRes<PlayerPowerUps>,
-    powerup_bank: Res<PowerUpBank>,
+    powerup_database: Res<PowerUpDatabase>,
     mut s: ResMut<SceneLoader>,
     mut powerups: ResMut<BufferedPowerUps>,
 )
@@ -69,7 +69,7 @@ fn spawn_power_up_ui(
     time.pause();
 
     // Generate power-up options for the player.
-    let options = get_powerup_options(&mut rng, powerup_source, &player_powerups, &powerup_bank);
+    let options = get_powerup_options(&mut rng, powerup_source, &player_powerups, &powerup_database);
     debug_assert!(options.len() > 0);
 
     let file = LoadableRef::from_file("ui.power_up");

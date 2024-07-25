@@ -18,8 +18,7 @@ impl Collectable
     pub fn get_detection_range(&self, constants: &GameConstants, _size: Vec2) -> Option<Vec2>
     {
         match self {
-            Self::Exp(..) => Some(constants.exp_detection_range),
-            Self::Karma(..) => None,
+            Self::Exp(..) | Self::Karma(..) => Some(constants.hoover_detection_range),
             Self::HealthPack(..) => None,
         }
     }

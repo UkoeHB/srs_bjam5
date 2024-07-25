@@ -22,7 +22,10 @@ pub struct GameConstants
     pub collectable_max_vel: f32,
     pub collectable_accel: f32,
 
-    pub exp_detection_range: Vec2,
+    pub hoover_detection_range: Vec2,
+
+    pub mob_attraction_offset: f32,
+    pub collider_mob_stop_distance: f32,
 
     pub player_size: Vec2,
     pub player_standing_animation: String,
@@ -30,6 +33,7 @@ pub struct GameConstants
     /// Player run speed in transform units per second.
     pub player_run_speed_tps: f32,
     pub player_base_hp: usize,
+    pub player_base_armor: usize,
     pub player_exp_start: usize,
     pub player_exp_rate: usize,
 

@@ -228,12 +228,12 @@ fn update_player_transform_from_tick(
     let target_translation = player_transform.translation.truncate() + translation;
     let target_translation_in_x = player_transform.translation.truncate() + translation.with_y(0.);
     let target_translation_in_y = player_transform.translation.truncate() + translation.with_x(0.);
-    let player_full_movement_bb = Aabb2d::new(target_translation, **player_size / 2.);
-    let player_x_movement_bb = Aabb2d::new(target_translation_in_x, **player_size / 2.);
-    let player_y_movement_bb = Aabb2d::new(target_translation_in_y, **player_size / 2.);
+    let player_full_movement_bb = player_size.get_2d_from_vec(target_translation);
+    let player_x_movement_bb = player_size.get_2d_from_vec(target_translation_in_x);
+    let player_y_movement_bb = player_size.get_2d_from_vec(target_translation_in_y);
 
     for (transform, size) in barriers.iter() {
-        let entity_aabb = Aabb2d::new(transform.translation.truncate(), **size / 2.);
+        let entity_aabb = size.get_2d(transform);
         if !entity_aabb.intersects(&player_full_movement_bb) {
             continue;
         }
@@ -345,6 +345,7 @@ fn spawn_player(
         Action::Standing,
         AabbSize(constants.player_size),
         Health::from_max(constants.player_base_hp),
+        Armor::new(constants.player_base_armor),
         Level::new(constants.player_exp_start, constants.player_exp_rate),
         AttractionSource::HighPriority,
         StateScoped(GameState::Play),
@@ -440,6 +441,7 @@ fn spawn_player(
 
 //-------------------------------------------------------------------------------------------------------------------
 
+/// Marker component for player entities.
 #[derive(Component, Debug)]
 pub struct Player;
 

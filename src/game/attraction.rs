@@ -61,15 +61,14 @@ pub struct Attraction
     max_velocity_tps: f32,
     /// If this is set to zero then max velocity will be reached immediately.
     acceleration: f32,
+    /// Offset to make movement more random and bunch up less.
+    target_offset: Vec2,
+    /// How close to get before stopping, prevents jitter and can be used to make an entity sit at a certain
+    /// range.
+    stop_distance: f32,
 
     /// Cached
     current_vel: f32,
-
-    // offset to make movement more random and bunch up less
-    target_offset: Vec2,
-
-    // how close to get before stopping, prevents jitter
-    stop_distance: f32,
 }
 
 impl Attraction

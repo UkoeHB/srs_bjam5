@@ -30,13 +30,17 @@
         "collectable_max_vel": 40.0,
         "collectable_accel": 40.0,
 
-        "exp_detection_range": {"x": 60, "y": 60},
+        "hoover_detection_range": {"x": 60, "y": 60},
+
+        "mob_attraction_offset": 200.0,
+        "collider_mob_stop_distance": 15.0,
 
         "player_size": "$player_sprite_size",
         "player_standing_animation": "$player_standing_animation",
 
         "player_run_speed_tps": 111.0,
-        "player_base_hp": 10,
+        "player_base_hp": 100,
+        "player_base_armor": 0,
         "player_exp_start": 4,
         "player_exp_rate": 3,
 

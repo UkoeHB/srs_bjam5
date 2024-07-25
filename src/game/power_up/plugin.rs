@@ -24,7 +24,7 @@ pub fn get_powerup_options(
     _rng: &mut GameRng,
     _source: PowerUpSource,
     _player_powerups: &PlayerPowerUps,
-    _powerup_bank: &PowerUpBank,
+    _powerup_bank: &PowerUpDatabase,
 ) -> Vec<PowerUpConfig>
 {
     // todo:
@@ -102,7 +102,7 @@ pub struct PlayerPowerUps {
 //-------------------------------------------------------------------------------------------------------------------
 
 #[derive(Resource, Debug, Default)]
-pub struct PowerUpBank {
+pub struct PowerUpDatabase {
     // todo: load from file
 }
 
@@ -130,7 +130,7 @@ impl Plugin for PowerUpPlugin
     {
         app.init_resource::<BufferedPowerUps>()
             .init_react_resource::<PlayerPowerUps>()
-            .init_resource::<PowerUpBank>()
+            .init_resource::<PowerUpDatabase>()
             .add_systems(Update, handle_buffered_powerups.in_set(PowerUpUpdateSet));
     }
 }
