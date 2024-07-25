@@ -152,7 +152,7 @@ fn spawn_mobs(
                     SpriteLayer::Objects,
                     AabbSize(mob_data.hitbox),
                     Health::from_max(mob_data.base_health),
-                    Attraction::new(player_entity, mob_data.base_speed_tps, 0., target_offset, 15.), //no accel, start
+                    Attraction::new(player_entity, mob_data.base_speed_tps, 0., target_offset, 30.), //no accel, start
                     // full-speed
                     Mob,
                     StateScoped(GameState::Play),

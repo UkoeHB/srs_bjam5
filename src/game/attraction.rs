@@ -36,9 +36,10 @@ fn update_transforms_for_attraction(
             continue;
         };
         let initial_vector = target_transform.translation - transform.translation;
-        let target_offset = attraction
-            .target_offset
-            .clamp_length(attraction.stop_distance, initial_vector.length() / 2.);
+        let target_offset = attraction.target_offset.clamp_length(
+            attraction.stop_distance,
+            attraction.stop_distance.max(initial_vector.length() / 2.),
+        );
 
         let vector = initial_vector + target_offset.extend(0.);
         // if vector.length() <= attraction.stop_distance {
