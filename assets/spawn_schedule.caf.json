@@ -13,10 +13,10 @@
             "sequence": [
                 {
                     "mob_name": "mob_imp",
-                    "start_time_secs": 2,
-                    "duration_secs": 20,
+                    "start_time_secs": 0,
+                    "duration_secs": 1,
                     "ramp_up_fraction": 0.3,
-                    "total_quantity": 100,
+                    "total_quantity": 1,
                     "max_clump_size": 3
                 }
             ]

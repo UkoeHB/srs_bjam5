@@ -39,8 +39,8 @@ fn apply_effect_zones<T: Component>(
             .unwrap_or(PrevLocation(zone_transform.translation.truncate()));
         let entity_aabb = AabbCast2d::new(
             entity_aabb,
-            last_pos,
-            Dir2::new(zone_transform.rotation.to_scaled_axis().truncate())
+            Vec2::default(),
+            Dir2::new(zone_transform.translation.truncate() - last_pos)
                 .unwrap_or(Dir2::new_unchecked(Vec2::default().with_x(1.))),
             (zone_transform.translation.truncate() - last_pos).length(),
         );

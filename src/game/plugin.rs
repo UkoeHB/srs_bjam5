@@ -36,6 +36,7 @@ impl Plugin for GamePlugin
                     AttractionUpdateSet,
                     ProjectileUpdateSet,
                     IntersectionsUpdateSet,
+                    EffectUpdateSet,
                     DamageUpdateSet,
                     CameraUpdateSet,
                     PowerUpUpdateSet,
