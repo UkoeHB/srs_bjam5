@@ -49,6 +49,7 @@ fn update_transforms_for_attraction(
         let direction = vector.normalize_or(Vec3::default());
         let movement = direction * distance;
         transform.translation += movement;
+        attraction.set_is_stopped(movement.truncate());
     }
 }
 
@@ -69,6 +70,7 @@ pub struct Attraction
 
     /// Cached
     current_vel: f32,
+    is_stopped: bool,
 }
 
 impl Attraction
@@ -92,6 +94,7 @@ impl Attraction
             current_vel,
             target_offset,
             stop_distance,
+            is_stopped: false,
         }
     }
 
@@ -100,8 +103,13 @@ impl Attraction
         self.target
     }
 
+    pub fn is_stopped(&self) -> bool
+    {
+        self.is_stopped
+    }
+
     /// Updates internal velocity and calculates distance to travel this tick.
-    pub fn update_and_get_distance(&mut self, delta: Duration) -> f32
+    fn update_and_get_distance(&mut self, delta: Duration) -> f32
     {
         let delta = delta.as_secs_f32();
         if self.current_vel < self.max_velocity_tps {
@@ -109,6 +117,11 @@ impl Attraction
             self.current_vel = self.current_vel.min(self.max_velocity_tps);
         }
         self.current_vel * delta
+    }
+
+    fn set_is_stopped(&mut self, movement: Vec2)
+    {
+        self.is_stopped = movement.try_normalize().is_none()
     }
 }
 

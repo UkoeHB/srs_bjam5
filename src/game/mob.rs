@@ -13,11 +13,37 @@ use crate::*;
 //-------------------------------------------------------------------------------------------------------------------
 
 fn update_emitter_mobs(
-    _player: Query<&Transform, With<Player>>,
-    mut _emitters: Query<(&mut Emitter, &Transform, &Attraction), (With<Mob>, Without<Player>)>,
+    mut c: Commands,
+    clock: Res<GameClock>,
+    animations: Res<SpriteAnimations>,
+    player: Query<&Transform, With<Player>>,
+    mut emitters: Query<(&mut Emitter, &Transform, &Attraction), (With<Mob>, Without<Player>)>,
 )
 {
-    //todo: emitter types should fire on cooldown when not attracted to player
+    let Ok(player_transform) = player.get_single() else { return };
+    let time = clock.elapsed;
+
+    for (mut emitter, transform, attraction) in emitters.iter_mut() {
+        // Wait for emitters to stop moving.
+        if !attraction.is_stopped() {
+            continue;
+        }
+
+        // Update emitter cooldown.
+        if !emitter.update_cooldown(time) {
+            continue;
+        }
+
+        // Make a new projectile targeting the player.
+        emitter.config().create_projectile::<Player>(
+            &mut c,
+            &clock,
+            &animations,
+            transform.translation.truncate(),
+            Dir2::new((player_transform.translation - transform.translation).truncate())
+                .unwrap_or(Dir2::new_unchecked(Vec2::default().with_x(1.))),
+        );
+    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------
