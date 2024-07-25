@@ -42,9 +42,6 @@ fn update_transforms_for_attraction(
         );
 
         let vector = initial_vector + target_offset.extend(0.);
-        // if vector.length() <= attraction.stop_distance {
-        //     continue;
-        // }
 
         // Move the entity toward its attraction source.
         let distance = attraction
