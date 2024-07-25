@@ -35,56 +35,23 @@ fn update_transforms_for_attraction(
             c.entity(entity).remove::<Attraction>();
             continue;
         };
+        let initial_vector = target_transform.translation - transform.translation;
+        let target_offset = attraction.target_offset.clamp_length(
+            attraction.stop_distance,
+            attraction.stop_distance.max(initial_vector.length() / 2.),
+        );
 
-        let vector = target_transform.translation - transform.translation + attraction.target_offset.extend(0.);
-        if vector.length() <= attraction.stop_distance {
-            continue;
-        }
+        let vector = initial_vector + target_offset.extend(0.);
 
         // Move the entity toward its attraction source.
-        let distance = attraction.update_and_get_distance(delta);
+        let distance = attraction
+            .update_and_get_distance(delta)
+            .min(vector.length());
         let direction = vector.normalize();
         let movement = direction * distance;
         transform.translation += movement;
     }
 }
-
-//-------------------------------------------------------------------------------------------------------------------
-
-fn update_enemy_target_offsets(
-    mut timer: ResMut<TargetOffsetUpdateTimer>,
-    time: Res<Time>,
-    mut enemies: Query<(&mut Attraction, &Transform), With<Mob>>,
-    player: Query<&Transform, With<Player>>,
-    mut rng: ResMut<GameRng>,
-)
-{
-    timer.0.tick(time.delta());
-    if !timer.0.just_finished() {
-        return; // run every time the timer runs out
-    }
-    let rng = rng.rng();
-    let player_transform = player.single();
-    let max_offset_length = 75.;
-    let precise_follow_dist = 75.; // when they will start following the player more precisely
-    for (mut attraction, transform) in enemies.iter_mut() {
-        let distance = (player_transform.translation - transform.translation).length();
-        // randomize offset, and clamp it to a set length
-        attraction.target_offset = if distance > precise_follow_dist {
-            Vec2::new(
-                rng.gen_range(-max_offset_length..=max_offset_length),
-                rng.gen_range(-max_offset_length..=max_offset_length),
-            )
-        } else {
-            Vec2::ZERO
-        };
-    }
-}
-
-//-------------------------------------------------------------------------------------------------------------------
-
-#[derive(Debug, Resource)]
-pub struct TargetOffsetUpdateTimer(pub Timer);
 
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -108,7 +75,13 @@ pub struct Attraction
 
 impl Attraction
 {
-    pub fn new(target: Entity, max_velocity_tps: f32, acceleration: f32, stop_distance: f32) -> Self
+    pub fn new(
+        target: Entity,
+        max_velocity_tps: f32,
+        acceleration: f32,
+        target_offset: Vec2,
+        stop_distance: f32,
+    ) -> Self
     {
         let current_vel = match acceleration {
             0. => max_velocity_tps,
@@ -119,7 +92,7 @@ impl Attraction
             max_velocity_tps,
             acceleration,
             current_vel,
-            target_offset: Vec2::ZERO,
+            target_offset,
             stop_distance,
         }
     }
@@ -184,12 +157,11 @@ impl Plugin for AttractionPlugin
     {
         app.add_systems(
             Update,
-            (update_enemy_target_offsets, update_transforms_for_attraction)
+            (update_transforms_for_attraction)
                 .chain()
                 .in_set(AttractionUpdateSet)
                 .run_if(in_state(GameState::Play)),
-        )
-        .insert_resource(TargetOffsetUpdateTimer(Timer::from_seconds(3., TimerMode::Repeating)));
+        );
     }
 }
 
