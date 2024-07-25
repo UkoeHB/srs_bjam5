@@ -12,7 +12,10 @@ use crate::*;
 
 //-------------------------------------------------------------------------------------------------------------------
 
-fn update_emitter_mobs()
+fn update_emitter_mobs(
+    _player: Query<&Transform, With<Player>>,
+    mut _emitters: Query<(&mut Emitter, &Transform, &Attraction), (With<Mob>, Without<Player>)>,
+)
 {
     //todo: emitter types should fire on cooldown when not attracted to player
 }

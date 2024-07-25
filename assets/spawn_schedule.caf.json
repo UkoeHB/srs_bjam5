@@ -14,9 +14,9 @@
                 {
                     "mob_name": "mob_imp",
                     "start_time_secs": 0,
-                    "duration_secs": 1,
+                    "duration_secs": 15,
                     "ramp_up_fraction": 0.3,
-                    "total_quantity": 1,
+                    "total_quantity": 55,
                     "max_clump_size": 3
                 }
             ]
