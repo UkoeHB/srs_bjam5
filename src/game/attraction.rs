@@ -54,13 +54,20 @@ fn update_transforms_for_attraction(
 fn update_enemy_target_offsets(
     mut enemies: Query<(&mut Attraction, &Transform), With<Mob>>,
     player: Query<&Transform, With<Player>>,
+    mut rng: ResMut<GameRng>,
 )
 {
+    let rng = rng.rng();
     let player_transform = player.single();
     for (mut attraction, transform) in enemies.iter_mut() {
         let distance = (player_transform.translation - transform.translation).length();
+        let adjustment_amount = distance / 10.;
+        let adjustment = Vec2::new(
+            rng.gen_range(-adjustment_amount..=adjustment_amount),
+            rng.gen_range(-adjustment_amount..=adjustment_amount),
+        );
         // clamp offset to half of the distance between enemy and player
-        attraction.target_offset = attraction.target_offset.clamp_length_max(distance / 2.);
+        attraction.target_offset = (attraction.target_offset + adjustment).clamp_length_max(distance / 2.);
     }
 }
 
