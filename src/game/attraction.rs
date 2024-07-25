@@ -1,7 +1,6 @@
 use std::time::Duration;
 
 use bevy::prelude::*;
-use rand::Rng;
 
 use crate::*;
 
@@ -47,7 +46,7 @@ fn update_transforms_for_attraction(
         let distance = attraction
             .update_and_get_distance(delta)
             .min(vector.length());
-        let direction = vector.normalize();
+        let direction = vector.normalize_or(Vec3::default());
         let movement = direction * distance;
         transform.translation += movement;
     }
