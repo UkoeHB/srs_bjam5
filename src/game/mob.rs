@@ -186,6 +186,8 @@ pub struct MobData
     pub base_armor: usize,
     pub base_speed_tps: f32,
     pub mob_type: MobType,
+    /// [ (probability of drop, drop) ]
+    pub drops: Vec<(f32, CollectableDrop)>,
 }
 
 impl MobData
@@ -220,6 +222,24 @@ impl MobData
             BoundInMap,
         ))
         .set_sprite_animation(&animations, &self.animation);
+
+        if let Some(drop) = self.select_collectable_drop(rng) {
+            ec.insert(drop);
+        }
+    }
+
+    fn select_collectable_drop(&self, rng: &mut ChaCha8Rng) -> Option<CollectableDrop>
+    {
+        let selection = rng.gen_range((0.)..(1.));
+        let mut accumulated = 0.;
+        for (probability, drop) in self.drops.iter() {
+            accumulated += probability;
+            if accumulated < selection {
+                continue;
+            }
+            return Some(drop.clone());
+        }
+        None
     }
 }
 

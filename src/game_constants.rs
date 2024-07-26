@@ -19,9 +19,11 @@ pub struct GameConstants
     /// Half-size of square around spawn location where spawns are randomly placed.
     pub spawn_adjustment_size: f32,
 
+    pub drop_radius: f32,
     pub collectable_max_vel: f32,
     pub collectable_accel: f32,
     pub hoover_detection_range: Vec2,
+    pub collectable_hp_max_health: f32,
 
     pub collectable_exp_texture: String,
     pub collectable_exp_size: Vec2,

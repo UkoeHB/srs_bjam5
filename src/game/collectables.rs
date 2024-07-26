@@ -2,10 +2,69 @@ use bevy::math::bounding::IntersectsVolume;
 use bevy::prelude::*;
 use bevy_cobweb::prelude::*;
 use bevy_cobweb_ui::prelude::*;
+use rand::Rng;
+use serde::{Deserialize, Serialize};
+use smallvec::SmallVec;
 
 use crate::*;
 
-//todo: add observer to OnRemove::<Mob> for spawning drops
+//-------------------------------------------------------------------------------------------------------------------
+
+#[derive(Event, Debug)]
+struct CollectableDropEvent
+{
+    location: Vec2,
+    drop: CollectableDrop,
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
+fn handle_collectable_drop_events(
+    mut events: EventReader<CollectableDropEvent>,
+    mut c: Commands,
+    mut rng: ResMut<GameRng>,
+    images: Res<ImageMap>,
+    constants: ReactRes<GameConstants>,
+)
+{
+    for CollectableDropEvent { location, drop } in events.read() {
+        let rng = rng.rng();
+        let radius = constants.drop_radius;
+
+        for collectable in drop.iter() {
+            // Select random nearby location to drop it.
+            let offset = Vec2 {
+                x: rng.gen_range(-radius..radius),
+                y: rng.gen_range(-radius..radius),
+            }
+            .clamp_length(0., radius);
+            let location = *location + offset;
+
+            // Drop it.
+            collectable.spawn(&mut c, &constants, &images, location);
+        }
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
+fn handle_collectable_drops(
+    trigger: Trigger<OnRemove, CollectableDrop>,
+    mut events: EventWriter<CollectableDropEvent>,
+    mut drops: Query<(&mut CollectableDrop, &Transform)>,
+)
+{
+    let entity = trigger.entity();
+    let Ok((drop, transform)) = drops.get_mut(entity) else {
+        tracing::error!("dropping entity missing");
+        return;
+    };
+
+    // Hack: use an event indirection because bevy is broken and can't spawn entities in an observer without
+    // panicking.
+    let drop = std::mem::take(drop.into_inner());
+    events.send(CollectableDropEvent { location: transform.translation.truncate(), drop });
+}
 
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -13,6 +72,7 @@ fn apply_collectable_effect_impl(
     In((collectable, _player_entity)): In<(Entity, Entity)>,
     collectables: Query<&Collectable>,
     mut c: Commands,
+    constants: ReactRes<GameConstants>,
     mut player: Query<(&mut Level, &mut Health), With<Player>>,
     mut karma: ReactResMut<Karma>,
     mut powerups: ResMut<BufferedPowerUps>,
@@ -30,7 +90,8 @@ fn apply_collectable_effect_impl(
         Collectable::Karma(k) => {
             karma.get_mut(&mut c).add(k);
         }
-        Collectable::HealthPack(hp) => {
+        Collectable::HealthPack => {
+            let hp = (constants.collectable_hp_max_health * (health.max as f32)).round() as usize;
             health.add(hp);
         }
     }
@@ -44,8 +105,6 @@ fn apply_collectable_effect(source: Entity, target: Entity, c: &mut Commands)
 //-------------------------------------------------------------------------------------------------------------------
 
 /// Adds Attraction to collectables in-range that don't have Attraction yet.
-///
-/// Do this after detection collisions to reduce redundant query accesses (tiny perf win).
 fn handle_collectable_detection(
     mut c: Commands,
     constants: ReactRes<GameConstants>,
@@ -85,12 +144,12 @@ fn handle_collectable_detection(
 //-------------------------------------------------------------------------------------------------------------------
 
 /// Item that can be collected by the player.
-#[derive(Component, Copy, Clone, Debug)]
+#[derive(Component, Reflect, Debug, Copy, Clone, PartialEq, Serialize, Deserialize)]
 pub enum Collectable
 {
     Exp(usize),
     Karma(usize),
-    HealthPack(usize),
+    HealthPack,
     //todo: Powerup ???
 }
 
@@ -100,32 +159,40 @@ impl Collectable
     {
         match self {
             Self::Exp(..) | Self::Karma(..) => Some(constants.hoover_detection_range),
-            Self::HealthPack(..) => None,
+            Self::HealthPack => None,
         }
     }
 
     pub fn spawn(&self, c: &mut Commands, constants: &GameConstants, images: &ImageMap, location: Vec2)
     {
-        let (params, texture) = match self {
-            Self::Exp(..) => (
+        // Hack: scale up the sprite based on its relative value.
+        let (params, texture, scale) = match self {
+            Self::Exp(exp) => (
                 AabbSize(constants.collectable_exp_size),
                 &constants.collectable_exp_texture,
+                (*exp as f32).sqrt(),
             ),
-            Self::Karma(..) => (
+            Self::Karma(karma) => (
                 AabbSize(constants.collectable_karma_size),
                 &constants.collectable_karma_texture,
+                (*karma as f32).sqrt(),
             ),
-            Self::HealthPack(..) => (
+            Self::HealthPack => (
                 AabbSize(constants.collectable_healthpack_size),
                 &constants.collectable_healthpack_texture,
+                1.0,
             ),
         };
+
+        let mut transform = Transform::from_translation(location.extend(0.));
+        transform.scale.x = scale.max(1.);
+        transform.scale.y = scale.max(1.);
 
         c.spawn((
             *self,
             params,
             EffectZone::<Player>::new(EffectZoneConfig::SelfDestructSingle, apply_collectable_effect),
-            SpatialBundle::from_transform(Transform::from_translation(location.extend(0.))),
+            SpatialBundle::from_transform(transform),
             SpriteLayer::Objects,
             StateScoped(GameState::Play),
             images.get(texture),
@@ -133,6 +200,20 @@ impl Collectable
         ));
     }
 }
+
+impl Default for Collectable
+{
+    fn default() -> Self
+    {
+        Self::Exp(0)
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
+/// Collection of collectables that can be dropped from a unit when it dies.
+#[derive(Component, Deref, Reflect, Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct CollectableDrop(SmallVec<[Collectable; 1]>);
 
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -147,7 +228,13 @@ impl Plugin for CollectablesPlugin
 {
     fn build(&self, app: &mut App)
     {
-        app.add_systems(Update, handle_collectable_detection.in_set(CollectablesUpdateSet));
+        app.add_event::<CollectableDropEvent>()
+            .register_type::<Collectable>()
+            .add_systems(
+                Update,
+                (handle_collectable_drop_events, handle_collectable_detection).in_set(CollectablesUpdateSet),
+            )
+            .observe(handle_collectable_drops);
     }
 }
 

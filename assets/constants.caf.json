@@ -34,9 +34,11 @@
         "spawn_radius_buffer": 0.0,
         "spawn_adjustment_size": 20.0,
 
-        "collectable_max_vel": 40.0,
-        "collectable_accel": 40.0,
+        "drop_radius": 25.0,
+        "collectable_max_vel": 300.0,
+        "collectable_accel": 400.0,
         "hoover_detection_range": {"x": 60, "y": 60},
+        "collectable_hp_max_health": 0.4,
 
         "collectable_exp_texture": "$collectable_exp_texture",
         "collectable_exp_size": "$collectable_exp_size",

@@ -32,6 +32,7 @@ extol_sprite_layer = { rev = "6093ce9", git = "https://github.com/UkoeHB/extol_s
 rand = { version = "0.8" }
 rand_chacha = { version = "0.3" }
 serde = { version = "1.0" }
+smallvec = { version = "1.13", features = ["serde"] }
 tracing = { version = "0.1" }
 wasm-timer = { version = "0.2" }
 bevy_light_2d = { version = "0.2" }
