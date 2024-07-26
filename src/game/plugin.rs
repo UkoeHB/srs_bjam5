@@ -17,6 +17,7 @@ impl Plugin for GamePlugin
             .add_plugins(MapPlugin)
             .add_plugins(MobPlugin)
             .add_plugins(PlayerPlugin)
+            .add_plugins(CollectablesPlugin)
             .add_plugins(IntersectionsPlugin)
             .add_plugins(AttractionPlugin)
             .add_plugins(DamagePlugin)
@@ -35,7 +36,7 @@ impl Plugin for GamePlugin
                     MobUpdateSet,
                     AttractionUpdateSet,
                     ProjectileUpdateSet,
-                    IntersectionsUpdateSet,
+                    CollectablesUpdateSet,
                     EffectUpdateSet,
                     DamageUpdateSet,
                     CameraUpdateSet,

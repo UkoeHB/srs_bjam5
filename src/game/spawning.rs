@@ -51,7 +51,6 @@ fn spawn_mobs(
         }
         let last = sequence.sequence.pop().unwrap();
         active_events.push(ActiveSpawnEvent::new(last, constants.spawn_point_cadence_secs));
-        tracing::error!("added spawn event");
     }
 
     if active_events.len() == 0 {

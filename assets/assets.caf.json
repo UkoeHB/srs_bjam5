@@ -8,7 +8,10 @@
         {"image": "$background_tile_texture"},
         {"image": "$boundary_side_texture"},
         {"image": "$boundary_corner_texture"},
-        {"image": "$controls_texture"}
+        {"image": "$controls_texture"},
+        {"image": "$collectable_exp_texture"},
+        {"image": "$collectable_karma_texture"},
+        {"image": "$collectable_healthpack_texture"}
     ]],
     "LoadSpriteAnimations": [[
         {

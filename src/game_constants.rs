@@ -21,8 +21,14 @@ pub struct GameConstants
 
     pub collectable_max_vel: f32,
     pub collectable_accel: f32,
-
     pub hoover_detection_range: Vec2,
+
+    pub collectable_exp_texture: String,
+    pub collectable_exp_size: Vec2,
+    pub collectable_karma_texture: String,
+    pub collectable_karma_size: Vec2,
+    pub collectable_healthpack_texture: String,
+    pub collectable_healthpack_size: Vec2,
 
     pub mob_attraction_offset: f32,
     pub collider_mob_stop_distance: f32,

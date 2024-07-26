@@ -1,8 +1,5 @@
-use bevy::math::bounding::{Aabb2d, IntersectsVolume};
+use bevy::math::bounding::Aabb2d;
 use bevy::prelude::*;
-use bevy_cobweb::prelude::*;
-
-use crate::*;
 
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -10,86 +7,6 @@ fn update_prev_locations(mut entities: Query<(&Transform, &mut PrevLocation)>)
 {
     for (transform, mut prev_location) in entities.iter_mut() {
         *prev_location = PrevLocation(transform.translation.truncate());
-    }
-}
-
-//-------------------------------------------------------------------------------------------------------------------
-
-fn handle_collectable_collisions(
-    mut c: Commands,
-    mut player: Query<(&mut Level, &mut Health, &Transform, &AabbSize), With<Player>>,
-    mut karma: ReactResMut<Karma>,
-    collectables: Query<(Entity, &Collectable, &Transform, &AabbSize)>,
-    mut powerups: ResMut<BufferedPowerUps>,
-)
-{
-    let Ok((mut level, mut health, player_transform, player_size)) = player.get_single_mut() else { return };
-    let player_aabb = player_size.get_2d(player_transform);
-
-    for (entity, collectable, collectable_transform, collectable_size) in collectables.iter() {
-        // Check for collision.
-        let entity_aabb = collectable_size.get_2d(collectable_transform);
-        if !entity_aabb.intersects(&player_aabb) {
-            continue;
-        }
-
-        // Handle type.
-        match *collectable {
-            Collectable::Exp(exp) => {
-                let levels = level.add_exp(exp);
-                powerups.insert(levels.iter().map(|_| PowerUpSource::LevelUp));
-            }
-            Collectable::Karma(k) => {
-                karma.get_mut(&mut c).add(k);
-            }
-            Collectable::HealthPack(hp) => {
-                health.add(hp);
-            }
-        }
-
-        // Despawn entity now it has been collected.
-        c.entity(entity).despawn_recursive();
-    }
-}
-
-//-------------------------------------------------------------------------------------------------------------------
-
-/// Adds Attraction to collectables in-range that don't have Attraction yet.
-///
-/// Do this after detection collisions to reduce redundant query accesses (tiny perf win).
-fn handle_collectable_detection(
-    mut c: Commands,
-    constants: ReactRes<GameConstants>,
-    player: Query<(Entity, &Transform, &AabbSize), With<Player>>,
-    collectables: Query<(Entity, &Collectable, &Transform, &AabbSize), Without<Attraction>>,
-)
-{
-    let Ok((player_entity, player_transform, player_size)) = player.get_single() else { return };
-    let player_aabb = player_size.get_2d(player_transform);
-
-    for (entity, collectable, collectable_transform, collectable_size) in collectables.iter() {
-        // Get collectable's detection range if allowed.
-        let Some(detection_range) = collectable.get_detection_range(&constants, **collectable_size) else {
-            continue;
-        };
-
-        // Check for collision with the collectable's detection range.
-        // - We convert to circle for collectable detection.
-        let entity_aabb = AabbSize(detection_range)
-            .get_2d(collectable_transform)
-            .bounding_circle();
-        if !entity_aabb.intersects(&player_aabb) {
-            continue;
-        }
-
-        // Add attraction.
-        c.entity(entity).try_insert(Attraction::new(
-            player_entity,
-            constants.collectable_max_vel,
-            constants.collectable_accel,
-            Vec2::ZERO,
-            0.,
-        ));
     }
 }
 
@@ -123,9 +40,6 @@ pub struct PrevLocation(pub Vec2);
 #[derive(SystemSet, Hash, Eq, PartialEq, Debug, Copy, Clone)]
 pub struct PrevLocationUpdateSet;
 
-#[derive(SystemSet, Hash, Eq, PartialEq, Debug, Copy, Clone)]
-pub struct IntersectionsUpdateSet;
-
 //-------------------------------------------------------------------------------------------------------------------
 
 pub struct IntersectionsPlugin;
@@ -134,13 +48,7 @@ impl Plugin for IntersectionsPlugin
 {
     fn build(&self, app: &mut App)
     {
-        app.add_systems(Update, update_prev_locations.in_set(PrevLocationUpdateSet))
-            .add_systems(
-                Update,
-                (handle_collectable_collisions, handle_collectable_detection)
-                    .chain()
-                    .in_set(IntersectionsUpdateSet),
-            );
+        app.add_systems(Update, update_prev_locations.in_set(PrevLocationUpdateSet));
     }
 }
 
