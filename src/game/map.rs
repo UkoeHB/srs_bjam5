@@ -193,24 +193,27 @@ fn spawn_map_controls(mut c: Commands, constants: ReactRes<GameConstants>, image
 
 //-------------------------------------------------------------------------------------------------------------------
 
-// TODO:
-// Account for mob size
-fn force_in_map_bounds(mut q: Query<&mut Transform, With<BoundInMap>>, constants: ReactRes<GameConstants>)
+fn force_in_map_bounds(
+    mut q: Query<(&mut Transform, &AabbSize), With<BoundInMap>>,
+    constants: ReactRes<GameConstants>,
+)
 {
-    let half_size = map_area_half_size(&constants);
-    let aabb = Aabb2d::new(-half_size, half_size);
+    let map_size = map_area_size(&constants);
 
     q.iter_mut()
-        .filter(|t| {
-            let Transform { translation: Vec3 { x, y, .. }, .. } = **t;
-            aabb.closest_point(Vec2 { x, y }) != Vec2 { x, y }
-        })
-        .for_each(|mut t| {
+        .filter_map(|(t, AabbSize(s))| {
             let Transform { translation: Vec3 { x, y, .. }, .. } = *t;
-            t.translation = aabb.closest_point(Vec2 { x, y }).extend(0.);
+            let adjusted_size = map_size - *s;
+            let interior_point = Aabb2d::new(Vec2::ZERO, adjusted_size / 2.).closest_point(Vec2 { x, y });
+            if interior_point != (Vec2 { x, y }) {
+                Some((t, interior_point.extend(0.)))
+            } else {
+                None
+            }
+        })
+        .for_each(|(mut t, goal)| {
+            t.translation = goal;
         });
-    // direction = inside_region_pos - current_pos
-    // final_pos = mob_size_radius * direction
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -256,9 +259,14 @@ impl Plugin for MapPlugin
         app.add_systems(
             // Run all these systems on startup so the map does need to be regenerated every time.
             OnExit(LoadState::Loading),
-            (spawn_map, setup_map_boundary, spawn_map_controls).chain(),
+            (spawn_map, spawn_map_controls).chain(),
         )
-        .add_systems(Update, force_in_map_bounds);
+        .add_systems(
+            Update,
+            force_in_map_bounds
+                .after(PlayerUpdateSet)
+                .after(AttractionUpdateSet),
+        );
     }
 }
 

@@ -213,6 +213,7 @@ impl MobData
             Armor::new(self.base_armor),
             Attraction::new(player_entity, self.base_speed_tps, 0., target_offset, stop_distance),
             StateScoped(GameState::Play),
+            BoundInMap,
         ))
         .set_sprite_animation(&animations, &self.animation);
     }
