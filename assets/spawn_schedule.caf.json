@@ -21,7 +21,7 @@
                 },
                 {
                     "mob_name": "mob_dark_mage",
-                    "start_time_secs": 0,
+                    "start_time_secs": 10,
                     "duration_secs": 10,
                     "ramp_up_fraction": 0.3,
                     "total_quantity": 5,
