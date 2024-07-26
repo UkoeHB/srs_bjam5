@@ -349,6 +349,7 @@ fn spawn_player(
         Level::new(constants.player_exp_start, constants.player_exp_rate),
         AttractionSource::HighPriority,
         StateScoped(GameState::Play),
+        BoundInMap,
     ))
     .set_sprite_animation(&animations, &constants.player_standing_animation)
     .observe(|_: Trigger<EntityDeath>, mut c: Commands| c.react().broadcast(PlayerDied))

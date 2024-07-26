@@ -1,6 +1,7 @@
 use core::f32::consts::PI;
 use std::f32::consts::FRAC_PI_2;
 
+use bevy::math::bounding::Aabb2d;
 use bevy::prelude::*;
 use bevy::sprite::Anchor;
 use bevy_cobweb::prelude::*;
@@ -10,6 +11,9 @@ use rand::Rng;
 use serde::{Deserialize, Serialize};
 
 use crate::*;
+
+#[derive(Component)]
+pub struct BoundInMap;
 
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -189,6 +193,31 @@ fn spawn_map_controls(mut c: Commands, constants: ReactRes<GameConstants>, image
 
 //-------------------------------------------------------------------------------------------------------------------
 
+fn force_in_map_bounds(
+    mut q: Query<(&mut Transform, &AabbSize), With<BoundInMap>>,
+    constants: ReactRes<GameConstants>,
+)
+{
+    let map_size = map_area_size(&constants);
+
+    q.iter_mut()
+        .filter_map(|(t, AabbSize(s))| {
+            let Transform { translation: Vec3 { x, y, .. }, .. } = *t;
+            let adjusted_size = map_size - *s;
+            let interior_point = Aabb2d::new(Vec2::ZERO, adjusted_size / 2.).closest_point(Vec2 { x, y });
+            if interior_point != (Vec2 { x, y }) {
+                Some((t, interior_point.extend(0.)))
+            } else {
+                None
+            }
+        })
+        .for_each(|(mut t, goal)| {
+            t.translation = goal;
+        });
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
 pub fn map_area_size(constants: &GameConstants) -> Vec2
 {
     Vec2 {
@@ -230,7 +259,13 @@ impl Plugin for MapPlugin
         app.add_systems(
             // Run all these systems on startup so the map does need to be regenerated every time.
             OnExit(LoadState::Loading),
-            (spawn_map, setup_map_boundary, spawn_map_controls).chain(),
+            (spawn_map, spawn_map_controls).chain(),
+        )
+        .add_systems(
+            Update,
+            force_in_map_bounds
+                .after(PlayerUpdateSet)
+                .after(AttractionUpdateSet),
         );
     }
 }
