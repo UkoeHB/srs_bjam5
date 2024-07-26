@@ -11,14 +11,12 @@ impl Plugin for UtilsPlugin
 {
     fn build(&self, app: &mut App)
     {
-        app.add_plugins(AssetsPlugin)
-            .add_plugins(ModPickingExtPlugin)
-            .insert_resource(GameRng::new(
-                SystemTime::now()
-                    .duration_since(UNIX_EPOCH)
-                    .unwrap_or_default()
-                    .as_millis() as u64,
-            ));
+        app.add_plugins(AssetsPlugin).insert_resource(GameRng::new(
+            SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap_or_default()
+                .as_millis() as u64,
+        ));
     }
 }
 

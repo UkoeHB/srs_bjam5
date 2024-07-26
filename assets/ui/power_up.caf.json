@@ -25,7 +25,8 @@
         "content": {
             "flex_direction": "Column",
             "justify_main": "SpaceEvenly",
-            "justify_cross": "Center"
+            "justify_cross": "Center",
+            "padding": {"top": {"Px": 50.0}, "bottom": {"Px": 50.0}, "left": {"Px": 15.0}, "right": {"Px": 15.0}}
         }
     },
     "Splat<Border>": [{"Px": 4.0}],
@@ -36,10 +37,15 @@
 },
 
 "powerup_scene": {
+    "FlexStyle": {
+        "dims": {
+            "width": {"Percent": 100.0}
+        }
+    },
     "TextLine": {"text": "Power Up (TODO)"}
 },
 
 "filler_scene": {
-    "TextLine": {"text": "Filler (TODO)"}
+    "TextLine": {"justify": "Center", "linebreak": "WordBoundary"}
 }
 }

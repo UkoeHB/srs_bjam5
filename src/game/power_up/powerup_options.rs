@@ -30,7 +30,7 @@ pub fn get_powerup_options(
     // todo:
     // - on level-up, at minimum 1 option should be 'new' if there are open slots; other slots are selected at
     // random proportional to number of open slots / total slots
-    vec![PowerupOption::Filler, PowerupOption::Filler]
+    vec![PowerupOption::Filler(FillerType::Health), PowerupOption::Filler(FillerType::Karma)]
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -98,7 +98,7 @@ impl BufferedPowerUps
 pub enum PowerupOption
 {
     PowerUp,
-    Filler,
+    Filler(FillerType),
 }
 
 //-------------------------------------------------------------------------------------------------------------------

@@ -1,0 +1,8 @@
+{
+"#commands": {
+    "FillerDatabase": {
+        "health": ["Recover Health", "Recover 75% missing health.", 75],
+        "karma": ["Gain Karma", "Gain 25 karma.", 25]
+    }
+}
+}

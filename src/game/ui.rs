@@ -79,7 +79,35 @@ fn spawn_power_up_ui(
 
         for option in options {
             l.load_scene(file.e("powerup_frame_scene"), |l| {
+                // Add custom behavior and styling for the specific power-up.
+                let button_id = l.id();
+                match option {
+                    PowerupOption::PowerUp => {
+                        l.load_scene(file.e("powerup_scene"), |l| {
+                            l.commands().ui_builder(button_id).on_pressed(move || {
+                                //todo: apply the power up
+                            });
+                        });
+                    }
+                    PowerupOption::Filler(filler_type) => {
+                        l.load_scene(file.e("filler_scene"), |l| {
+                            l.update_on((), |id| {
+                                move |mut e: TextEditor, data: Res<FillerDatabase>| {
+                                    let (_, description) = data.get_info(filler_type);
+                                    write_text!(e, id, "{}", description.as_str());
+                                }
+                            });
+                            l.commands()
+                                .ui_builder(button_id)
+                                .on_pressed(move |w: &mut World| {
+                                    w.syscall(filler_type, FillerType::apply);
+                                });
+                        });
+                    }
+                }
+
                 // Add behavior all buttons need.
+                // - Add this *after* setting up other on-pressed reactors so the despawn occurs last.
                 l.on_pressed(
                     move |mut c: Commands,
                           mut buffer: ResMut<BufferedPowerUps>,
@@ -91,24 +119,6 @@ fn spawn_power_up_ui(
                         time.unpause();
                     },
                 );
-
-                // Add custom behavior and styling for the specific power-up.
-                match option {
-                    PowerupOption::PowerUp => {
-                        l.load_scene(file.e("powerup_scene"), |l| {
-                            l.commands().ui_builder(scene_id).on_pressed(move || {
-                                //todo: apply the power up
-                            });
-                        });
-                    }
-                    PowerupOption::Filler => {
-                        l.load_scene(file.e("filler_scene"), |l| {
-                            l.commands().ui_builder(scene_id).on_pressed(move || {
-                                //todo: apply the filler effect
-                            });
-                        });
-                    }
-                }
             });
         }
     });

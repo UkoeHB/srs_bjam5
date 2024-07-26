@@ -25,9 +25,8 @@ dev = ["bevy_cobweb_ui/dev", "bevy/dynamic_linking"]
 [dependencies]
 bevy = { version = "0.14", default-features = true, features = ["mp3"] }
 bevy_cobweb = { version = "0.10" }
-bevy_cobweb_ui = { rev = "8445ab5", git = "https://github.com/UkoeHB/bevy_cobweb_ui" }
+bevy_cobweb_ui = { version = ">=0.1.1" }
 bevy_ecs_tilemap = { git = "https://github.com/StarArawn/bevy_ecs_tilemap", default-features = true, features = ["atlas"]}
-bevy_mod_picking = { version = "0.20", features = [ "backend_sprite" ] }
 bevy_spritesheet_animation = { version = "0.2" }
 extol_sprite_layer = { rev = "6093ce9", git = "https://github.com/UkoeHB/extol_sprite_layer" }
 rand = { version = "0.8" }

@@ -8,7 +8,6 @@ use bevy_cobweb::prelude::*;
 use bevy_cobweb_ui::prelude::*;
 use bevy_cobweb_ui::sickle::SickleUiPlugin;
 use bevy_ecs_tilemap::TilemapPlugin;
-use bevy_mod_picking::DefaultPickingPlugins;
 use bevy_spritesheet_animation::plugin::SpritesheetAnimationPlugin;
 
 use crate::*;
@@ -92,7 +91,6 @@ impl Plugin for AppPlugin
                 .set(AssetPlugin { meta_check: AssetMetaCheck::Never, ..default() }),
         )
         // Dependencies
-        .add_plugins(DefaultPickingPlugins) //todo: need this?
         .add_plugins(TilemapPlugin)
         .add_plugins(SpritesheetAnimationPlugin)
         .add_plugins(ReactPlugin)

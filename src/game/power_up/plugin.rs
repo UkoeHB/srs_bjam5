@@ -18,7 +18,8 @@ impl Plugin for PowerUpPlugin
         app.add_plugins(PowerupBankPlugin)
             .add_plugins(PlayerPowerupPlugin)
             .add_plugins(PowerupOptionsPlugin)
-            .add_plugins(AbilitiesPlugin);
+            .add_plugins(AbilitiesPlugin)
+            .add_plugins(FillerPlugin);
     }
 }
 

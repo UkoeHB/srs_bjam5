@@ -36,7 +36,7 @@ impl Health
     pub fn add(&mut self, add: usize)
     {
         self.current += add;
-        self.current = self.current.max(self.max);
+        self.current = self.current.min(self.max);
     }
 
     pub fn remove(&mut self, sub: usize)
