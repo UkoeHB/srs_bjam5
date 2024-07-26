@@ -138,10 +138,18 @@ impl MobType
                               animations: Res<SpriteAnimations>,
                               player: Query<(Entity, &Transform), With<Player>>,
                               mobs: Query<&Transform, Without<Player>>| {
-                            let Ok((player, player_transform)) = player.get_single() else { return };
+                            // Spawn explosion effect.
                             let Ok(mob_transform) = mobs.get(mob_entity) else { return };
+                            c.spawn((
+                                DespawnOnAnimationCycle,
+                                SpatialBundle::from_transform(*mob_transform),
+                                SpriteLayer::Objects,
+                                StateScoped(GameState::Play),
+                            ))
+                            .set_sprite_animation(&animations, explosion_animation.clone());
 
                             // Check if player is in range.
+                            let Ok((player, player_transform)) = player.get_single() else { return };
                             let distance = (player_transform.translation - mob_transform.translation).length();
                             if distance > base_range {
                                 return;
@@ -149,10 +157,6 @@ impl MobType
 
                             // Send damage event.
                             dmg_events.send(DamageEvent { target: player, damage: base_damage });
-
-                            // Spawn explosion effect.
-                            c.spawn(DespawnOnAnimationCycle)
-                                .set_sprite_animation(&animations, explosion_animation.clone());
                         },
                     );
                     0.

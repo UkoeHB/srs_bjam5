@@ -16,7 +16,7 @@
                     "start_time_secs": 0,
                     "duration_secs": 15,
                     "ramp_up_fraction": 0.3,
-                    "total_quantity": 20,
+                    "total_quantity": 5,
                     "max_clump_size": 3
                 },
                 {
@@ -29,10 +29,10 @@
                 },
                 {
                     "mob_name": "mob_bomb",
-                    "start_time_secs": 30,
+                    "start_time_secs": 0,
                     "duration_secs": 8,
                     "ramp_up_fraction": 0.3,
-                    "total_quantity": 3,
+                    "total_quantity": 10,
                     "max_clump_size": 1
                 }
             ]

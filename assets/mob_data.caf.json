@@ -18,8 +18,8 @@
     "$mob_animation_bomb": "sprites/mob_bomb.png",
     "$mob_size_bomb": {"x": 40, "y": 40},
 
-    "$areaaffect_animation_explosion": "sprites/explosion_anim.png",
-    "$areaaffect_size_explosion": {"x": 40, "y": 40}
+    "$mob_bomb_explosion_animation": "sprites/explosion_anim.png",
+    "$mob_bomb_explosion_size": {"x": 40, "y": 40}
 },
 
 "#commands": {
@@ -82,9 +82,9 @@
             "clips": [{"frames": {"Row": 0}}]
         },
         {
-            "name": "areaaffect_explosion",
-            "image": "$areaaffect_animation_explosion",
-            "size": "$areaaffect_size_explosion",
+            "name": "mob_bomb_explosion",
+            "image": "$mob_bomb_explosion_animation",
+            "size": "$mob_bomb_explosion_size",
             "columns": 4,
             "rows": 1,
             "frame_time": 100,
@@ -135,7 +135,7 @@
             "base_health": 10,
             "base_armor": 1,
             "base_speed_tps": 60.0,
-            "mob_type": {"OnDeath": {"Explode": {"base_damage": 40, "base_range": 100, "explosion_animation": "$areaaffect_animation_explosion"}}}
+            "mob_type": {"OnDeath": {"Explode": {"base_damage": 40, "base_range": 100, "explosion_animation": "mob_bomb_explosion"}}}
         }
     }]
 }
