@@ -11,8 +11,15 @@
     "$mob_size_dark_mage": {"x": 35, "y": 35},
     "$projectile_animation_dark_mage": "sprites/mob_dark_mage.png",
     "$projectile_size_dark_mage": {"x": 20, "y": 20},
+    
     "$mob_animation_slime": "sprites/mob_slime_40_40.png",
-    "$mob_size_slime": {"x": 40, "y": 40}
+    "$mob_size_slime": {"x": 40, "y": 40},
+
+    "$mob_animation_bomb": "sprites/mob_bomb.png",
+    "$mob_size_bomb": {"x": 40, "y": 40},
+
+    "$areaaffect_animation_explosion": "sprites/explosion_anim.png",
+    "$areaaffect_size_explosion": {"x": 40, "y": 40}
 },
 
 "#commands": {
@@ -64,6 +71,24 @@
             "rows": 1,
             "frame_time": 175,
             "clips": [{"frames": {"Row": 0}}]
+        },
+        {
+            "name": "mob_bomb",
+            "image": "$mob_animation_bomb",
+            "size": "$mob_size_bomb",
+            "columns": 2,
+            "rows": 1,
+            "frame_time": 150,
+            "clips": [{"frames": {"Row": 0}}]
+        },
+        {
+            "name": "areaaffect_explosion",
+            "image": "$areaaffect_animation_explosion",
+            "size": "$areaaffect_size_explosion",
+            "columns": 4,
+            "rows": 1,
+            "frame_time": 100,
+            "clips": [{"frames": {"Row": 0}}]
         }
     ]],
 
@@ -96,13 +121,21 @@
                 }
             }
         },
-        "mob_slime":{
+        "mob_slime": {
             "animation": "mob_slime",
             "hitbox": "$mob_size_slime",
             "base_health": 10,
             "base_armor": 1,
             "base_speed_tps": 50.0,
             "mob_type": {"Collider": {"base_damage": 10, "base_cooldown_millis": 500}}
+        },
+        "mob_bomb": {
+            "animation": "mob_bomb",
+            "hitbox": "$mob_size_bomb",
+            "base_health": 10,
+            "base_armor": 1,
+            "base_speed_tps": 60.0,
+            "mob_type": {"OnDeath": {"Explode": {"base_damage": 40, "base_range": 100, "explosion_animation": "$areaaffect_animation_explosion"}}}
         }
     }]
 }
