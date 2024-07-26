@@ -35,12 +35,20 @@ fn update_transforms_for_attraction(
             continue;
         };
         let initial_vector = target_transform.translation - transform.translation;
-        let target_offset = attraction.target_offset.clamp_length(
-            attraction.stop_distance,
-            attraction.stop_distance.max(initial_vector.length() / 2.),
-        );
 
-        let vector = initial_vector + target_offset.extend(0.);
+        let vector = if initial_vector.length() > attraction.stop_distance {
+            attraction.set_is_stopped(false);
+
+            let target_offset = attraction.target_offset.clamp_length(
+                attraction.stop_distance,
+                attraction.stop_distance.max(initial_vector.length() / 2.),
+            );
+
+            initial_vector + target_offset.extend(0.)
+        } else {
+            attraction.set_is_stopped(true);
+            Vec3::default()
+        };
 
         // Move the entity toward its attraction source.
         let distance = attraction
@@ -49,7 +57,6 @@ fn update_transforms_for_attraction(
         let direction = vector.normalize_or(Vec3::default());
         let movement = direction * distance;
         transform.translation += movement;
-        attraction.set_is_stopped(movement.truncate());
     }
 }
 
@@ -119,9 +126,9 @@ impl Attraction
         self.current_vel * delta
     }
 
-    fn set_is_stopped(&mut self, movement: Vec2)
+    fn set_is_stopped(&mut self, stopped: bool)
     {
-        self.is_stopped = movement.try_normalize().is_none()
+        self.is_stopped = stopped
     }
 }
 

@@ -96,7 +96,7 @@ fn handle_collectable_detection(
 //-------------------------------------------------------------------------------------------------------------------
 
 /// Component that contains an entity's size for bounding-box intersections.
-#[derive(Component, Deref, DerefMut)]
+#[derive(Component, Deref, DerefMut, Debug)]
 pub struct AabbSize(pub Vec2);
 
 impl AabbSize

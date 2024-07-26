@@ -1,3 +1,4 @@
+use std::f32::consts::PI;
 use std::marker::PhantomData;
 use std::time::Duration;
 
@@ -31,16 +32,21 @@ fn apply_effect_zones<T: Component>(
         // - We also extend effect zones based on their position last tick, so fast-moving zones don't skip over
         //   entities.
         zone.next_effect_time = None;
+        let mut rotation = Quat::default().angle_between(zone_transform.rotation.normalize());
+        if rotation > PI / 2. {
+            rotation = PI - rotation;
+        }
+        rotation = rotation.clamp(0., PI / 2.);
         let entity_aabb = zone_aabb
-            .get_2d(zone_transform)
-            .rotated_by(Quat::default().angle_between(zone_transform.rotation.normalize()));
+            .get_2d_from_vec(Vec2::default())
+            .transformed_by(zone_transform.translation.truncate(), rotation);
         let last_pos = *maybe_zone_last_pos
             .cloned()
             .unwrap_or(PrevLocation(zone_transform.translation.truncate()));
         let entity_aabb = AabbCast2d::new(
             entity_aabb,
             Vec2::default(),
-            Dir2::new(zone_transform.translation.truncate() - last_pos)
+            Dir2::new(last_pos - zone_transform.translation.truncate())
                 .unwrap_or(Dir2::new_unchecked(Vec2::default().with_x(1.))),
             (zone_transform.translation.truncate() - last_pos).length(),
         );

@@ -5,7 +5,12 @@
 
 "#constants": {
     "$mob_animation_imp": "sprites/mob_imp_50_50.png",
-    "$mob_size_imp": {"x": 50, "y": 50}
+    "$mob_size_imp": {"x": 50, "y": 50},
+
+    "$mob_animation_dark_mage": "sprites/mob_dark_mage.png",
+    "$mob_size_dark_mage": {"x": 35, "y": 35},
+    "$projectile_animation_dark_mage": "sprites/mob_dark_mage.png",
+    "$projectile_size_dark_mage": {"x": 20, "y": 20}
 },
 
 "#commands": {
@@ -18,6 +23,25 @@
             "rows": 1,
             "frame_time": 415,
             "clips": [{"frames": {"Row": 0}}]
+        },
+        {
+            "name": "mob_dark_mage",
+            "image": "$mob_animation_dark_mage",
+            "size": "$mob_size_dark_mage",
+            "columns": 2,
+            "rows": 1,
+            "frame_time": 100,
+            "clips": [{"frames": {"Frames": [0, 1]}}]
+        },
+        {
+            "name": "projectile_dark_mage",
+            "image": "$projectile_animation_dark_mage",
+            "size": "$projectile_size_dark_mage",
+            "padding": {"x": 15, "y": 15},
+            "columns": 5,
+            "rows": 1,
+            "frame_time": 150,
+            "clips": [{"frames": {"Frames": [2, 3, 4, 3]}}]
         }
     ]],
 
@@ -29,6 +53,25 @@
             "base_armor": 1,
             "base_speed_tps": 80.0,
             "mob_type": {"Collider": {"base_damage": 2, "base_cooldown_millis": 1000}}
+        },
+        "mob_dark_mage": {
+            "animation": "mob_dark_mage",
+            "hitbox": "$mob_size_dark_mage",
+            "base_health": 10,
+            "base_armor": 1,
+            "base_speed_tps": 40.0,
+            "mob_type": {
+                "Emitter": {
+                    "base_fire_range": 300.0,
+                    "base_cooldown_millis": 1000,
+                    "projectile": {
+                        "projectile_type": {"SingleUse": {"damage": 10}},
+                        "velocity_tps": 70.0,
+                        "animation": "projectile_dark_mage",
+                        "size": "$projectile_size_dark_mage"
+                    }
+                }
+            }
         }
     }]
 }

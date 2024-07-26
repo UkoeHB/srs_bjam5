@@ -16,6 +16,7 @@ fn add_effect_animation(ec: &mut EntityCommands, projectile: &Projectile, transf
     let Some(animation) = projectile.effect_animation else { return };
     ec.insert((
         SpatialBundle::from_transform(*transform),
+        StateScoped(GameState::Play),
         DespawnOnAnimationCycle,
         projectile
             .effect_sprite_layer
@@ -230,6 +231,7 @@ impl ProjectileConfig
                     .max_lifetime_ms
                     .map(|l| clock.elapsed + Duration::from_millis(l)),
             },
+            StateScoped(GameState::Play),
             AabbSize(self.size),
             PrevLocation(spawn_location),
             SpatialBundle::from_transform(
