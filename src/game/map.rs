@@ -250,6 +250,11 @@ pub struct TileConfig
 
 //-------------------------------------------------------------------------------------------------------------------
 
+#[derive(SystemSet, Hash, Eq, PartialEq, Debug, Copy, Clone)]
+pub struct MapConstraintsSet;
+
+//-------------------------------------------------------------------------------------------------------------------
+
 pub struct MapPlugin;
 
 impl Plugin for MapPlugin
@@ -259,14 +264,9 @@ impl Plugin for MapPlugin
         app.add_systems(
             // Run all these systems on startup so the map does need to be regenerated every time.
             OnExit(LoadState::Loading),
-            (spawn_map, spawn_map_controls).chain(),
+            (spawn_map, setup_map_boundary, spawn_map_controls).chain(),
         )
-        .add_systems(
-            Update,
-            force_in_map_bounds
-                .after(PlayerUpdateSet)
-                .after(AttractionUpdateSet),
-        );
+        .add_systems(Update, force_in_map_bounds.in_set(MapConstraintsSet));
     }
 }
 

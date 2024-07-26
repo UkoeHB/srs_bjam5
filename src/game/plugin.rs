@@ -40,6 +40,7 @@ impl Plugin for GamePlugin
                     PowerUpUpdateSet,
                     EffectUpdateSet,
                     DamageUpdateSet,
+                    MapConstraintsSet,
                     CameraUpdateSet,
                     PowerUpActivateSet,
                 )
