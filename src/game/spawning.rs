@@ -51,6 +51,7 @@ fn spawn_mobs(
         }
         let last = sequence.sequence.pop().unwrap();
         active_events.push(ActiveSpawnEvent::new(last, constants.spawn_point_cadence_secs));
+        tracing::error!("added spawn event");
     }
 
     if active_events.len() == 0 {
@@ -96,9 +97,9 @@ fn spawn_mobs(
         let magnitude = calc_magnitude(progress, event.ramp_up_fraction);
 
         // Calculate number of mobs to spawn right now.
-        let mut spawn_point_remaining = ((*spawn_point_size as f32) * magnitude) as usize;
+        let mut spawn_point_remaining = ((*spawn_point_size as f32) * magnitude).round() as usize;
         spawn_point_remaining = spawn_point_remaining.min(event.total_quantity.saturating_sub(*spawned_quantity));
-        let mut clump_size = ((event.max_clump_size as f32) * magnitude) as usize;
+        let mut clump_size = ((event.max_clump_size as f32) * magnitude).round() as usize;
 
         // Update the spawned quantity.
         *spawned_quantity += spawn_point_remaining;
@@ -188,7 +189,9 @@ impl ActiveSpawnEvent
             let progress = (n as f32) / (total_points.saturating_sub(1) as f32).max(1.);
             total_magnitude += calc_magnitude(progress, event.ramp_up_fraction);
         }
-        let spawn_point_size = ((event.total_quantity as f32) / total_magnitude.max(1.)) as usize;
+        let spawn_point_size = ((event.total_quantity as f32) / total_magnitude.max(1.))
+            .round()
+            .max(1.) as usize;
 
         Self {
             event,

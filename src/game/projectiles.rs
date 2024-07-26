@@ -15,7 +15,7 @@ fn add_effect_animation(ec: &mut EntityCommands, projectile: &Projectile, transf
 {
     let Some(animation) = projectile.effect_animation else { return };
 
-tracing::error!("added effect animation");
+    tracing::error!("added effect animation");
     ec.insert((
         SpatialBundle::from_transform(*transform),
         StateScoped(GameState::Play),

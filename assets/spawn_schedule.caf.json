@@ -16,20 +16,15 @@
                     "start_time_secs": 0,
                     "duration_secs": 15,
                     "ramp_up_fraction": 0.3,
-                    "total_quantity": 55,
+                    "total_quantity": 20,
                     "max_clump_size": 3
-                }
-            ]
-        },
-        {
-            "day": 2,
-            "sequence": [
+                },
                 {
                     "mob_name": "mob_dark_mage",
                     "start_time_secs": 0,
-                    "duration_secs": 1,
+                    "duration_secs": 10,
                     "ramp_up_fraction": 0.3,
-                    "total_quantity": 2,
+                    "total_quantity": 5,
                     "max_clump_size": 1
                 }
             ]
