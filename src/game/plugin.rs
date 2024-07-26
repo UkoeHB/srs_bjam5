@@ -37,10 +37,11 @@ impl Plugin for GamePlugin
                     AttractionUpdateSet,
                     ProjectileUpdateSet,
                     CollectablesUpdateSet,
+                    PowerUpUpdateSet,
                     EffectUpdateSet,
                     DamageUpdateSet,
                     CameraUpdateSet,
-                    PowerUpUpdateSet,
+                    PowerUpActivateSet,
                 )
                     .chain()
                     .run_if(in_state(PlayState::Day)),

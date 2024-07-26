@@ -94,12 +94,12 @@ fn check_dev_commands(
             if powerups.is_handling_powerup() {
                 continue;
             }
-            powerups.insert([PowerUpSource::LevelUp]);
+            powerups.insert([PowerupSource::LevelUp]);
         } else if *pressed == controls.add_exp {
             let Ok((_, mut level, _)) = player.get_single_mut() else { continue };
             let required = level.exp_required();
-            let levels = level.add_exp(required / 3 + 1);
-            powerups.insert(levels.iter().map(|_| PowerUpSource::LevelUp));
+            let levels = level.add_exp(required / 3 + required / 7 + 1);
+            powerups.insert(levels.iter().map(|_| PowerupSource::LevelUp));
         } else if *pressed == controls.apply_damage {
             let Ok((entity, _, health)) = player.get_single_mut() else { continue };
             let max = health.max;

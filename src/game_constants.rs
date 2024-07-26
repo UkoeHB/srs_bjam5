@@ -43,6 +43,8 @@ pub struct GameConstants
     pub player_exp_start: usize,
     pub player_exp_rate: usize,
 
+    pub starting_powerup: String,
+
     pub level_tag_font: String,
     pub level_tag_color: Color,
     pub level_tag_font_size: f32,

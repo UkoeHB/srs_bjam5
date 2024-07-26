@@ -25,7 +25,7 @@ fn apply_collectable_effect_impl(
     match *collectable {
         Collectable::Exp(exp) => {
             let levels = level.add_exp(exp);
-            powerups.insert(levels.iter().map(|_| PowerUpSource::LevelUp));
+            powerups.insert(levels.iter().map(|_| PowerupSource::LevelUp));
         }
         Collectable::Karma(k) => {
             karma.get_mut(&mut c).add(k);
@@ -91,6 +91,7 @@ pub enum Collectable
     Exp(usize),
     Karma(usize),
     HealthPack(usize),
+    //todo: Powerup ???
 }
 
 impl Collectable

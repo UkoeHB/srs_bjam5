@@ -53,8 +53,8 @@ fn spawn_power_up_ui(
     mut c: Commands,
     mut time: ResMut<Time<Virtual>>,
     mut rng: ResMut<GameRng>,
-    player_powerups: ReactRes<PlayerPowerUps>,
-    powerup_database: Res<PowerUpDatabase>,
+    player_powerups: ReactRes<PlayerPowerups>,
+    powerup_bank: Res<PowerupBank>,
     mut s: ResMut<SceneLoader>,
     mut powerups: ResMut<BufferedPowerUps>,
 )
@@ -69,7 +69,7 @@ fn spawn_power_up_ui(
     time.pause();
 
     // Generate power-up options for the player.
-    let options = get_powerup_options(&mut rng, powerup_source, &player_powerups, &powerup_database);
+    let options = get_powerup_options(&mut rng, powerup_source, &player_powerups, &powerup_bank);
     debug_assert!(options.len() > 0);
 
     let file = LoadableRef::from_file("ui.power_up");
@@ -94,14 +94,14 @@ fn spawn_power_up_ui(
 
                 // Add custom behavior and styling for the specific power-up.
                 match option {
-                    PowerUpConfig::PowerUp => {
+                    PowerupOption::PowerUp => {
                         l.load_scene(file.e("powerup_scene"), |l| {
                             l.commands().ui_builder(scene_id).on_pressed(move || {
                                 //todo: apply the power up
                             });
                         });
                     }
-                    PowerUpConfig::Filler => {
+                    PowerupOption::Filler => {
                         l.load_scene(file.e("filler_scene"), |l| {
                             l.commands().ui_builder(scene_id).on_pressed(move || {
                                 //todo: apply the filler effect

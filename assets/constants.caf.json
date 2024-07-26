@@ -57,6 +57,8 @@
         "player_exp_start": 4,
         "player_exp_rate": 3,
 
+        "starting_powerup": "Beer Can",
+
         "level_tag_font": "embedded://sickle_ui/fonts/FiraSans-Medium.ttf",
         "level_tag_color": {"Hsla": {"hue": 0.0, "saturation": 0.0, "lightness": 1.0, "alpha": 1.0}},
         "level_tag_font_size": 10.0,
