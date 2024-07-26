@@ -49,7 +49,6 @@ fn update_beer_can_powerup(
     if time < ability.next_fire_time {
         return;
     }
-    ability.next_fire_time = time + config.get_cooldown(power_up.level);
 
     // Identify nearest mob.
     // TODO: this is not an efficient approach
@@ -62,13 +61,22 @@ fn update_beer_can_powerup(
             nearest = Some((new_distance, delta));
             continue;
         };
-        if new_distance < distance {
+        if new_distance >= distance {
             continue;
         }
         nearest = Some((new_distance, delta));
     }
-    let nearest = nearest.map(|(_, delta)| delta).unwrap_or_default();
-    let nearest_dir = Dir2::new(nearest).unwrap_or(Dir2::new_unchecked(Vec2::default().with_x(1.)));
+
+    // If no mobs to kill, don't fire.
+    let Some((distance_squared, delta)) = nearest else {
+        return;
+    };
+    let nearest_dir = Dir2::new(delta).unwrap_or(Dir2::new_unchecked(Vec2::default().with_x(1.)));
+
+    // If nearest isn't close enough, don't fire.
+    if distance_squared.sqrt() > config.detection_range {
+        return;
+    }
 
     // Spawn projectile.
     let damage = config.get_damage(power_up.level);
@@ -87,6 +95,9 @@ fn update_beer_can_powerup(
         player_loc + nearest_dir.rotation_from_x() * config.launch_offset,
         nearest_dir,
     );
+
+    // Update cooldown.
+    ability.next_fire_time = time + config.get_cooldown(power_up.level);
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -108,6 +119,8 @@ pub struct BeerCanConfig
     pub size: Vec2,
     pub damage_by_level: Vec<usize>,
     pub cooldown_by_level_ms: Vec<u64>,
+    /// Min distance a mob must be before firing.
+    pub detection_range: f32,
     pub velocity_tps: f32,
     /// Offset relative to player from where the projectile should be launched.
     pub launch_offset: Vec2,
@@ -157,7 +170,7 @@ impl Plugin for BeerCanPlugin
     {
         app.register_command::<BeerCanConfig>()
             .init_resource::<BeerCanConfig>()
-            .react(|rc| rc.on_persistent(resource_mutation::<PlayerPowerups>(), add_beercan_ability))
+            .add_systems(PreUpdate, add_beercan_ability.run_if(in_state(PlayState::Day)))
             .add_systems(Update, update_beer_can_powerup.in_set(PowerUpUpdateSet));
     }
 }

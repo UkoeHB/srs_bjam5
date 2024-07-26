@@ -25,7 +25,8 @@
             750,
             400
         ],
-        "velocity_tps": 120.0,
+        "detection_range": 220.0,
+        "velocity_tps": 200.0,
         "launch_offset": {"x": 25.0, "y": 0.0},
         "explosion_animation": "beer_can_explosion",
         "explosion_size": "$explosion_size"
