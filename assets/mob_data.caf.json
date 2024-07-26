@@ -94,8 +94,7 @@
                         "effect_animation": "projectile_dissipate_dark_mage"
                     }
                 }
-            },
-            "mob_type": {"Collider": {"base_damage": 10, "base_cooldown_millis": 500}}
+            }
         },
         "mob_slime":{
             "animation": "mob_slime",
