@@ -1,10 +1,10 @@
 {
 "#constants": {
-    "$collectable_exp_texture": "sprites/collectable_exp.png",
+    "$collectable_exp_texture": "sprites/collectable_exp_texture.png",
     "$collectable_exp_size": {"x": 5, "y": 5},
-    "$collectable_karma_texture": "sprites/collectable_karma.png",
+    "$collectable_karma_texture": "sprites/collectable_karma_texture.png",
     "$collectable_karma_size": {"x": 4, "y": 4},
-    "$collectable_healthpack_texture": "sprites/collectable_healthpack.png",
+    "$collectable_healthpack_texture": "sprites/collectable_healthpack_texture.png",
     "$collectable_healthpack_size": {"x": 8, "y": 8},
 
     "$player_standing_animation": "player_standing_animation",
