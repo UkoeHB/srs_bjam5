@@ -42,6 +42,17 @@
             "rows": 1,
             "frame_time": 150,
             "clips": [{"frames": {"Frames": [2, 3, 4, 3]}}]
+        },
+        {
+            "name": "projectile_dissipate_dark_mage",
+            "image": "$projectile_animation_dark_mage",
+            "size": "$projectile_size_dark_mage",
+            "padding": {"x": 15, "y": 15},
+            "columns": 7,
+            "rows": 1,
+            "frame_time": 75,
+            "loops": 1,
+            "clips": [{"frames": {"Frames": [5, 6]}}]
         }
     ]],
 
@@ -68,7 +79,8 @@
                         "projectile_type": {"SingleUse": {"damage": 10}},
                         "velocity_tps": 70.0,
                         "animation": "projectile_dark_mage",
-                        "size": "$projectile_size_dark_mage"
+                        "size": "$projectile_size_dark_mage",
+                        "effect_animation": "projectile_dissipate_dark_mage"
                     }
                 }
             }
