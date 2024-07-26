@@ -117,7 +117,6 @@ fn setup_map_boundary(
 
         c.spawn((
             SpriteBundle { texture, transform, ..default() },
-            Barrier,
             AabbSize(size),
             SpriteLayer::Objects,
         ));
@@ -131,7 +130,6 @@ fn setup_map_boundary(
 
         c.spawn((
             SpatialBundle { transform, ..default() },
-            Barrier,
             AabbSize(size),
             SpriteLayer::Objects,
             StateScoped(GameState::Play),

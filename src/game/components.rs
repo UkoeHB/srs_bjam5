@@ -9,12 +9,6 @@ use crate::*;
 
 //-------------------------------------------------------------------------------------------------------------------
 
-/// An entity that mobile entities can't move through.
-#[derive(Component)]
-pub struct Barrier;
-
-//-------------------------------------------------------------------------------------------------------------------
-
 #[derive(Debug, Clone, Copy, Event)]
 pub struct EntityDeath;
 
