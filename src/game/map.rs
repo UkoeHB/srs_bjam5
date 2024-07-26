@@ -1,6 +1,7 @@
 use core::f32::consts::PI;
 use std::f32::consts::FRAC_PI_2;
 
+use bevy::math::bounding::Aabb2d;
 use bevy::prelude::*;
 use bevy::sprite::Anchor;
 use bevy_cobweb::prelude::*;
@@ -10,6 +11,9 @@ use rand::Rng;
 use serde::{Deserialize, Serialize};
 
 use crate::*;
+
+#[derive(Component)]
+pub struct BoundInMap;
 
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -189,6 +193,28 @@ fn spawn_map_controls(mut c: Commands, constants: ReactRes<GameConstants>, image
 
 //-------------------------------------------------------------------------------------------------------------------
 
+// TODO:
+// Account for mob size
+fn force_in_map_bounds(mut q: Query<&mut Transform, With<BoundInMap>>, constants: ReactRes<GameConstants>)
+{
+    let half_size = map_area_half_size(&constants);
+    let aabb = Aabb2d::new(-half_size, half_size);
+
+    q.iter_mut()
+        .filter(|t| {
+            let Transform { translation: Vec3 { x, y, .. }, .. } = **t;
+            aabb.closest_point(Vec2 { x, y }) != Vec2 { x, y }
+        })
+        .for_each(|mut t| {
+            let Transform { translation: Vec3 { x, y, .. }, .. } = *t;
+            t.translation = aabb.closest_point(Vec2 { x, y }).extend(0.);
+        });
+    // direction = inside_region_pos - current_pos
+    // final_pos = mob_size_radius * direction
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
 pub fn map_area_size(constants: &GameConstants) -> Vec2
 {
     Vec2 {
@@ -231,7 +257,8 @@ impl Plugin for MapPlugin
             // Run all these systems on startup so the map does need to be regenerated every time.
             OnExit(LoadState::Loading),
             (spawn_map, setup_map_boundary, spawn_map_controls).chain(),
-        );
+        )
+        .add_systems(Update, force_in_map_bounds);
     }
 }
 
