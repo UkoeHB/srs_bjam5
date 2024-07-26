@@ -12,7 +12,7 @@
             "day": 1,
             "sequence": [
                 {
-                    "mob_name": "mob_imp",
+                    "mob_name": "mob_slime",
                     "start_time_secs": 0,
                     "duration_secs": 15,
                     "ramp_up_fraction": 0.3,

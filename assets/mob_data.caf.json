@@ -10,7 +10,9 @@
     "$mob_animation_dark_mage": "sprites/mob_dark_mage.png",
     "$mob_size_dark_mage": {"x": 35, "y": 35},
     "$projectile_animation_dark_mage": "sprites/mob_dark_mage.png",
-    "$projectile_size_dark_mage": {"x": 20, "y": 20}
+    "$projectile_size_dark_mage": {"x": 20, "y": 20},
+    "$mob_animation_slime": "sprites/mob_slime_40_40.png",
+    "$mob_size_slime": {"x": 40, "y": 40}
 },
 
 "#commands": {
@@ -53,6 +55,15 @@
             "frame_time": 75,
             "loops": 1,
             "clips": [{"frames": {"Frames": [5, 6]}}]
+        },
+        {
+            "name": "mob_slime",
+            "image": "$mob_animation_slime",
+            "size": "$mob_size_slime",
+            "columns": 4,
+            "rows": 1,
+            "frame_time": 175,
+            "clips": [{"frames": {"Row": 0}}]
         }
     ]],
 
@@ -83,7 +94,16 @@
                         "effect_animation": "projectile_dissipate_dark_mage"
                     }
                 }
-            }
+            },
+            "mob_type": {"Collider": {"base_damage": 10, "base_cooldown_millis": 500}}
+        },
+        "mob_slime":{
+            "animation": "mob_slime",
+            "hitbox": "$mob_size_slime",
+            "base_health": 10,
+            "base_armor": 1,
+            "base_speed_tps": 80.0,
+            "mob_type": {"Collider": {"base_damage": 10, "base_cooldown_millis": 500}}
         }
     }]
 }
