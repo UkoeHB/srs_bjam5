@@ -3,110 +3,94 @@
     "constants.caf.json": ""
 },
 
-"#c: TODO: convert to a spec for reuse w/ success scene":0,
-"failure_scene": {
-    "FlexStyle": {
-        "dims": {"width": {"Vw": 100.0}, "height": {"Vh": 100.0}},
-        "content": {
-            "flex_direction": "Column",
-            "justify_main": "Center",
-            "justify_cross": "Center",
-            "padding": {"top": {"Px": 50.0}, "bottom": {"Px": 50.0}, "left": {"Px": 50.0}, "right": {"Px": 50.0}}
+"#specs": {
+    "result_scene": {
+        "@result_text": "[placeholder]",
+        "*": {
+            "FlexStyle": {
+                "dims": {"width": {"Vw": 100.0}, "height": {"Vh": 100.0}},
+                "content": {
+                    "flex_direction": "Column",
+                    "justify_main": "Center",
+                    "justify_cross": "Center",
+                    "padding": {"top": {"Px": 50.0}, "bottom": {"Px": 50.0}, "left": {"Px": 50.0}, "right": {"Px": 50.0}}
+                }
+            },
+        
+            "window": {
+                "FlexStyle": {
+                    "dims": {"width": {"Percent": 100.0}, "height": {"Percent": 100.0}},
+                    "content": {"flex_direction": "Column", "justify_main": "Center", "justify_cross": "Center"}
+                },
+                "Splat<Border>": [{"Px": 5.0}],
+                "BrRadius": [{"Px": 20.0}],
+                "BrColor": [{"Hsla": {"hue": 111.0, "saturation": 0.30, "lightness": 0.10, "alpha": 1.0}}],
+                "BgColor": [{"Hsla": {"hue": 111.0, "saturation": 0.30, "lightness": 0.30, "alpha": 1.0}}],
+        
+                "title": {
+                    "FlexStyle": {
+                        "content": {"justify_main": "Center", "justify_cross": "Center"},
+                        "flex": {"margin": {"bottom": {"Px": 60}}}
+                    },
+                    "TextLine": {"text": "@result_text", "size": 40.0}
+                },
+                "!window":0
+            }
         }
     },
 
-    "window": {
-        "FlexStyle": {
-            "dims": {"width": {"Percent": 100.0}, "height": {"Percent": 100.0}},
-            "content": {"flex_direction": "Column", "justify_main": "Center", "justify_cross": "Center"}
-        },
-        "BgColor": [{"Hsla": {"hue": 111.0, "saturation": 0.30, "lightness": 0.30, "alpha": 1.0}}],
-
-        "title": {
-            "FlexStyle": {
-                "content": {"justify_main": "Center", "justify_cross": "Center"},
-                "flex": {"margin": {"bottom": {"Px": 40}}}
-            },
-            "TextLine": {"text": "YOU DIED..."}
-        },
-
-        "today_again_button": {
+    "result_button": {
+        "@text": "[placeholder]",
+        "*": {
             "FlexStyle": {
                 "dims": {"min_width": {"Px": 200.0}},
-                "content": {"justify_main": "Center", "justify_cross": "Center"}
+                "content": {"justify_main": "Center", "justify_cross": "Center"},
+                "flex": {"!flex":0}
             },
-            "BgColor": [{"Hsla": {"hue": 150.0, "saturation": 0.40, "lightness": 0.40, "alpha": 1.0}}],
+            "Splat<Border>": [{"Px": 2.0}],
+            "BrRadius": [{"Px": 13.0}],
+            "BrColor": [{"Hsla": {"hue": 150.0, "saturation": 0.40, "lightness": 0.20, "alpha": 1.0}}],
             "Interactive": [],
+            "Animated<BgColor>": {
+                "values": {
+                    "idle": {"Hsla": {"hue": 150.0, "saturation": 0.40, "lightness": 0.40, "alpha": 1.0}},
+                    "hover": {"Hsla": {"hue": 150.0, "saturation": 0.45, "lightness": 0.30, "alpha": 1.0}}
+                },
+                "settings": {
+                    "pointer_enter": {"duration": 0.15, "easing": "OutExpo"},
+                    "pointer_leave": {"duration": 0.15, "easing": "OutExpo"}
+                }
+            },
 
             "text": {
                 "FlexStyle": {
                     "flex": {"margin": {"top": {"Px": 17.0}, "bottom": {"Px": 17.0}, "left": {"Px": 10.0}, "right": {"Px": 10.0}}}
                 },
-                "TextLine": {"text": "Today Again"}
+                "TextLine": {"text": "@text"}
             }
         }
+    },
+
+    "today_again_button(#spec:result_button)": {
+        "@text": "Today Again"
+    },
+
+    "tomorrow_button(#spec:result_button)": {
+        "@text": "Tomorrow",
+        "!flex": {"margin": {"bottom": {"Px": 20}}}
     }
 },
 
-"success_scene": {
-    "FlexStyle": {
-        "dims": {"width": {"Vw": 100.0}, "height": {"Vh": 100.0}},
-        "content": {
-            "flex_direction": "Column",
-            "justify_main": "Center",
-            "justify_cross": "Center",
-            "padding": {"top": {"Px": 50.0}, "bottom": {"Px": 50.0}, "left": {"Px": 50.0}, "right": {"Px": 50.0}}
-        }
-    },
+"failure_scene(#spec:result_scene)": {
+    "@result_text": "YOU DIED...",
+    "!window": {"today_again_button(#spec:today_again_button)": {}}
+},
 
-    "window": {
-        "FlexStyle": {
-            "dims": {"width": {"Percent": 100.0}, "height": {"Percent": 100.0}},
-            "content": {"flex_direction": "Column", "justify_main": "Center", "justify_cross": "Center"}
-        },
-        "BgColor": [{"Hsla": {"hue": 111.0, "saturation": 0.30, "lightness": 0.30, "alpha": 1.0}}],
-
-        "title": {
-            "FlexStyle": {
-                "content": {"justify_main": "Center", "justify_cross": "Center"},
-                "flex": {"margin": {"bottom": {"Px": 40}}}
-            },
-            "TextLine": {"text": "YOU SURVIVED!"}
-        },
-
-        "tomorrow_button": {
-            "FlexStyle": {
-                "dims": {"min_width": {"Px": 200.0}},
-                "content": {"justify_main": "Center", "justify_cross": "Center"},
-                "flex": {"margin": {"bottom": {"Px": 20}}}
-            },
-            "BgColor": [{"Hsla": {"hue": 150.0, "saturation": 0.40, "lightness": 0.40, "alpha": 1.0}}],
-            "Interactive": [],
-
-            "text": {
-                "FlexStyle": {
-                    "flex": {"margin": {"top": {"Px": 17.0}, "bottom": {"Px": 17.0}, "left": {"Px": 10.0}, "right": {"Px": 10.0}}}
-                },
-                "TextLine": {"text": "Tomorrow"}
-            }
-        },
-
-        "today_again_button": {
-            "FlexStyle": {
-                "dims": {"min_width": {"Px": 200.0}},
-                "content": {"justify_main": "Center", "justify_cross": "Center"}
-            },
-            "BgColor": [{"Hsla": {"hue": 150.0, "saturation": 0.40, "lightness": 0.40, "alpha": 1.0}}],
-            "Interactive": [],
-
-            "text": {
-                "FlexStyle": {
-                    "flex": {"margin": {"top": {"Px": 17.0}, "bottom": {"Px": 17.0}, "left": {"Px": 10.0}, "right": {"Px": 10.0}}}
-                },
-                "TextLine": {"text": "Today Again"}
-            }
-        }
+"success_scene(#spec:result_scene)": {
+    "@result_text": "YOU SURVIVED!",
+    "!window": {
+        "tomorrow_button(#spec:tomorrow_button)": {},
+        "today_again_button(#spec:today_again_button)": {}
     }
-
 }
 }

@@ -8,12 +8,12 @@
         "dims": {"width": {"Vw": 100.0}, "height": {"Vh": 100.0}},
         "content": {"flex_direction": "Column", "justify_main": "Center", "justify_cross": "Center"}
     },
-    "BgColor": [{"Hsla": {"hue": 30.0, "saturation": 0.09, "lightness": 0.72, "alpha": 1.0}}],
+    "BgColor": [{"Hsla": {"hue": 214.0, "saturation": 0.12, "lightness": 0.22, "alpha": 1.0}}],
 
     "header": {
-        "FlexStyle": {
-            "dims": {"width": {"Percent": 100.0}, "min_height": {"Percent": 20.0}},
-            "content": {"flex_direction": "Row", "justify_main": "Center", "justify_cross": "Center"}
+        "AbsoluteStyle": {
+            "dims": {"width": {"Percent": 100.0}, "height": {"Percent": 90.0}},
+            "content": {"flex_direction": "Column", "justify_main": "Center", "justify_cross": "Center"}
         },
 
         "day": {
@@ -23,20 +23,16 @@
         },
 
         "karma": {
-            "AbsoluteStyle": {
-                "dims": {
-                    "width": {"Percent": 100.0},
-                    "height": {"Percent": 100.0},
-                    "top": "Auto",
-                    "bottom": "Auto",
-                    "left": "Auto",
-                    "right": "Auto"
-                },
-                "content": {"justify_main": "FlexEnd", "justify_cross": "FlexStart"}
+            "FlexStyle": {
+                "flex": {
+                    "margin": {
+                        "top": {"Px": 20.0}
+                    }
+                }
             },
 
             "text": {
-                "TextLine": {}
+                "TextLine": {"size": 35.0}
             }
         }
     },
@@ -65,8 +61,20 @@
                 "content": {"justify_main": "Center", "justify_cross": "Center"},
                 "flex": {"margin": {"bottom": {"Px": 40.0}, "right": {"Px": 40.0}}}
             },
-            "BgColor": [{"Hsla": {"hue": 150.0, "saturation": 0.40, "lightness": 0.40, "alpha": 1.0}}],
+            "Splat<Border>": [{"Px": 3.0}],
+            "BrRadius": [{"Px": 13.0}],
+            "BrColor": [{"Hsla": {"hue": 32.0, "saturation": 0.7, "lightness": 0.2, "alpha": 1.0}}],
             "Interactive": [],
+            "Animated<BgColor>": {
+                "values": {
+                    "idle": {"Hsla": {"hue": 32.0, "saturation": 0.5, "lightness": 0.45, "alpha": 1.0}},
+                    "hover": {"Hsla": {"hue": 32.0, "saturation": 0.6, "lightness": 0.4, "alpha": 1.0}}
+                },
+                "settings": {
+                    "pointer_enter": {"duration": 0.15, "easing": "OutExpo"},
+                    "pointer_leave": {"duration": 0.15, "easing": "OutExpo"}
+                }
+            },
 
             "text": {
                 "FlexStyle": {
