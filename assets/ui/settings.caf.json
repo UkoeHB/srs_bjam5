@@ -79,12 +79,13 @@
         },
 
         "spacer": {
-            "FlexStyle": {
-                "dims": {"height": {"Px": 50.0}}
-            }
+            "FlexStyle": {"flex": {"flex_grow": 1.0}}
         },
 
         "audio": {
+            "FlexStyle": {
+                "dims": {"width": {"Px": 400.0}}
+            },
             "#c: filled in manually":0
         },
 

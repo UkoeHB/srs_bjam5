@@ -10,11 +10,6 @@ use crate::*;
 
 //-------------------------------------------------------------------------------------------------------------------
 
-#[derive(Component, Debug, Deref)]
-struct BackgroundAudio(String);
-
-//-------------------------------------------------------------------------------------------------------------------
-
 fn insert_audio(ec: &mut EntityCommands, soundtrack: &Soundtrack, audio: &AudioMap)
 {
     ec.try_insert((
@@ -27,7 +22,7 @@ fn insert_audio(ec: &mut EntityCommands, soundtrack: &Soundtrack, audio: &AudioM
             },
             ..default()
         },
-        BackgroundAudio(soundtrack.source.clone()),
+        BackgroundAudio(soundtrack.clone()),
     ));
 }
 
@@ -47,12 +42,17 @@ fn set_soundtrack(
         insert_audio(&mut ec, current_track, &audio);
         return;
     };
-    if **background == current_track.source {
+    if background.source == current_track.source {
         return;
     }
     let mut ec = c.entity(entity);
     insert_audio(&mut ec, current_track, &audio);
 }
+
+//-------------------------------------------------------------------------------------------------------------------
+
+#[derive(Component, Debug, Deref)]
+pub struct BackgroundAudio(Soundtrack);
 
 //-------------------------------------------------------------------------------------------------------------------
 
