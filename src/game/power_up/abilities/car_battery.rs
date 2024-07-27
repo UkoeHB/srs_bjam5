@@ -15,16 +15,13 @@ fn car_battery_placement(
     mut c: Commands,
     clock: Res<GameClock>,
     animations: Res<SpriteAnimations>,
-    mut player: Query<(&mut CarBatteryAbility, &Transform, &PrevLocation), With<Player>>,
+    mut player: Query<(&mut CarBatteryAbility, &Transform, &PlayerDirection), With<Player>>,
     player_powerups: ReactRes<PlayerPowerups>,
     config: Res<CarBatteryConfig>,
 )
 {
-    let Ok((
-        mut ability,
-        Transform { translation: Vec3 { x: player_x, y: player_y, .. }, .. },
-        PrevLocation(prev_loc),
-    )) = player.get_single_mut()
+    let Ok((mut ability, Transform { translation: Vec3 { x: player_x, y: player_y, .. }, .. }, p_dir)) =
+        player.get_single_mut()
     else {
         return;
     };
@@ -38,7 +35,7 @@ fn car_battery_placement(
         return;
     }
 
-    let Ok(dir_to_prev) = Dir2::new(*prev_loc - Vec2 { x: *player_x, y: *player_y }) else { return };
+    let behind_player_dir = -Dir2::new_unchecked(p_dir.to_unit_vector());
 
     // Spawn projectile.
     let damage = config.get_damage(level);
@@ -57,8 +54,8 @@ fn car_battery_placement(
         &mut c,
         &clock,
         &animations,
-        config.drop_offset * dir_to_prev,
-        dir_to_prev,
+        Vec2 { x: *player_x, y: *player_y } + config.drop_offset * behind_player_dir,
+        behind_player_dir,
     );
 
     // Update cooldown.
@@ -110,10 +107,10 @@ impl Command for CarBatteryConfig
     fn apply(self, w: &mut World)
     {
         w.resource_mut::<PowerupBank>().register(PowerupInfo {
-            ability_type: AbilityType::Active,
             name: self.name.clone(),
             description: self.description.clone(),
             icon: self.animation.clone(),
+            ability_type: AbilityType::Active,
         });
         w.insert_resource(self);
     }

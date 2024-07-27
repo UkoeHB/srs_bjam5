@@ -33,7 +33,7 @@ impl Default for BillboardEntities
 
 /// Component tracks which direction the player faces.
 #[derive(Component, Debug, Copy, Clone, Eq, PartialEq, Default)]
-enum PlayerDirection
+pub enum PlayerDirection
 {
     #[default]
     Up,
