@@ -12,7 +12,7 @@ fn update_transforms_for_attraction(
     clock: Res<GameClock>,
     mut pset: ParamSet<(
         Query<(Entity, &Transform, &AttractionSource)>,
-        Query<(Entity, &mut Transform, &mut Attraction)>,
+        Query<(Entity, &mut Transform, &mut Attraction, &mut Sprite)>,
     )>,
 )
 {
@@ -29,7 +29,7 @@ fn update_transforms_for_attraction(
     buffer.sort_unstable_by(|a, b| b.0.cmp(&a.0));
 
     // Update transforms of attracted entities.
-    for (entity, mut transform, mut attraction) in pset.p1().iter_mut() {
+    for (entity, mut transform, mut attraction, mut sprite) in pset.p1().iter_mut() {
         let Some((_, _, target_transform)) = buffer.iter().find(|(_, e, _)| *e == attraction.target) else {
             c.entity(entity).remove::<Attraction>();
             continue;
@@ -49,6 +49,8 @@ fn update_transforms_for_attraction(
             attraction.set_is_stopped(true);
             Vec3::default()
         };
+
+        sprite.flip_x = attraction.auto_flip_sprite && vector.x < 0.;
 
         // Move the entity toward its attraction source.
         let distance = attraction
@@ -78,6 +80,7 @@ pub struct Attraction
     /// Cached
     current_vel: f32,
     is_stopped: bool,
+    auto_flip_sprite: bool,
 }
 
 impl Attraction
@@ -88,6 +91,7 @@ impl Attraction
         acceleration: f32,
         target_offset: Vec2,
         stop_distance: f32,
+        auto_flip_sprite: bool,
     ) -> Self
     {
         let current_vel = match acceleration {
@@ -102,6 +106,7 @@ impl Attraction
             target_offset,
             stop_distance,
             is_stopped: false,
+            auto_flip_sprite,
         }
     }
 

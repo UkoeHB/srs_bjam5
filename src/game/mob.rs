@@ -188,6 +188,7 @@ pub struct MobData
     pub mob_type: MobType,
     /// [ (probability of drop, drop) ]
     pub drops: Vec<(f32, CollectableDrop)>,
+    pub auto_flip_sprite: bool,
 }
 
 impl MobData
@@ -217,7 +218,14 @@ impl MobData
             AabbSize(self.hitbox),
             Health::from_max(self.base_health),
             Armor::new(self.base_armor),
-            Attraction::new(player_entity, self.base_speed_tps, 0., target_offset, stop_distance),
+            Attraction::new(
+                player_entity,
+                self.base_speed_tps,
+                0.,
+                target_offset,
+                stop_distance,
+                self.auto_flip_sprite,
+            ),
             StateScoped(GameState::Play),
             BoundInMap,
         ))
