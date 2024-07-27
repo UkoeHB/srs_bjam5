@@ -13,7 +13,9 @@
 
     "$background_tile_texture": "images/background_tile_32_32.png",
     "$background_tile_configs": [
-        {"frequency": 1.0}
+        {"frequency": 0.5},
+        {"frequency": 0.05},
+        {"frequency": 0.45}
     ],
     "$background_tile_size": {"x": 32, "y": 32},
 
