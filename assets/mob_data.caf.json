@@ -123,6 +123,7 @@
             "base_health": 10,
             "base_armor": 1,
             "base_speed_tps": 80.0,
+            "auto_flip_sprite": false,
             "mob_type": {"Collider": {"base_damage": 2, "base_cooldown_millis": 1000}},
             "drops": [
                 [0.2, [[{"Exp": 1}]]]
@@ -134,6 +135,7 @@
             "base_health": 10,
             "base_armor": 1,
             "base_speed_tps": 50.0,
+            "auto_flip_sprite": false,
             "mob_type": {"Collider": {"base_damage": 10, "base_cooldown_millis": 500}},
             "drops": [
                 [0.4, [[{"Exp": 1}]]],
@@ -146,6 +148,7 @@
             "base_health": 10,
             "base_armor": 1,
             "base_speed_tps": 40.0,
+            "auto_flip_sprite": false,
             "mob_type": {
                 "Emitter": {
                     "base_fire_range": 300.0,
@@ -171,6 +174,7 @@
             "base_health": 10,
             "base_armor": 1,
             "base_speed_tps": 60.0,
+            "auto_flip_sprite": true,
             "mob_type": {"OnDeath": {"Explode": {"base_damage": 40, "base_range": 50, "explosion_animation": "mob_bomb_explosion"}}},
             "drops": [
                 [0.4, [[{"Exp": 2}]]],
@@ -183,6 +187,7 @@
             "base_health": 5,
             "base_armor": 1,
             "base_speed_tps": 0.0,
+            "auto_flip_sprite": false,
             "mob_type": {"Collider": {"base_damage": 0, "base_cooldown_millis": 500}},
             "drops": [
                 [0.4, [["HealthPack"]]],
@@ -196,6 +201,7 @@
             "base_health": 25,
             "base_armor": 2,
             "base_speed_tps": 20.0,
+            "auto_flip_sprite": true,
             "mob_type": {"Collider": {"base_damage": 20, "base_cooldown_millis": 1500}},
             "drops": [
                 [0.2, [[{"Exp": 3}]]],

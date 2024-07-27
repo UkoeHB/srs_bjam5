@@ -137,6 +137,7 @@ fn handle_collectable_detection(
             constants.collectable_accel,
             Vec2::ZERO,
             0.,
+            false,
         ));
     }
 }
