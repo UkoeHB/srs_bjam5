@@ -201,8 +201,7 @@ fn force_in_map_bounds(
     q.iter_mut()
         .filter_map(|(t, AabbSize(s))| {
             let Transform { translation: Vec3 { x, y, .. }, .. } = *t;
-            let adjusted_size = map_size - *s;
-            let interior_point = Aabb2d::new(Vec2::ZERO, adjusted_size / 2.).closest_point(Vec2 { x, y });
+            let interior_point = Aabb2d::new(Vec2::ZERO, (map_size - *s) / 2.).closest_point(Vec2 { x, y });
             if interior_point != (Vec2 { x, y }) {
                 Some((t, interior_point.extend(0.)))
             } else {
