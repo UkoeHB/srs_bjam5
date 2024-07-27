@@ -68,7 +68,7 @@
         "num_active_slots": 3,
 
         "level_tag_font": "embedded://sickle_ui/fonts/FiraSans-Medium.ttf",
-        "level_tag_color": {"Hsla": {"hue": 0.0, "saturation": 0.0, "lightness": 1.0, "alpha": 1.0}},
+        "level_tag_color": {"Hsla": {"hue": 0.0, "saturation": 1.0, "lightness": 2.0, "alpha": 1.0}},
         "level_tag_font_size": 10.0,
         "level_tag_offset": {"x": -6.0, "y": 7.0},
 

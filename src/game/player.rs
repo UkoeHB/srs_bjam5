@@ -32,9 +32,10 @@ impl Default for BillboardEntities
 //-------------------------------------------------------------------------------------------------------------------
 
 /// Component tracks which direction the player faces.
-#[derive(Component, Debug, Copy, Clone, Eq, PartialEq)]
+#[derive(Component, Debug, Copy, Clone, Eq, PartialEq, Default)]
 enum PlayerDirection
 {
+    #[default]
     Up,
     Down,
     Left,
@@ -222,6 +223,7 @@ fn update_player_transform_from_tick(
 //-------------------------------------------------------------------------------------------------------------------
 
 fn update_player_animation(
+    mut prev: Local<String>,
     mut c: Commands,
     constants: ReactRes<GameConstants>,
     animations: Res<SpriteAnimations>,
@@ -249,6 +251,13 @@ fn update_player_animation(
         },
     };
 
+    // Don't reset the animation if it stays the same.
+    if *anim_name == *prev {
+        return;
+    }
+    *prev = anim_name.clone();
+
+    // Set the animation.
     c.entity(player_entity)
         .set_sprite_animation(&animations, anim_name);
 }
