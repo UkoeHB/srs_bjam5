@@ -189,7 +189,7 @@ fn handle_toggle_settings(
 
 //-------------------------------------------------------------------------------------------------------------------
 
-fn spawn_settings_menu(mut c: Commands, mut s: ResMut<SceneLoader>)
+fn spawn_settings_menu(mut c: Commands, mut s: ResMut<SceneLoader>, audio_settings: ReactRes<AudioSettings>)
 {
     let scene = LoadableRef::new("ui.settings", "display_scene");
     c.ui_builder(UiRoot).load_scene(&mut s, scene, |l| {
@@ -200,14 +200,18 @@ fn spawn_settings_menu(mut c: Commands, mut s: ResMut<SceneLoader>)
 
             l.edit("audio", |l| {
                 // Slider: sickle_ui built-in widget.
-                let mut ui = l.slider(SliderConfig::horizontal(Some("Audio ".into()), 0.0, 100.0, 100.0, true));
+                let mut ui = l.slider(SliderConfig::horizontal(
+                    Some("Audio ".into()),
+                    0.0,
+                    100.0,
+                    audio_settings.master_volume * 100.0,
+                    true,
+                ));
                 let id = ui.id();
                 let n = ui.update_on(entity_event::<SliderChanged>(id), |id| {
-                    move |sliders: Query<&Slider>, audio: Query<(&BackgroundAudio, &AudioSink)>| {
+                    move |mut c: Commands, mut settings: ReactResMut<AudioSettings>, sliders: Query<&Slider>| {
                         let Ok(slider) = sliders.get(id) else { return };
-                        let Ok((background_audio, sink)) = audio.get_single() else { return };
-
-                        sink.set_volume(background_audio.volume * slider.value() / 100.);
+                        settings.get_mut(&mut c).master_volume = slider.value() / 100.;
                     }
                 });
                 adjust_sickle_slider_theme(&mut n.entity_commands());

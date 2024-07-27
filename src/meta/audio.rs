@@ -10,14 +10,22 @@ use crate::*;
 
 //-------------------------------------------------------------------------------------------------------------------
 
-fn insert_audio(ec: &mut EntityCommands, soundtrack: &Soundtrack, audio: &AudioMap)
+fn update_volume(settings: ReactRes<AudioSettings>, mut bg: Query<(&mut AudioSink, &BackgroundAudio)>)
+{
+    let Ok((sink, bg)) = bg.get_single_mut() else { return };
+    sink.set_volume(bg.volume * settings.master_volume);
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
+fn insert_audio(ec: &mut EntityCommands, master_volume: f32, soundtrack: &Soundtrack, audio: &AudioMap)
 {
     ec.try_insert((
         AudioBundle {
             source: audio.get(&soundtrack.source),
             settings: PlaybackSettings {
                 mode: PlaybackMode::Loop,
-                volume: Volume::new(soundtrack.volume),
+                volume: Volume::new(soundtrack.volume * master_volume),
                 ..default()
             },
             ..default()
@@ -32,6 +40,7 @@ fn set_soundtrack(
     mut c: Commands,
     soundtracks: Res<SoundtrackDatabase>,
     audio: Res<AudioMap>,
+    settings: ReactRes<AudioSettings>,
     day: ReactRes<Day>,
     query: Query<(Entity, &BackgroundAudio)>,
 )
@@ -39,14 +48,14 @@ fn set_soundtrack(
     let Some(current_track) = soundtracks.get(day.get()) else { return };
     let Ok((entity, background)) = query.get_single() else {
         let mut ec = c.spawn_empty();
-        insert_audio(&mut ec, current_track, &audio);
+        insert_audio(&mut ec, settings.master_volume, current_track, &audio);
         return;
     };
     if background.source == current_track.source {
         return;
     }
     let mut ec = c.entity(entity);
-    insert_audio(&mut ec, current_track, &audio);
+    insert_audio(&mut ec, settings.master_volume, current_track, &audio);
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -101,15 +110,25 @@ impl Command for SoundtrackDatabase
 
 //-------------------------------------------------------------------------------------------------------------------
 
+#[derive(ReactResource, Debug)]
+pub struct AudioSettings
+{
+    pub master_volume: f32,
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
 pub struct AudioPlugin;
 
 impl Plugin for AudioPlugin
 {
     fn build(&self, app: &mut App)
     {
-        app.init_resource::<SoundtrackDatabase>()
+        app.insert_react_resource(AudioSettings { master_volume: 1.0 })
+            .init_resource::<SoundtrackDatabase>()
             .register_command::<SoundtrackDatabase>()
-            .add_systems(OnEnter(GameState::DayStart), set_soundtrack);
+            .add_systems(OnEnter(GameState::DayStart), set_soundtrack)
+            .react(|rc| rc.on_persistent(resource_mutation::<AudioSettings>(), update_volume));
     }
 }
 
