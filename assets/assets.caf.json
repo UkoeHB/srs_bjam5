@@ -26,6 +26,11 @@
     ]],
     "LoadAudio": [[
         {"audio": "$loop1"}
-    ]]
+    ]],
+    "SoundtrackDatabase": {
+        "tracks": [
+            {"source": "$loop1", "volume": 0.3}
+        ]
+    }
 }
 }

@@ -1,6 +1,6 @@
 mod animations;
-mod audio;
 mod attraction;
+mod audio;
 mod billboard_cache;
 mod camera;
 mod collectables;
@@ -23,8 +23,8 @@ mod sprite_layers;
 mod ui;
 
 pub use animations::*;
-pub use audio::*;
 pub use attraction::*;
+pub use audio::*;
 pub use billboard_cache::*;
 pub use camera::*;
 pub use collectables::*;
