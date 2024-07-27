@@ -22,7 +22,7 @@
     "$mob_bomb_explosion_size": {"x": 40, "y": 40},
 
     "$mob_animation_balloon": "sprites/mob_balloon.png",
-    "$mob_size_balloon": {"x": 40, "y": 40}
+    "$mob_size_balloon": {"x": 16, "y": 28}
 },
 
 "#commands": {
