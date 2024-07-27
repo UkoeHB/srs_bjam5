@@ -170,8 +170,13 @@
             "hitbox": "$mob_size_balloon",
             "base_health": 5,
             "base_armor": 1,
-            "base_speed_tps": 40.0,
-            "mob_type": {"Collider": {"base_damage": 0, "base_cooldown_millis": 500}}
+            "base_speed_tps": 0.0,
+            "mob_type": {"Collider": {"base_damage": 0, "base_cooldown_millis": 500}},
+            "drops": [
+                [0.4, [["HealthPack"]]],
+                [0.4, [[{"Karma": 1}, {"Karma": 1}, {"Karma": 1}, {"Karma": 2}, {"Karma": 2}]]],
+                [0.1, [[{"Karma": 2}, {"Karma": 2}, {"Karma": 2}, {"Karma": 4}]]]
+            ]
         }
     }]
 }

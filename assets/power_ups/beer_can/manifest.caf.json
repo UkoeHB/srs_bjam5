@@ -8,7 +8,7 @@
 "#commands": {
     "BeerCanConfig": {
         "name": "Beer Can",
-        "description": "Hurls a beer can at the nearest enemy.",
+        "description": "Hurls a beer can at the nearest enemy in range, exploding on impact.",
         "animation": "beer_can",
         "size": "$sprite_size",
         "damage_by_level": [
@@ -25,7 +25,7 @@
             750,
             400
         ],
-        "detection_range": 220.0,
+        "detection_range": 250.0,
         "velocity_tps": 200.0,
         "launch_offset": {"x": 25.0, "y": 0.0},
         "explosion_animation": "beer_can_explosion",
