@@ -3,11 +3,130 @@
     "constants.caf.json": ""
 },
 
-"scene": {
+"#constants": {
+    "$settings_icon": "images/settings_icon.png"
+},
+
+"#commands": {
+    "LoadImages": [[
+        {"image": "$settings_icon"}
+    ]]
+},
+
+"button_scene": {
+    "AbsoluteStyle": {
+        "dims": {"width": {"Vw": 100.0}, "height": {"Vh": 100.0}},
+        "content": {"justify_cross": "FlexEnd", "justify_main": "FlexStart"}
+    },
+
+    "button": {
+        "FlexStyle": {
+            "dims": {"width": {"Px": 50.0}},
+            "flex": {"margin": {"left": {"Px": 6.0}, "bottom": {"Px": 6.0}}}
+        },
+        "SetZIndex": {"Global": 1},
+        "SetFocusPolicy": "Block",
+        "Interactive": [],
+        "LoadedUiImage": {"texture": "$settings_icon"},
+        "Animated<UiImageColor>": {
+            "values": {
+                "idle": {"Hsla": {"hue": 0.0, "saturation": 0.0, "lightness": 1.0, "alpha": 1.0}},
+                "hover": {"Hsla": {"hue": 0.0, "saturation": 0.0, "lightness": 0.8, "alpha": 1.0}}
+            },
+            "settings": {
+                "pointer_enter": {"duration": 0.15, "easing": "OutExpo"},
+                "pointer_leave": {"duration": 0.15, "easing": "OutExpo"}
+            }
+        }
+    }
+},
+
+"display_scene": {
+    "AbsoluteStyle": {
+        "dims": {"width": {"Vw": 100.0}, "height": {"Vh": 100.0}},
+        "content": {
+            "flex_direction": "Column",
+            "justify_main": "Center",
+            "justify_cross": "Center",
+            "padding": {"top": {"Px": 50.0}, "bottom": {"Px": 50.0}, "left": {"Px": 50.0}, "right": {"Px": 50.0}}
+        }
+    },
+    "BgColor": [{"Hsla": {"hue": 0.0, "saturation": 0.80, "lightness": 0.0, "alpha": 0.5}}],
+    "SetZIndex": {"Global": 2},
+
     "window": {
+        "FlexStyle": {
+            "dims": {"width": {"Percent": 100.0}, "height": {"Percent": 100.0}},
+            "content": {
+                "flex_direction": "Column",
+                "justify_main": "Center",
+                "justify_cross": "Center"
+            }
+        },
+        "Splat<Border>": [{"Px": 3.0}],
+        "BrRadius": [{"Px": 13.0}],
+        "BgColor": [{"Hsla": {"hue": 32.0, "saturation": 0.7, "lightness": 0.5, "alpha": 1.0}}],
+        "BrColor": [{"Hsla": {"hue": 32.0, "saturation": 0.7, "lightness": 0.2, "alpha": 1.0}}],
 
-        "close_button": {
+        "title_spacer": {
+            "FlexStyle": {
+                "dims": {"height": {"Px": 30.0}}
+            }
+        },
 
+        "title": {
+            "TextLine": {"text": "Settings", "size": 40.0}
+        },
+
+        "spacer": {
+            "FlexStyle": {
+                "dims": {"height": {"Px": 50.0}}
+            }
+        },
+
+        "audio": {
+            "#c: filled in manually":0
+        },
+
+        "filler": {
+            "FlexStyle": {"flex": {"flex_grow": 1.0}}
+        },
+
+        "footer": {
+            "FlexStyle": {
+                "dims": {"width": {"Percent": 100.0}},
+                "content": {"flex_direction": "Row", "justify_main": "Center", "justify_cross": "Center"}
+            },
+
+            "close_button": {
+                "FlexStyle": {
+                    "dims": {"min_width": {"Px": 200.0}},
+                    "content": {"justify_main": "Center", "justify_cross": "Center"},
+                    "flex": {"margin": {"bottom": {"Px": 40.0}}}
+                },
+                "Splat<Border>": [{"Px": 3.0}],
+                "BrRadius": [{"Px": 13.0}],
+                "BrColor": [{"Hsla": {"hue": 32.0, "saturation": 0.7, "lightness": 0.2, "alpha": 1.0}}],
+                "Interactive": [],
+                "SetFocusPolicy": "Block",
+                "Animated<BgColor>": {
+                    "values": {
+                        "idle": {"Hsla": {"hue": 32.0, "saturation": 0.5, "lightness": 0.45, "alpha": 1.0}},
+                        "hover": {"Hsla": {"hue": 32.0, "saturation": 0.6, "lightness": 0.4, "alpha": 1.0}}
+                    },
+                    "settings": {
+                        "pointer_enter": {"duration": 0.15, "easing": "OutExpo"},
+                        "pointer_leave": {"duration": 0.15, "easing": "OutExpo"}
+                    }
+                },
+
+                "text": {
+                    "FlexStyle": {
+                        "flex": {"margin": {"top": {"Px": 17.0}, "bottom": {"Px": 17.0}, "left": {"Px": 10.0}, "right": {"Px": 10.0}}}
+                    },
+                    "TextLine": {"text": "Close"}
+                }
+            }
         }
     }
 }

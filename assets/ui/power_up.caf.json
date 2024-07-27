@@ -45,7 +45,8 @@
     "BgColor": [{"Hsla": {"hue": 120.0, "saturation": 0.7, "lightness": 0.28, "alpha": 1.0}}],
     "BrColor": [{"Hsla": {"hue": 120.0, "saturation": 0.85, "lightness": 0.10, "alpha": 1.0}}],
     "BrRadius": [{"Px": 30.0}],
-    "Interactive": []
+    "Interactive": [],
+    "SetFocusPolicy": "Block"
 },
 
 "powerup_scene": {

@@ -28,7 +28,7 @@ impl DevControls
     fn display(&self) -> String
     {
         // How to get this from the fields of self? Kind of a pain..
-        format!("DEV: Survive(Z), Die(X), +Karma(F), +PowerUp(Q), +Exp(E), -Hp(C)")
+        format!("DEV:\nSurvive(Z)\nDie(X)\n+Karma(F)\n+PowerUp(Q)\n+Exp(E)\n-Hp(C)")
     }
 }
 
@@ -57,7 +57,7 @@ fn display_dev_controls(mut c: Commands, controls: Res<DevControls>)
         ui.style()
             .height(Val::Vh(100.0))
             .flex_direction(FlexDirection::Column)
-            .justify_content(JustifyContent::FlexEnd);
+            .justify_content(JustifyContent::Center);
 
         ui.container(NodeBundle::default(), |ui| {
             ui.insert_derived(TextLine { text: controls.display(), ..default() });

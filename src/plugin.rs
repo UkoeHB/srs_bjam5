@@ -100,6 +100,7 @@ impl Plugin for AppPlugin
         .add_plugins(UtilsPlugin) // must be added after CobwebUiPlugin
         // Game content
         .add_plugins(ControlsPlugin)
+        .add_plugins(SettingsPlugin)
         .add_plugins(GameConstantsPlugin)
         .add_plugins(MetaPlugin)
         .add_plugins(DayStartPlugin)

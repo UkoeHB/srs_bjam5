@@ -7,7 +7,7 @@
     "result_scene": {
         "@result_text": "[placeholder]",
         "*": {
-            "FlexStyle": {
+            "AbsoluteStyle": {
                 "dims": {"width": {"Vw": 100.0}, "height": {"Vh": 100.0}},
                 "content": {
                     "flex_direction": "Column",

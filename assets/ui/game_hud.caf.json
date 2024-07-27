@@ -31,7 +31,7 @@
 },
 
 "scene": {
-    "FlexStyle": {
+    "AbsoluteStyle": {
         "dims": {"width": {"Vw": 100.0}, "height": {"Vh": 100.0}},
         "content": {
             "flex_direction": "Column",
@@ -129,6 +129,7 @@
     "BgColor": [{"Hsla": {"hue": 0.0, "saturation": 0.0, "lightness": 0.18, "alpha": 0.7}}],
     "Interactive": [],
     "PropagateControl": {},
+    "SetFocusPolicy": "Block",
 
     "icon": {
         "FlexStyle": {

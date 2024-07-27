@@ -9,6 +9,7 @@ mod game;
 mod game_constants;
 mod meta;
 mod plugin;
+mod settings;
 mod utils;
 
 pub use controls::*;
@@ -20,6 +21,7 @@ pub use game::*;
 pub use game_constants::*;
 pub use meta::*;
 pub use plugin::*;
+pub use settings::*;
 pub use utils::*;
 
 fn main()
