@@ -61,10 +61,11 @@ pub fn get_powerup_options(
             if open_active_slots == 0 && i.ability_type == AbilityType::Active {
                 return None;
             }
-            let Some(powerup) = player_powerups.get(&i.name) else {
+            let level = player_powerups.get(&i.name);
+            if level == 0 {
                 return Some(PowerupType::New(i.name.clone()));
-            };
-            if powerup.level >= constants.max_powerup_level {
+            }
+            if level >= constants.max_powerup_level {
                 return None;
             }
             Some(PowerupType::Upgrade(i.name.clone()))

@@ -22,7 +22,7 @@ fn add_beercan_ability(
     if has_ability {
         return;
     }
-    if player_powerups.get(&config.name).is_none() {
+    player_powerups.get(&config.name) == 0 {
         return;
     }
 
@@ -42,7 +42,8 @@ fn update_beer_can_powerup(
 )
 {
     let Ok((transform, mut ability)) = player.get_single_mut() else { return };
-    let Some(power_up) = player_powerups.get(&config.name) else { return };
+    let level = player_powerups.get(&config.name);
+    if level == 0 { return }
 
     // Check cooldown.
     let time = clock.elapsed;
@@ -79,7 +80,7 @@ fn update_beer_can_powerup(
     }
 
     // Spawn projectile.
-    let damage = config.get_damage(power_up.level);
+    let damage = config.get_damage(level);
     ProjectileConfig {
         projectile_type: ProjectileType::Explosion { damage, area: config.explosion_size },
         velocity_tps: config.velocity_tps,
@@ -97,7 +98,7 @@ fn update_beer_can_powerup(
     );
 
     // Update cooldown.
-    ability.next_fire_time = time + config.get_cooldown(power_up.level);
+    ability.next_fire_time = time + config.get_cooldown(level);
 }
 
 //-------------------------------------------------------------------------------------------------------------------

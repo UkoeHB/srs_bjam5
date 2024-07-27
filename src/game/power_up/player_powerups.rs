@@ -70,10 +70,14 @@ impl PlayerPowerups
         powerup.level += 1;
     }
 
-    pub fn get(&self, name: impl AsRef<str>) -> Option<&PowerupLevel>
+    /// Gets the level of the requested name. Returns `0` if the player doesn't have the powerup.
+    pub fn get(&self, name: impl AsRef<str>) -> usize
     {
         let name = name.as_ref();
-        self.iter().find(|p| p.name.as_str() == name)
+        self
+            .iter()
+            .find(|p| p.name.as_str() == name).map(|l| l.level)
+            .unwrap_or_default()
     }
 
     pub fn iter(&self) -> impl Iterator<Item = &PowerupLevel>

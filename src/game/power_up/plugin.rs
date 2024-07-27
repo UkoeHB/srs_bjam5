@@ -19,6 +19,7 @@ impl Plugin for PowerUpPlugin
             .add_plugins(PlayerPowerupPlugin)
             .add_plugins(PowerupOptionsPlugin)
             .add_plugins(AbilitiesPlugin)
+            .add_plugins(PassivesPlugin)
             .add_plugins(FillerPlugin);
     }
 }
