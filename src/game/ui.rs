@@ -71,6 +71,7 @@ fn spawn_power_up_ui(
     // Generate power-up options for the player.
     let options = get_powerup_options(&mut rng, powerup_source, &player_powerups, &powerup_bank);
     debug_assert!(options.len() > 0);
+    let is_filler = options.iter().any(|o| matches!(o, PowerupOption::Filler(..)));
 
     let file = LoadableRef::from_file("ui.power_up");
     let scene = file.e("scene");
@@ -120,6 +121,10 @@ fn spawn_power_up_ui(
                     },
                 );
             });
+        }
+
+        if is_filler {
+            l.load_scene(file.e("filler_notification"), |_|{});
         }
     });
 }

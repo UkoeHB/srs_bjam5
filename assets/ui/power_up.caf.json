@@ -16,6 +16,18 @@
     "BgColor": [{"Hsla": {"hue": 0.0, "saturation": 0.80, "lightness": 0.0, "alpha": 0.5}}]
 },
 
+"filler_notification": {
+    "AbsoluteStyle": {
+        "dims": {"top": "Auto", "left": "Auto"},
+        "content": {
+            "padding": {"top": {"Px": 400.0}}
+        }
+    },
+    "text": {
+        "TextLine": {"text": "All power-ups are max level."}
+    }
+},
+
 "powerup_frame_scene": {
     "FlexStyle": {
         "dims": {
