@@ -28,7 +28,6 @@ impl Plugin for GamePlugin
             .add_plugins(GameClockPlugin)
             .add_plugins(GameCameraPlugin)
             .add_plugins(LightPlugin)
-            .add_plugins(AudioPlugin)
             .configure_sets(
                 Update,
                 (
