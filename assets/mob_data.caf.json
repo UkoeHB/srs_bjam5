@@ -22,7 +22,10 @@
     "$mob_bomb_explosion_size": {"x": 40, "y": 40},
 
     "$mob_animation_balloon": "sprites/mob_balloon.png",
-    "$mob_size_balloon": {"x": 16, "y": 28}
+    "$mob_size_balloon": {"x": 16, "y": 28},
+
+    "$mob_animation_gargoyle": "sprites/mob_gargoyle.png",
+    "$mob_size_gargoyle": {"x": 35, "y": 29}
 },
 
 "#commands": {
@@ -101,6 +104,15 @@
             "rows": 1,
             "frame_time": 100,
             "clips": [{"frames": {"Row": 0}}]
+        },
+        {
+            "name": "mob_gargoyle",
+            "image": "$mob_animation_gargoyle",
+            "size": "$mob_size_gargoyle",
+            "columns": 2,
+            "rows": 1,
+            "frame_time": 300,
+            "clips": [{"frames": {"Row": 0}}]
         }
     ]],
 
@@ -176,6 +188,19 @@
                 [0.4, [["HealthPack"]]],
                 [0.4, [[{"Karma": 1}, {"Karma": 1}, {"Karma": 1}, {"Karma": 2}, {"Karma": 2}]]],
                 [0.1, [[{"Karma": 2}, {"Karma": 2}, {"Karma": 2}, {"Karma": 4}]]]
+            ]
+        },
+        "mob_gargoyle": {
+            "animation": "mob_gargoyle",
+            "hitbox": "$mob_size_gargoyle",
+            "base_health": 25,
+            "base_armor": 2,
+            "base_speed_tps": 20.0,
+            "mob_type": {"Collider": {"base_damage": 20, "base_cooldown_millis": 1500}},
+            "drops": [
+                [0.2, [[{"Exp": 3}]]],
+                [0.4, [[{"Exp": 5}]]],
+                [0.02, [[{"Karma": 1}, {"Karma": 2}]]]
             ]
         }
     }]
