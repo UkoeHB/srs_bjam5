@@ -1,4 +1,9 @@
+use std::collections::HashMap;
+
+use bevy::ecs::world::Command;
 use bevy::prelude::*;
+use bevy_cobweb_ui::prelude::*;
+use serde::{Deserialize, Serialize};
 
 use crate::*;
 
@@ -23,7 +28,7 @@ pub enum Passive
     /// Increases size of area effects. Calculated as area*(1 + (area_size / 100))
     AreaSize,
     /// Amplifies damage effects. Calculated as damage*(1 + (damage_amp / 100))
-    DamageAmp
+    DamageAmp,
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -51,9 +56,14 @@ impl PassiveDatabase
     pub fn get_for_level(&self, passive: Passive, level: usize) -> usize
     {
         self.0
-        .get(&passive)
-        .and_then(|info| info.bonuses.get(level.saturating_sub(1)).or_else(|| info.bonuses.last()))
-        .unwrap_or_default()
+            .get(&passive)
+            .and_then(|info| {
+                info.bonuses
+                    .get(level.saturating_sub(1))
+                    .or_else(|| info.bonuses.last())
+            })
+            .cloned()
+            .unwrap_or_default()
     }
 }
 
@@ -61,7 +71,7 @@ impl Command for PassiveDatabase
 {
     fn apply(self, w: &mut World)
     {
-        let bank = w.resource_mut::<PowerupBank>();
+        let mut bank = w.resource_mut::<PowerupBank>();
         for (_passive, info) in self.iter() {
             bank.register(PowerupInfo {
                 ability_type: AbilityType::Passive,

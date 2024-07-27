@@ -74,9 +74,9 @@ impl PlayerPowerups
     pub fn get(&self, name: impl AsRef<str>) -> usize
     {
         let name = name.as_ref();
-        self
-            .iter()
-            .find(|p| p.name.as_str() == name).map(|l| l.level)
+        self.iter()
+            .find(|p| p.name.as_str() == name)
+            .map(|l| l.level)
             .unwrap_or_default()
     }
 

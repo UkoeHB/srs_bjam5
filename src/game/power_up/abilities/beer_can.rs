@@ -22,7 +22,7 @@ fn add_beercan_ability(
     if has_ability {
         return;
     }
-    player_powerups.get(&config.name) == 0 {
+    if player_powerups.get(&config.name) == 0 {
         return;
     }
 
@@ -43,7 +43,9 @@ fn update_beer_can_powerup(
 {
     let Ok((transform, mut ability)) = player.get_single_mut() else { return };
     let level = player_powerups.get(&config.name);
-    if level == 0 { return }
+    if level == 0 {
+        return;
+    }
 
     // Check cooldown.
     let time = clock.elapsed;

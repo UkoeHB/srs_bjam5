@@ -149,10 +149,7 @@ fn spawn_power_up_ui(
                                     String::from("New!"),
                                 ),
                                 PowerupType::Upgrade(name) => {
-                                    let level = player_powerups
-                                        .get(name)
-                                        .map(|p| p.level)
-                                        .unwrap_or_default();
+                                    let level = player_powerups.get(name);
                                     let next_level = level + 1;
                                     (
                                         powerup_bank.get(name).cloned().unwrap_or_default(),

@@ -28,7 +28,10 @@ fn car_battery_placement(
     else {
         return;
     };
-    let Some(power_up) = player_powerups.get(&config.name) else { return };
+    let level = player_powerups.get(&config.name);
+    if level == 0 {
+        return;
+    }
 
     let time = clock.elapsed;
     if time < ability.next_drop_time {
@@ -38,7 +41,7 @@ fn car_battery_placement(
     let Ok(dir_to_prev) = Dir2::new(*prev_loc - Vec2 { x: *player_x, y: *player_y }) else { return };
 
     // Spawn projectile.
-    let damage = config.get_damage(power_up.level);
+    let damage = config.get_damage(level);
     ProjectileConfig {
         projectile_type: ProjectileType::Continuous {
             damage,
@@ -59,7 +62,7 @@ fn car_battery_placement(
     );
 
     // Update cooldown.
-    ability.next_drop_time = time + config.get_cooldown(power_up.level);
+    ability.next_drop_time = time + config.get_cooldown(level);
 }
 
 #[derive(Component, Debug, Default)]
@@ -107,7 +110,7 @@ impl Command for CarBatteryConfig
     fn apply(self, w: &mut World)
     {
         w.resource_mut::<PowerupBank>().register(PowerupInfo {
-            powerup_type: PowerupType::Active,
+            ability_type: AbilityType::Active,
             name: self.name.clone(),
             description: self.description.clone(),
             icon: self.animation.clone(),
