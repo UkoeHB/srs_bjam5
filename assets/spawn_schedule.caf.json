@@ -34,6 +34,14 @@
                     "ramp_up_fraction": 0.3,
                     "total_quantity": 10,
                     "max_clump_size": 1
+                },
+                {
+                    "mob_name": "mob_balloon",
+                    "start_time_secs": 5,
+                    "duration_secs": 15,
+                    "ramp_up_fraction": 0.3,
+                    "total_quantity": 4,
+                    "max_clump_size": 1
                 }
             ]
         }

@@ -19,7 +19,10 @@
     "$mob_size_bomb": {"x": 40, "y": 40},
 
     "$mob_bomb_explosion_animation": "sprites/explosion_anim.png",
-    "$mob_bomb_explosion_size": {"x": 40, "y": 40}
+    "$mob_bomb_explosion_size": {"x": 40, "y": 40},
+
+    "$mob_animation_balloon": "sprites/mob_balloon.png",
+    "$mob_size_balloon": {"x": 16, "y": 28}
 },
 
 "#commands": {
@@ -89,6 +92,15 @@
             "rows": 1,
             "frame_time": 100,
             "clips": [{"frames": {"Row": 0}}]
+        },
+        {
+            "name": "mob_balloon",
+            "image": "$mob_animation_balloon",
+            "size": "$mob_size_balloon",
+            "columns": 1,
+            "rows": 1,
+            "frame_time": 100,
+            "clips": [{"frames": {"Row": 0}}]
         }
     ]],
 
@@ -152,6 +164,14 @@
                 [0.4, [[{"Exp": 2}]]],
                 [0.01, [[{"Exp": 10}]]]
             ]
+        },
+        "mob_balloon": {
+            "animation": "mob_balloon",
+            "hitbox": "$mob_size_balloon",
+            "base_health": 5,
+            "base_armor": 1,
+            "base_speed_tps": 40.0,
+            "mob_type": {"Collider": {"base_damage": 0, "base_cooldown_millis": 500}}
         }
     }]
 }
