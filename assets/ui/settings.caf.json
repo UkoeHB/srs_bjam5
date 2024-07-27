@@ -42,7 +42,7 @@
 },
 
 "display_scene": {
-    "AbsoluteStyle": {
+    "FlexStyle": {
         "dims": {"width": {"Vw": 100.0}, "height": {"Vh": 100.0}},
         "content": {
             "flex_direction": "Column",
@@ -84,9 +84,19 @@
 
         "audio": {
             "FlexStyle": {
-                "dims": {"width": {"Px": 400.0}}
+                "content": {"flex_direction": "Row", "justify_main": "FlexStart", "justify_cross": "Center"}
             },
-            "#c: filled in manually":0
+            "message": {
+                "FlexStyle": {
+                    "flex": {"margin": {"bottom": {"Px": 2.0}, "right": {"Px": 5.0}}}
+                },
+                "TextLine": {"text": "Audio:"}
+            },
+            "slider": {
+                "FlexStyle": {},
+                "Width": [{"Px": 400.0}],
+                "#c: filled in manually":0
+            }
         },
 
         "filler": {

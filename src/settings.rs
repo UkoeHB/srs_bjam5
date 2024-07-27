@@ -198,10 +198,10 @@ fn spawn_settings_menu(mut c: Commands, mut s: ResMut<SceneLoader>, audio_settin
         l.edit("window", |l| {
             // todo: controls image (non-configurable)
 
-            l.edit("audio", |l| {
+            l.edit("audio::slider", |l| {
                 // Slider: sickle_ui built-in widget.
                 let mut ui = l.slider(SliderConfig::horizontal(
-                    Some("Audio ".into()),
+                    None,
                     0.0,
                     100.0,
                     audio_settings.master_volume * 100.0,
