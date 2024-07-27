@@ -25,6 +25,7 @@
         }
     ]],
     "LoadAudio": [[
+        {"audio": "$loop1"}
     ]]
 }
 }

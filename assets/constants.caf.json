@@ -25,7 +25,9 @@
     "$boundary_side_texture": "images/boundary_side.png",
     "$boundary_corner_texture": "images/boundary_corner.png",
     "$boundary_width": 16.0,
-    "$boundary_length": 32.0
+    "$boundary_length": 32.0,
+
+    "$loop1": "audio/loop1.ogg"
 },
 
 "#commands": {
@@ -92,7 +94,9 @@
         "boundary_side_texture": "$boundary_side_texture",
         "boundary_corner_texture": "$boundary_corner_texture",
         "boundary_width": "$boundary_width",
-        "boundary_length": "$boundary_length"
+        "boundary_length": "$boundary_length",
+
+        "loop1": "$loop1"
     },
     "Controls": {
         "move_up": ["ArrowUp"],

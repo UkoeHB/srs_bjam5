@@ -5,3 +5,5 @@ wasm/srs_bjam5*
 wasm/assets*
 wasm/.DS_Store
 *.zip
+.direnv
+.envrc
