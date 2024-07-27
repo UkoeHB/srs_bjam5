@@ -7,9 +7,10 @@ use crate::*;
 
 //-------------------------------------------------------------------------------------------------------------------
 
-fn spawn_game_hud(mut c: Commands, mut s: ResMut<SceneLoader>)
+fn spawn_game_hud(mut c: Commands, mut s: ResMut<SceneLoader>, constants: ReactRes<GameConstants>)
 {
-    let scene = LoadableRef::new("ui.game_hud", "scene");
+    let file = LoadableRef::from_file("ui.game_hud");
+    let scene = file.e("scene");
     c.ui_builder(UiRoot).load_scene(&mut s, scene, |l| {
         l.despawn_on_broadcast::<GameDayStart>();
 
@@ -41,9 +42,63 @@ fn spawn_game_hud(mut c: Commands, mut s: ResMut<SceneLoader>)
 
         // todo: settings button
 
-        // todo: health and exp bars w/ level number
-
         // todo: passive/active ability slots
+
+        fn slot_builder<'a>(l: &mut LoadedScene<'a, '_, UiBuilder<'a, Entity>>, file: &LoadableRef, index: usize, target_ability_type: AbilityType) {
+            l.load_scene(file.e("ability_slot_scene"), |l| {
+                let level_entity = l.get_entity("level").unwrap();
+                let level_text_entity = l.get_entity("level::text").unwrap();
+
+                l.edit("icon", |l| {
+                    l.update_on(resource_mutation::<PlayerPowerups>(),
+                        |id| move |
+                            mut c: Commands,
+                            mut e: TextEditor,
+                            player_powerups: ReactRes<PlayerPowerups>,
+                            powerup_bank: Res<PowerupBank>
+                        | {
+                            // Find the current powerup corresponding to this slot.
+                            let Some((_, (info, level))) = player_powerups
+                                .iter()
+                                .filter_map(|l| {
+                                    let Some(info) = powerup_bank.get(&l.name) else {
+                                        tracing::error!("player powerups has powerup {} not known to powerup bank", l.name);
+                                        return None;
+                                    };
+                                    if info.ability_type != target_ability_type {
+                                        return None;
+                                    }
+                                    Some((info, l))
+                                })
+                                .enumerate()
+                                .find(|(i, _)| *i == index)
+                            else {
+                                return;
+                            };
+
+                            // Update level text.
+                            c.entity(level_entity).insert_reactive(DisplayControl::Display);
+                            write_text!(e, level_text_entity, "{}", level.level);
+
+                            // Update icon.
+                            c.entity(id).insert_derived(LoadedUiImage{ texture: info.icon.clone(), ..default() });
+                        }
+                    );
+                });
+            });
+        }
+
+        l.edit("footer::passives::slots", |l| {
+            for i in 0..constants.num_passive_slots {
+                slot_builder(l, &file, i, AbilityType::Passive);
+            }
+        });
+
+        l.edit("footer::actives::slots", |l| {
+            for i in 0..constants.num_passive_slots {
+                slot_builder(l, &file, i, AbilityType::Active);
+            }
+        });
     });
 }
 
@@ -218,7 +273,8 @@ impl Plugin for GameUiPlugin
 {
     fn build(&self, app: &mut App)
     {
-        app.react(|rc| rc.on_persistent(broadcast::<GamePlay>(), spawn_game_hud))
+        app.register_type::<DisplayControl>()
+            .react(|rc| rc.on_persistent(broadcast::<GamePlay>(), spawn_game_hud))
             .react(|rc| rc.on_persistent(broadcast::<PlayerPowerUp>(), spawn_power_up_ui))
             .react(|rc| rc.on_persistent(broadcast::<PlayerDied>(), spawn_day_failed_ui))
             .react(|rc| rc.on_persistent(broadcast::<PlayerSurvived>(), spawn_day_survived_ui));

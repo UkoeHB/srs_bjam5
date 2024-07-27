@@ -3,6 +3,33 @@
     "constants.caf.json": ""
 },
 
+"#specs": {
+    "ability_section": {
+        "@text": "[placeholder]",
+        "*": {
+            "FlexStyle": {
+                "content": {
+                    "flex_direction": "Row",
+                    "justify_main": "Center",
+                    "justify_cross": "Center"
+                }
+            },
+
+            "text": {
+                "FlexStyle": {
+                    "flex": {"margin": {"right": {"Px": 5.0}}}
+                },
+                "TextLine": {"text": "@text", "size": 20.0}
+            },
+            "slots": {
+                "FlexStyle": {},
+                "Splat<Border>": [{"Px": 1.0}],
+                "BrColor": [{"Hsla": {"hue": 0.0, "saturation": 0.0, "lightness": 0.0, "alpha": 1.0}}]
+            }
+        }
+    }
+},
+
 "scene": {
     "FlexStyle": {
         "dims": {"width": {"Vw": 100.0}, "height": {"Vh": 100.0}},
@@ -66,6 +93,82 @@
 
     "fill": {
         "FlexStyle": {"flex": {"flex_grow": 1.0}}
+    },
+
+    "footer": {
+        "FlexStyle": {
+            "content": {
+                "flex_direction": "Row",
+                "justify_main": "Center",
+                "justify_cross": "FlexEnd"
+            }
+        },
+
+        "passives(#spec:ability_section)": {
+            "@text": "Passive"
+        },
+
+        "spacer": {
+            "FlexStyle": {
+                "dims": {"width": {"Px": 15.0}}
+            }
+        },
+
+        "actives(#spec:ability_section)": {
+            "@text": "Active"
+        }
+    }
+},
+
+"ability_slot_scene": {
+    "FlexStyle": {
+        "dims": {"width": {"Px": 40.0}, "height": {"Px": 40.0}}
+    },
+    "Splat<Border>": [{"Px": 1.0}],
+    "BrColor": [{"Hsla": {"hue": 0.0, "saturation": 0.0, "lightness": 0.0, "alpha": 1.0}}],
+    "BgColor": [{"Hsla": {"hue": 0.0, "saturation": 0.0, "lightness": 0.18, "alpha": 0.7}}],
+    "Interactive": [],
+    "PropagateControl": {},
+
+    "icon": {
+        "FlexStyle": {
+            "dims": {"width": {"Px": 34.0}},
+            "flex": {"justify_self_cross": "Center"}
+        },
+        "Splat<Margin>": [{"Px": 2.0}],
+        "Animated<UiImageColor>": {
+            "values": {
+                "idle": {"Hsla": {"hue": 0.0, "saturation": 0.0, "lightness": 1.0, "alpha": 1.0}},
+                "hover": {"Hsla": {"hue": 0.0, "saturation": 0.0, "lightness": 0.8, "alpha": 1.0}}
+            },
+            "settings": {
+                "pointer_enter": {"duration": 0.15, "easing": "OutExpo"},
+                "pointer_leave": {"duration": 0.15, "easing": "OutExpo"}
+            },
+            "inherit_control": true
+        }
+    },
+
+    "level": {
+        "AbsoluteStyle": {
+            "dims": {
+                "border": {"bottom": {"Px": 1.0}, "right": {"Px": 1.0}}
+            },
+            "content": {
+                "padding": {"top": {"Px": 1.0}, "bottom": {"Px": 1.0}, "left": {"Px": 3.0}, "right": {"Px": 3.0}},
+                "justify_main": "Center", "justify_cross": "Center"
+            }
+        },
+        "BgColor": [{"Hsla": {"hue": 0.0, "saturation": 0.0, "lightness": 0.3, "alpha": 1.0}}],
+        "BrColor": [{"Hsla": {"hue": 0.0, "saturation": 0.0, "lightness": 0.0, "alpha": 1.0}}],
+        "DisplayControl": "Hide",
+
+        "text": {
+            "FlexStyle": {
+            },
+            "TextLine": {"size": 15.0, "text": ""},
+            "TextLineColor": [{"Hsla": {"hue": 0.0, "saturation": 0.0, "lightness": 1.0, "alpha": 1.0}}]
+        }
     }
 }
 }

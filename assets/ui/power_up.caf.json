@@ -64,6 +64,7 @@
         "FlexStyle": {
             "dims": {
                 "max_width": {"Percent": 100.0},
+                "max_height": {"Px": 100.0},
                 "width": {"Px": 100.0}
             }
         }
