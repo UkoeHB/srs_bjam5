@@ -28,7 +28,7 @@ impl DevControls
     fn display(&self) -> String
     {
         // How to get this from the fields of self? Kind of a pain..
-        format!("DEV: Survive(S), Die(D), +Karma(K), +PowerUp(P), +Exp(E), -Hp(A)")
+        format!("DEV: Survive(Z), Die(X), +Karma(F), +PowerUp(Q), +Exp(E), -Hp(C)")
     }
 }
 
@@ -37,12 +37,12 @@ impl Default for DevControls
     fn default() -> Self
     {
         Self {
-            survive_immediately: KeyCode::KeyS,
-            die_immediately: KeyCode::KeyD,
-            add_karma: KeyCode::KeyK,
-            get_power_up: KeyCode::KeyP,
+            survive_immediately: KeyCode::KeyZ,
+            die_immediately: KeyCode::KeyX,
+            add_karma: KeyCode::KeyF,
+            get_power_up: KeyCode::KeyQ,
             add_exp: KeyCode::KeyE,
-            apply_damage: KeyCode::KeyA,
+            apply_damage: KeyCode::KeyC,
         }
     }
 }
