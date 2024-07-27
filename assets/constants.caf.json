@@ -60,6 +60,10 @@
         "player_exp_rate": 3,
 
         "starting_powerup": "Beer Can",
+        "max_powerup_level": 5,
+        "max_powerup_offers": 3,
+        "num_passive_slots": 3,
+        "num_active_slots": 3,
 
         "level_tag_font": "embedded://sickle_ui/fonts/FiraSans-Medium.ttf",
         "level_tag_color": {"Hsla": {"hue": 0.0, "saturation": 0.0, "lightness": 1.0, "alpha": 1.0}},

@@ -11,3 +11,4 @@ Publishing to itch.io: push tag with format `v1.2.3`.
 
 - UkoeHB (SnowyRoadStudios)
 - auralluring
+- CMorrison82z

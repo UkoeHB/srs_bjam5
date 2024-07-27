@@ -1,6 +1,7 @@
 {
 "#constants": {
     "$texture": "power_ups/beer_can/beer_can.png",
+    "$icon": "power_ups/beer_can/beer_can_icon.png",
     "$sprite_size": {"x": 20, "y": 11},
     "$explosion_size": {"x": 40, "y": 23}
 },
@@ -8,8 +9,9 @@
 "#commands": {
     "BeerCanConfig": {
         "name": "Beer Can",
-        "description": "Hurls a beer can at the nearest enemy in range, exploding on impact.",
+        "description": "Hurls a beer at the nearest enemy in range. Explodes on impact.",
         "animation": "beer_can",
+        "icon": "$icon",
         "size": "$sprite_size",
         "damage_by_level": [
             10,
@@ -31,13 +33,16 @@
         "explosion_animation": "beer_can_explosion",
         "explosion_size": "$explosion_size"
     },
+    "LoadImages": [[
+        {"image": "$icon"}
+    ]],
     "LoadSpriteAnimations": [[
         {
             "name": "beer_can",
             "image": "$texture",
             "size": "$sprite_size",
-            "padding": {"x": 20, "y": 12},
-            "columns": 1,
+            "padding": {"x": 20, "y": 1},
+            "columns": 5,
             "rows": 1,
             "frame_time": 10000,
             "clips": [{"frames": {"Frames": [0]}}]

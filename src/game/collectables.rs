@@ -197,7 +197,7 @@ impl Collectable
             StateScoped(GameState::Play),
             images.get(texture),
             Sprite::default(),
-            BoundInMap
+            BoundInMap,
         ));
     }
 }

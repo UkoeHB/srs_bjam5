@@ -15,6 +15,7 @@ fn setup_animation(
     image_map: &ImageMap,
     library: &mut SpritesheetLibrary,
     atlas_layouts: &mut Assets<TextureAtlasLayout>,
+    altas_layout_map: &mut TextureAtlasLayoutMap,
     animations: &mut SpriteAnimations,
     spritesheet_markers: &mut SpritesheetMarkers,
     mut animation: SpriteAnimation,
@@ -86,15 +87,22 @@ fn setup_animation(
     });
 
     // Save the animation's sprite info.
-    let image = image_map.get(animation.image);
-    let layout = atlas_layouts.add(TextureAtlasLayout::from_grid(
-        animation.size,
-        animation.columns,
-        animation.rows,
-        animation.padding,
-        animation.offset,
-    ));
-    animations.insert(anim_id, animation.name, image, layout);
+    // - Layouts are stored in the atlas layout map so they can be accessed for other use-cases like UI.
+    let image = image_map.get(&animation.image);
+    altas_layout_map.insert(
+        animation.image.clone(),
+        animation.name.clone(),
+        atlas_layouts,
+        TextureAtlasLayout::from_grid(
+            animation.size,
+            animation.columns,
+            animation.rows,
+            animation.padding,
+            animation.offset,
+        ),
+    );
+    let layout = altas_layout_map.get(&animation.image, &animation.name);
+    animations.insert(anim_id, animation.name, animation.image, image, layout);
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -105,6 +113,7 @@ fn load_sprite_animations(
     mut library: ResMut<SpritesheetLibrary>,
     mut spritesheet_markers: ResMut<SpritesheetMarkers>,
     mut atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
+    mut atlast_layout_map: ResMut<TextureAtlasLayoutMap>,
     mut animations: ResMut<SpriteAnimations>,
 )
 {
@@ -113,6 +122,7 @@ fn load_sprite_animations(
             &image_map,
             &mut library,
             &mut atlas_layouts,
+            &mut atlast_layout_map,
             &mut animations,
             &mut spritesheet_markers,
             animation,
@@ -203,6 +213,9 @@ pub struct SpriteAnimationClip
 //-------------------------------------------------------------------------------------------------------------------
 
 //todo: can add more info like animation settings and more precise ways to extract spritesheets
+/// Note: `TextureAtlasLayoutMap` will contain the layout for this animation in case you need to use it for
+/// another purpose like UI. The animation texture can be obtained from [`SpriteAnimations::get_texture`], and
+/// the layout alias equals the animation name.
 #[derive(Reflect, Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct SpriteAnimation
 {
@@ -231,6 +244,7 @@ pub struct SpriteAnimation
 pub struct SpriteAnimations
 {
     names: HashMap<String, AnimationId>,
+    textures: HashMap<String, String>,
     map: HashMap<AnimationId, (String, Handle<Image>, Handle<TextureAtlasLayout>)>,
 }
 
@@ -244,6 +258,7 @@ impl SpriteAnimations
         &mut self,
         animation_id: AnimationId,
         image_name: impl AsRef<str> + Into<String>,
+        image_texture: impl Into<String>,
         image: Handle<Image>,
         texture_layout: Handle<TextureAtlasLayout>,
     )
@@ -254,6 +269,8 @@ impl SpriteAnimations
 
         let image_name = image_name.into();
         self.names.insert(image_name.clone(), animation_id);
+        self.textures
+            .insert(image_name.clone(), image_texture.into());
         self.map
             .insert(animation_id, (image_name, image, texture_layout));
     }
@@ -276,6 +293,14 @@ impl SpriteAnimations
     pub fn get_id(&self, name: impl AsRef<str>) -> Option<AnimationId>
     {
         self.names.get(name.as_ref()).cloned()
+    }
+
+    /// Gets the texture path for a given animation name.
+    ///
+    /// Returns `None` if unknown.
+    pub fn get_texture(&self, name: impl AsRef<str>) -> Option<&String>
+    {
+        self.textures.get(name.as_ref())
     }
 }
 

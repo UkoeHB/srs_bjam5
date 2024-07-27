@@ -6,8 +6,8 @@ use bevy::prelude::*;
 
 //-------------------------------------------------------------------------------------------------------------------
 
-#[derive(Debug, Default)]
-pub enum PowerupType
+#[derive(Debug, Default, Copy, Clone, Eq, PartialEq)]
+pub enum AbilityType
 {
     #[default]
     Passive,
@@ -16,12 +16,14 @@ pub enum PowerupType
 
 //-------------------------------------------------------------------------------------------------------------------
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct PowerupInfo
 {
-    pub powerup_type: PowerupType,
+    pub ability_type: AbilityType,
     pub name: String,
     pub description: String,
+    /// Stores a string pointing to a spritesheet animation. We will use the first frame of that animation as the
+    /// icon.
     pub icon: String,
 }
 

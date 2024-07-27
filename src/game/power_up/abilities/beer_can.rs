@@ -116,6 +116,7 @@ pub struct BeerCanConfig
     pub name: String,
     pub description: String,
     pub animation: String,
+    pub icon: String,
     pub size: Vec2,
     pub damage_by_level: Vec<usize>,
     pub cooldown_by_level_ms: Vec<u64>,
@@ -151,10 +152,10 @@ impl Command for BeerCanConfig
     fn apply(self, w: &mut World)
     {
         w.resource_mut::<PowerupBank>().register(PowerupInfo {
-            powerup_type: PowerupType::Active,
+            ability_type: AbilityType::Active,
             name: self.name.clone(),
             description: self.description.clone(),
-            icon: self.animation.clone(),
+            icon: self.icon.clone(),
         });
         w.insert_resource(self);
     }

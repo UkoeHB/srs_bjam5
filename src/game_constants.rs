@@ -46,6 +46,10 @@ pub struct GameConstants
     pub player_exp_rate: usize,
 
     pub starting_powerup: String,
+    pub max_powerup_level: usize,
+    pub max_powerup_offers: usize,
+    pub num_passive_slots: usize,
+    pub num_active_slots: usize,
 
     pub level_tag_font: String,
     pub level_tag_color: Color,

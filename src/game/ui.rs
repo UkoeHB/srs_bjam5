@@ -53,6 +53,7 @@ fn spawn_power_up_ui(
     mut c: Commands,
     mut time: ResMut<Time<Virtual>>,
     mut rng: ResMut<GameRng>,
+    constants: ReactRes<GameConstants>,
     player_powerups: ReactRes<PlayerPowerups>,
     powerup_bank: Res<PowerupBank>,
     mut s: ResMut<SceneLoader>,
@@ -69,9 +70,11 @@ fn spawn_power_up_ui(
     time.pause();
 
     // Generate power-up options for the player.
-    let options = get_powerup_options(&mut rng, powerup_source, &player_powerups, &powerup_bank);
+    let options = get_powerup_options(&constants, &mut rng, powerup_source, &player_powerups, &powerup_bank);
     debug_assert!(options.len() > 0);
-    let is_filler = options.iter().any(|o| matches!(o, PowerupOption::Filler(..)));
+    let is_filler = options
+        .iter()
+        .any(|o| matches!(o, PowerupOption::Filler(..)));
 
     let file = LoadableRef::from_file("ui.power_up");
     let scene = file.e("scene");
@@ -83,11 +86,50 @@ fn spawn_power_up_ui(
                 // Add custom behavior and styling for the specific power-up.
                 let button_id = l.id();
                 match option {
-                    PowerupOption::PowerUp => {
+                    PowerupOption::Powerup(powerup_type) => {
                         l.load_scene(file.e("powerup_scene"), |l| {
-                            l.commands().ui_builder(button_id).on_pressed(move || {
-                                //todo: apply the power up
+                            let (info, effect_text) = match &powerup_type {
+                                PowerupType::New(name) => (
+                                    powerup_bank.get(name).cloned().unwrap_or_default(),
+                                    String::from("New!"),
+                                ),
+                                PowerupType::Upgrade(name) => {
+                                    let level = player_powerups
+                                        .get(name)
+                                        .map(|p| p.level)
+                                        .unwrap_or_default();
+                                    let next_level = level + 1;
+                                    (
+                                        powerup_bank.get(name).cloned().unwrap_or_default(),
+                                        format!("Lv. {} -> {}", level, next_level),
+                                    )
+                                }
+                            };
+                            l.edit("icon", |l| {
+                                l.insert_derived(LoadedUiImage { texture: info.icon.clone(), ..default() });
                             });
+                            l.edit("title", |l| {
+                                let name = info.name.clone();
+                                l.update_on((), |id| {
+                                    move |mut e: TextEditor| {
+                                        write_text!(e, id, "{}: {}", name, effect_text);
+                                    }
+                                });
+                            });
+                            l.edit("description", |l| {
+                                let description = info.description.clone();
+                                l.update_on((), |id| {
+                                    move |mut e: TextEditor| {
+                                        write_text!(e, id, "{}", description);
+                                    }
+                                });
+                            });
+
+                            l.commands()
+                                .ui_builder(button_id)
+                                .on_pressed(move |w: &mut World| {
+                                    w.syscall(powerup_type.clone(), PowerupType::apply);
+                                });
                         });
                     }
                     PowerupOption::Filler(filler_type) => {
@@ -124,7 +166,7 @@ fn spawn_power_up_ui(
         }
 
         if is_filler {
-            l.load_scene(file.e("filler_notification"), |_|{});
+            l.load_scene(file.e("filler_notification"), |_| {});
         }
     });
 }

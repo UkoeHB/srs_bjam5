@@ -52,9 +52,35 @@
     "FlexStyle": {
         "dims": {
             "width": {"Percent": 100.0}
+        },
+        "content": {
+            "flex_direction": "Column",
+            "justify_main": "Center",
+            "justify_cross": "Center"
         }
     },
-    "TextLine": {"text": "Power Up (TODO)"}
+
+    "icon": {
+        "FlexStyle": {
+            "dims": {
+                "max_width": {"Percent": 100.0},
+                "width": {"Px": 100.0}
+            }
+        }
+    },
+
+    "title": {
+        "FlexStyle": {
+            "flex": {
+                "margin": {"top": {"Px": 20.0}, "bottom": {"Px": 25.0}}
+            }
+        },
+        "TextLine": {}
+    },
+
+    "description": {
+        "TextLine": {"size": 22.0, "justify": "Center", "linebreak": "WordBoundary"}
+    }
 },
 
 "filler_scene": {
