@@ -70,10 +70,9 @@ impl Health
     pub fn set_bonus(&mut self, bonus: usize)
     {
         // When increasing max hp, add to current health.
-        if bonus != self.bonus {
-            self.add(bonus.saturating_sub(self.bonus));
-        }
+        let diff = bonus.saturating_sub(self.bonus);
         self.bonus = bonus;
+        self.add(diff);
     }
 }
 

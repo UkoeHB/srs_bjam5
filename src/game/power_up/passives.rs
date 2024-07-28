@@ -90,9 +90,9 @@ impl Passive
             Self::Health => "Health",
             Self::HealthRegen => "Health Regen",
             Self::Armor => "Armor",
-            Self::CooldownReduction => "Cooldown Reduction",
+            Self::CooldownReduction => "Ability Haste",
             Self::MoveSpeed => "Move Speed",
-            Self::CollectionRange => "Collection Range",
+            Self::CollectionRange => "Pickup Range",
             Self::AreaSize => "Area Size",
             Self::DamageAmp => "Damage Amp",
             Self::ExpAmp => "Exp Amp",
@@ -150,6 +150,7 @@ impl Command for PassiveDatabase
     fn apply(self, w: &mut World)
     {
         let mut bank = w.resource_mut::<PowerupBank>();
+        let mut to_load = Vec::default();
         for (passive, info) in self.iter() {
             bank.register(PowerupInfo {
                 ability_type: AbilityType::Passive,
@@ -157,7 +158,9 @@ impl Command for PassiveDatabase
                 description: info.description.clone(),
                 icon: info.icon.clone(),
             });
+            to_load.push(LoadedImage { image: info.icon.clone(), ..default() });
         }
+        LoadImages(to_load).apply(w);
         w.insert_resource(self);
     }
 }

@@ -55,14 +55,14 @@ pub fn get_powerup_options(
     let mut candidates: Vec<PowerupOption> = powerup_bank
         .iter()
         .filter_map(|(_, i)| {
-            if open_passive_slots == 0 && i.ability_type == AbilityType::Passive {
-                return None;
-            }
-            if open_active_slots == 0 && i.ability_type == AbilityType::Active {
-                return None;
-            }
             let level = player_powerups.get(&i.name);
             if level == 0 {
+                if open_passive_slots == 0 && i.ability_type == AbilityType::Passive {
+                    return None;
+                }
+                if open_active_slots == 0 && i.ability_type == AbilityType::Active {
+                    return None;
+                }
                 return Some(PowerupType::New(i.name.clone()));
             }
             if level >= constants.max_powerup_level {
