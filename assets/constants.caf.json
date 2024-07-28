@@ -3,9 +3,9 @@
     "$collectable_exp_texture": "sprites/collectable_exp.png",
     "$collectable_exp_size": {"x": 5, "y": 5},
     "$collectable_karma_texture": "sprites/collectable_karma.png",
-    "$collectable_karma_size": {"x": 4, "y": 4},
+    "$collectable_karma_size": {"x": 6, "y": 5},
     "$collectable_healthpack_texture": "sprites/collectable_healthpack.png",
-    "$collectable_healthpack_size": {"x": 8, "y": 8},
+    "$collectable_healthpack_size": {"x": 12, "y": 9},
 
     "$player_standing_animation": "player_standing_animation",
     "$player_standing_texture": "sprites/hillbilly_bill_50_70.png",
