@@ -24,13 +24,6 @@
             "clips": [{"frames": {"Row": 0}}]
         }
     ]],
-    "LoadAudio": [[
-        {"audio": "$loop1"},
-        {"audio": "$loop2"},
-        {"audio": "$loop3"},
-        {"audio": "$loop4"},
-        {"audio": "$loop5"}
-    ]],
     "SoundtrackDatabase": {
         "tracks": [
             {"source": "$loop1", "volume": 0.5},

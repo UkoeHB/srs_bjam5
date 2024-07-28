@@ -1,5 +1,4 @@
 use bevy::audio::{PlaybackMode, Volume};
-use bevy::ecs::system::EntityCommands;
 use bevy::ecs::world::Command;
 use bevy::prelude::*;
 use bevy_cobweb::prelude::*;
@@ -18,9 +17,9 @@ fn update_volume(settings: ReactRes<AudioSettings>, mut bg: Query<(&mut AudioSin
 
 //-------------------------------------------------------------------------------------------------------------------
 
-fn insert_audio(ec: &mut EntityCommands, master_volume: f32, soundtrack: &Soundtrack, audio: &AudioMap)
+fn spawn_audio(c: &mut Commands, master_volume: f32, soundtrack: &Soundtrack, audio: &AudioMap)
 {
-    ec.try_insert((
+    c.spawn((
         AudioBundle {
             source: audio.get(&soundtrack.source),
             settings: PlaybackSettings {
@@ -47,15 +46,14 @@ fn set_soundtrack(
 {
     let Some(current_track) = soundtracks.get(day.get()) else { return };
     let Ok((entity, background)) = query.get_single() else {
-        let mut ec = c.spawn_empty();
-        insert_audio(&mut ec, settings.master_volume, current_track, &audio);
+        spawn_audio(&mut c, settings.master_volume, current_track, &audio);
         return;
     };
     if background.source == current_track.source {
         return;
     }
-    let mut ec = c.entity(entity);
-    insert_audio(&mut ec, settings.master_volume, current_track, &audio);
+    c.entity(entity).despawn_recursive();
+    spawn_audio(&mut c, settings.master_volume, current_track, &audio);
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -88,7 +86,7 @@ impl SoundtrackDatabase
         if self.tracks.is_empty() {
             return None;
         }
-        let index = std::cmp::min(day - 1, self.tracks.len());
+        let index = std::cmp::min(day.saturating_sub(1), self.tracks.len());
         self.tracks.get(index)
     }
 }
