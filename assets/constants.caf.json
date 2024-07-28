@@ -27,7 +27,11 @@
     "$boundary_width": 16.0,
     "$boundary_length": 32.0,
 
-    "$loop1": "audio/loop1.ogg"
+    "$loop1": "audio/loop1.ogg",
+    "$loop2": "audio/loop2.ogg",
+    "$loop3": "audio/loop3.ogg",
+    "$loop4": "audio/loop4.ogg",
+    "$loop5": "audio/loop5.ogg"
 },
 
 "#commands": {
@@ -96,7 +100,11 @@
         "boundary_width": "$boundary_width",
         "boundary_length": "$boundary_length",
 
-        "loop1": "$loop1"
+        "loop1": "$loop1",
+        "loop2": "$loop2",
+        "loop3": "$loop3",
+        "loop4": "$loop4",
+        "loop5": "$loop5"
     },
     "Controls": {
         "move_up": ["KeyW"],

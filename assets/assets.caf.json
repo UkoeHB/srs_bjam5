@@ -25,11 +25,19 @@
         }
     ]],
     "LoadAudio": [[
-        {"audio": "$loop1"}
+        {"audio": "$loop1"},
+        {"audio": "$loop2"},
+        {"audio": "$loop3"},
+        {"audio": "$loop4"},
+        {"audio": "$loop5"}
     ]],
     "SoundtrackDatabase": {
         "tracks": [
-            {"source": "$loop1", "volume": 0.3}
+            {"source": "$loop1", "volume": 0.5},
+            {"source": "$loop2", "volume": 0.5},
+            {"source": "$loop3", "volume": 0.5},
+            {"source": "$loop4", "volume": 0.5},
+            {"source": "$loop5", "volume": 0.5}
         ]
     }
 }

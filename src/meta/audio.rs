@@ -88,7 +88,7 @@ impl SoundtrackDatabase
         if self.tracks.is_empty() {
             return None;
         }
-        let index = day % self.tracks.len();
+        let index = std::cmp::min(day - 1, self.tracks.len());
         self.tracks.get(index)
     }
 }
