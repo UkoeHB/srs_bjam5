@@ -15,16 +15,12 @@
         "size": "$shock_sprite_size",
         "damage_by_level": [
             15,
-            25,
             45,
-            80,
             140
         ],
         "cooldown_by_level_ms": [
             3000,
-            2500,
             2000,
-            1600,
             1200
         ],
         "drop_offset": 35.0,

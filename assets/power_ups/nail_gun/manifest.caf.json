@@ -13,17 +13,13 @@
         "icon": "$icon",
         "size": "$sprite_size",
         "damage_by_level": [
-            2,
-            4,
-            7,
-            15,
+            5,
+            12,
             25
         ],
         "cooldown_by_level_ms": [
             750,
-            600,
             475,
-            350,
             250
         ],
         "velocity_tps": 200.0,

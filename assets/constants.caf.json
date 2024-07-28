@@ -30,7 +30,7 @@
 
 "#commands": {
     "GameConstants": {
-        "day_length_secs": 60,
+        "day_length_secs": 300,
 
         "spawn_point_cadence_secs": 1,
         "spawn_radius_buffer": 0.0,
@@ -58,11 +58,11 @@
         "player_run_speed_tps": 111,
         "player_base_hp": 100,
         "player_base_armor": 0,
-        "player_exp_start": 4,
-        "player_exp_rate": 3,
+        "player_exp_start": 3,
+        "player_exp_rate": 4,
 
         "starting_powerup": "Beer Can",
-        "max_powerup_level": 5,
+        "max_powerup_level": 3,
         "max_powerup_offers": 3,
         "num_passive_slots": 3,
         "num_active_slots": 3,
@@ -84,7 +84,7 @@
 
         "background_tile_texture": "$background_tile_texture",
         "background_tile_configs": "$background_tile_configs",
-        "map_size": {"x": 22, "y": 22},
+        "map_size": {"x": 52, "y": 52},
         "map_tile_size": "$background_tile_size",
 
         "controls_texture": "$controls_texture",

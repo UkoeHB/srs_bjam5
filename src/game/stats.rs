@@ -352,7 +352,7 @@ impl Level
         self.exp += amp.calculate_exp(exp as f32);
 
         let mut levels = Vec::default();
-        while self.exp > self.exp_required() {
+        while self.exp >= self.exp_required() {
             self.exp -= self.exp_required();
             self.level += 1;
             levels.push(self.level);

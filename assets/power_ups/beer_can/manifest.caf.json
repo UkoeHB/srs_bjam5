@@ -15,16 +15,12 @@
         "size": "$sprite_size",
         "damage_by_level": [
             10,
-            20,
             40,
-            70,
             110
         ],
         "cooldown_by_level_ms": [
             2000,
-            1500,
             1100,
-            750,
             400
         ],
         "detection_range": 250.0,

@@ -14,16 +14,12 @@
         "size": "$sprite_size",
         "damage_by_level": [
             35,
-            75,
             150,
-            225,
             350
         ],
         "cooldown_by_level_ms": [
             3000,
-            2500,
             2000,
-            1600,
             1200
         ],
         "velocity_tps": 150.0,

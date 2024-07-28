@@ -134,12 +134,6 @@ fn spawn_mobs(
                 let mut entity_transform = point_transform;
                 entity_transform.translation += adjustment.extend(0.);
 
-                // Correct so the entity stays inside the map.
-                // - Incorporates mob hit box.
-                // - Consider not just truncating the offset from player but also re-rotating so not too many mobs
-                //   spawn on top of you when adjacent to a wall?
-                // TODO
-
                 // SPAWN IT
                 mob_data.spawn(&mut c, rng, &constants, entity_transform, player_entity, &animations);
             }

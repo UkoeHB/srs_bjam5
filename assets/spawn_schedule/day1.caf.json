@@ -6,11 +6,20 @@
             "sequence": [
                 {
                     "mob_name": "mob_balloon",
-                    "start_time_secs": 0,
-                    "duration_secs": 15,
-                    "ramp_up_fraction": 0.0,
-                    "total_quantity": 20,
+                    "start_time_secs": 5,
+                    "duration_secs": 300,
+                    "ramp_up_fraction": 0.3,
+                    "total_quantity": 30,
                     "max_clump_size": 1
+                },
+
+                {
+                    "mob_name": "mob_slime",
+                    "start_time_secs": 0,
+                    "duration_secs": 20,
+                    "ramp_up_fraction": 0.9,
+                    "total_quantity": 25,
+                    "max_clump_size": 2
                 }
             ]
         }
