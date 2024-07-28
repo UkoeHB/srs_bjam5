@@ -4,14 +4,20 @@
 },
 
 "#constants": {
+    "$mob_animation_slime": "sprites/mob_slime_40_40.png",
+    "$mob_size_slime": {"x": 40, "y": 40},
+
+    "$mob_animation_imp": "sprites/mob_imp.png",
+    "$mob_size_imp": {"x": 16, "y": 16},
+
+    "$mob_animation_skull": "sprites/mob_skull.png",
+    "$mob_size_skull": {"x": 14, "y": 16},
+
     "$mob_animation_dark_mage": "sprites/mob_dark_mage.png",
     "$mob_size_dark_mage": {"x": 35, "y": 35},
     "$projectile_animation_dark_mage": "sprites/mob_dark_mage.png",
     "$projectile_size_dark_mage": {"x": 20, "y": 20},
     
-    "$mob_animation_slime": "sprites/mob_slime_40_40.png",
-    "$mob_size_slime": {"x": 40, "y": 40},
-
     "$mob_animation_bomb": "sprites/mob_bomb.png",
     "$mob_size_bomb": {"x": 40, "y": 40},
 
@@ -27,6 +33,33 @@
 
 "#commands": {
     "LoadSpriteAnimations": [[
+        {
+            "name": "mob_slime",
+            "image": "$mob_animation_slime",
+            "size": "$mob_size_slime",
+            "columns": 4,
+            "rows": 1,
+            "frame_time": 175,
+            "clips": [{"frames": {"Row": 0}}]
+        },
+        {
+            "name": "mob_imp",
+            "image": "$mob_animation_imp",
+            "size": "$mob_size_imp",
+            "columns": 2,
+            "rows": 1,
+            "frame_time": 100,
+            "clips": [{"frames": {"Row": 0}}]
+        },
+        {
+            "name": "mob_skull",
+            "image": "$mob_animation_skull",
+            "size": "$mob_size_skull",
+            "columns": 1,
+            "rows": 1,
+            "frame_time": 100,
+            "clips": [{"frames": {"Row": 0}}]
+        },
         {
             "name": "mob_dark_mage",
             "image": "$mob_animation_dark_mage",
@@ -56,15 +89,6 @@
             "frame_time": 75,
             "loops": 1,
             "clips": [{"frames": {"Frames": [5, 6]}}]
-        },
-        {
-            "name": "mob_slime",
-            "image": "$mob_animation_slime",
-            "size": "$mob_size_slime",
-            "columns": 4,
-            "rows": 1,
-            "frame_time": 175,
-            "clips": [{"frames": {"Row": 0}}]
         },
         {
             "name": "mob_bomb",
@@ -129,6 +153,33 @@
             "mob_type": {"Collider": {"base_damage": 1, "base_cooldown_millis": 500}},
             "drops": [
                 [0.4, [[{"Exp": 1}]]],
+                [0.01, [[{"Exp": 10}]]]
+            ]
+        },
+        "mob_imp": {
+            "animation": "mob_imp",
+            "hitbox": "$mob_size_imp",
+            "base_health": 5,
+            "base_armor": 1,
+            "base_speed_tps": 90.0,
+            "auto_flip_sprite": true,
+            "mob_type": {"Collider": {"base_damage": 1, "base_cooldown_millis": 1000}},
+            "drops": [
+                [0.4, [[{"Exp": 1}]]],
+                [0.01, [[{"Exp": 8}]]]
+            ]
+        },
+        "mob_skull": {
+            "animation": "mob_skull",
+            "hitbox": "$mob_size_skull",
+            "base_health": 20,
+            "base_armor": 8,
+            "base_speed_tps": 40.0,
+            "auto_flip_sprite": false,
+            "mob_type": {"Collider": {"base_damage": 2, "base_cooldown_millis": 1200}},
+            "drops": [
+                [0.2, [[{"Exp": 1}]]],
+                [0.2, [[{"Exp": 2}]]],
                 [0.01, [[{"Exp": 10}]]]
             ]
         },
