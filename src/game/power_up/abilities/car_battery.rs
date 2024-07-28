@@ -10,6 +10,27 @@ use crate::*;
 
 //-------------------------------------------------------------------------------------------------------------------
 
+/// Checks if the ability needs to be set up on the player.
+fn add_car_battery_ability(
+    mut c: Commands,
+    player: Query<(Entity, Has<CarBatteryAbility>), With<Player>>,
+    player_powerups: ReactRes<PlayerPowerups>,
+    config: Res<CarBatteryConfig>,
+)
+{
+    let Ok((entity, has_ability)) = player.get_single() else { return };
+    if has_ability {
+        return;
+    }
+    if player_powerups.get(&config.name) == 0 {
+        return;
+    }
+
+    c.entity(entity).try_insert(CarBatteryAbility::default());
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
 fn car_battery_placement(
     mut c: Commands,
     clock: Res<GameClock>,
@@ -56,14 +77,17 @@ fn car_battery_placement(
     // Spawn projectile.
     let damage = config.get_damage(level);
     ProjectileConfig {
-        projectile_type: ProjectileType::Continuous {
+        projectile_type: ProjectileType::Pulse {
             damage,
             cooldown_ms: (1000. / config.shock_pulse_frequency) as u64,
+            area: config.size,
         },
         velocity_tps: 0.,
         animation: config.animation.clone(),
         size: config.size,
         effect_animation: Some(config.shock_animation.clone()),
+        max_lifetime_ms: Some(config.duration_ms),
+        sprite_layer: Some(SpriteLayer::GroundEffect),
         ..default()
     }
     .create_projectile::<Mob>(
@@ -72,7 +96,7 @@ fn car_battery_placement(
         &animations,
         player_entity,
         Vec2 { x: *player_x, y: *player_y } + config.drop_offset * behind_player_dir,
-        behind_player_dir,
+        PlayerDirection::Right.into(),
         &area_size,
     );
 
@@ -96,6 +120,8 @@ pub struct CarBatteryConfig
     pub name: String,
     pub description: String,
     pub animation: String,
+    pub icon: String,
+    /// This is the size of the damage effect zone, not the battery itself.
     pub size: Vec2,
     pub damage_by_level: Vec<usize>,
     pub cooldown_by_level_ms: Vec<u64>,
@@ -104,6 +130,7 @@ pub struct CarBatteryConfig
     pub shock_animation: String,
     /// In Hz
     pub shock_pulse_frequency: f32,
+    pub duration_ms: u64,
 }
 
 impl CarBatteryConfig
@@ -137,7 +164,7 @@ impl Command for CarBatteryConfig
         w.resource_mut::<PowerupBank>().register(PowerupInfo {
             name: self.name.clone(),
             description: self.description.clone(),
-            icon: self.animation.clone(),
+            icon: self.icon.clone(),
             ability_type: AbilityType::Active,
         });
         w.insert_resource(self);
@@ -154,6 +181,9 @@ impl Plugin for CarBatteryPlugin
     {
         app.register_command::<CarBatteryConfig>()
             .init_resource::<CarBatteryConfig>()
+            .add_systems(PreUpdate, add_car_battery_ability.run_if(in_state(PlayState::Day)))
             .add_systems(Update, car_battery_placement.in_set(AbilitiesUpdateSet));
     }
 }
+
+//-------------------------------------------------------------------------------------------------------------------

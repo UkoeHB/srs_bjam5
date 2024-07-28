@@ -12,6 +12,7 @@ fn refresh_player_powerups(
     bank: Res<PowerupBank>,
 )
 {
+    tracing::info!("resetting player powerups");
     let powerups = powerups.get_mut(&mut c);
     powerups.reset();
     let Some(starting) = bank.get(&constants.starting_powerup) else {
@@ -95,7 +96,7 @@ impl Plugin for PlayerPowerupPlugin
     fn build(&self, app: &mut App)
     {
         app.init_react_resource::<PlayerPowerups>()
-            .add_systems(OnEnter(GameState::Play), refresh_player_powerups);
+            .add_systems(OnEnter(GameState::DayStart), refresh_player_powerups);
     }
 }
 

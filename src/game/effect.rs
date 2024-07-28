@@ -120,6 +120,31 @@ fn apply_effect_zones<T: Component>(
                 // Set cooldown (for sanity).
                 zone.next_effect_time = Some(time + Duration::from_millis(1_000_000));
             }
+            EffectZoneConfig::ApplyAndRegenSingle { cooldown_ms } => {
+                // Check intersection with any targets.
+                let mut count = 0;
+                for (target, aabb, transform) in targets.iter() {
+                    // Check intersection.
+                    let target_aabb = aabb.get_2d(transform);
+                    if !entity_aabb.intersects(&target_aabb) {
+                        continue;
+                    }
+
+                    // Apply effect.
+                    (zone.callback)(zone_entity, target, &mut c);
+
+                    // Exit now that a single target has been found.
+                    count += 1;
+                    break;
+                }
+
+                if count == 0 {
+                    continue;
+                }
+
+                // Set cooldown.
+                zone.next_effect_time = Some(time + Duration::from_millis(cooldown_ms as u64));
+            }
             EffectZoneConfig::ApplyAndRegen { cooldown_ms } => {
                 // Check intersection with any targets.
                 let mut count = 0;
@@ -211,6 +236,13 @@ pub enum EffectZoneConfig
     ///
     /// Does nothing until there is at least one intersected entity.
     SelfDestruct,
+    /// Applies effect to one intersected entity, then hides self until cooldown ends.
+    ///
+    /// Does not go on cooldown if no intersected entities.
+    ApplyAndRegenSingle
+    {
+        cooldown_ms: u64
+    },
     /// Applies effect to intersected entities, then hides self until cooldown ends.
     ///
     /// Does not go on cooldown if no intersected entities.

@@ -1,35 +1,61 @@
 {
-  "#constants": {
-    "$texture": "powerups/car_battery/car_battery.png",
-    "$icon": "powerups/car_battery/car_battery.png",
-    "$sprite_size": {"x": 15, "y": 11}
-  },
-  "#commands": {
+"#constants": {
+    "$texture": "power_ups/car_battery/car_battery.png",
+    "$shock_texture": "power_ups/car_battery/car_battery_shock.png",
+    "$icon": "power_ups/car_battery/car_battery_icon.png",
+    "$sprite_size": {"x": 15, "y": 11},
+    "$shock_sprite_size": {"x": 15, "y": 11}
+},
+"#commands": {
     "CarBatteryConfig": {
-      "name": "Car Battery",
-      "description": "Sits on the ground and zaps nearby enemies.",
-      "animation": "car_battery",
-      "icon": "$icon",
-      "size": "$sprite_size",
-      "damage_by_level": [
-        15,
-        25,
-        45,
-        80,
-        140,
-        200
-      ],
-      "cooldown_by_level_ms": [
-        5000,
-        4200,
-        3500,
-        2800,
-        1500,
-        800
-      ],
-      "drop_offset": 5.0,
-      "shock_animation": "car_battery_shock",
-      "shock_pulse_frequency": 0.7
-    }
-  }
+        "name": "Car Battery",
+        "description": "Sits on the ground and zaps nearby enemies.",
+        "animation": "car_battery",
+        "icon": "$icon",
+        "size": "$shock_sprite_size",
+        "damage_by_level": [
+            15,
+            25,
+            45,
+            80,
+            140,
+            200
+        ],
+        "cooldown_by_level_ms": [
+            3000,
+            2500,
+            2000,
+            1600,
+            1200,
+            800
+        ],
+        "drop_offset": 35.0,
+        "shock_animation": "car_battery_shock",
+        "shock_pulse_frequency": 0.7,
+        "duration_ms": 4000
+    },
+    "LoadImages": [[
+        {"image": "$icon"}
+    ]],
+    "LoadSpriteAnimations": [[
+        {
+            "name": "car_battery",
+            "image": "$texture",
+            "size": "$sprite_size",
+            "columns": 10,
+            "rows": 2,
+            "frame_time": 100,
+            "clips": [{"frames": {"Frames": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]}}]
+        },
+        {
+            "name": "car_battery_shock",
+            "image": "$shock_texture",
+            "size": "$shock_sprite_size",
+            "columns": 3,
+            "rows": 1,
+            "frame_time": 100,
+            "clips": [{"frames": {"Row": 0}}]
+        }
+    ]]
+}
 }

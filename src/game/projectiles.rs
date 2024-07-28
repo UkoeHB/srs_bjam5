@@ -45,10 +45,24 @@ fn apply_projectile_effect_impl<T: Component>(
                 add_effect_animation(&mut ec, projectile, transform);
             }
         }
+        ProjectileType::Pulse { damage, area, .. } => {
+            let mut ec = c.spawn((
+                EffectZone::<T>::new(
+                    // Use regen so the effect isn't despawned. We want it to despawn after the animation.
+                    EffectZoneConfig::ApplyAndRegen { cooldown_ms: 1_000_000 },
+                    apply_collider_effect,
+                ),
+                Collider { damage },
+                AabbSize(area),
+            ));
+
+            add_effect_animation(&mut ec, projectile, transform);
+        }
         ProjectileType::Explosion { damage, area } => {
             let mut ec = c.spawn((
                 EffectZone::<T>::new(
-                    EffectZoneConfig::Continuous { cooldown_ms: 1_000_000 },
+                    // Use regen so the effect isn't despawned. We want it to despawn after the animation.
+                    EffectZoneConfig::ApplyAndRegen { cooldown_ms: 1_000_000 },
                     apply_collider_effect,
                 ),
                 Collider { damage },
@@ -121,6 +135,11 @@ pub enum ProjectileType
         damage: usize, cooldown_ms: u64
     },
     /// Note: the projectile's `effect_animation` field must be set to use this.
+    Pulse
+    {
+        cooldown_ms: u64, damage: usize, area: Vec2
+    },
+    /// Note: the projectile's `effect_animation` field must be set to use this.
     Explosion
     {
         damage: usize, area: Vec2
@@ -131,8 +150,11 @@ impl ProjectileType
 {
     pub fn with_area_size(mut self, area_size: &AreaSize) -> Self
     {
-        if let Self::Explosion { area, .. } = &mut self {
-            *area = area_size.calculate_area(*area);
+        match &mut self {
+            Self::Pulse { area, .. } | Self::Explosion { area, .. } => {
+                *area = area_size.calculate_area(*area);
+            }
+            _ => (),
         }
         self
     }
@@ -214,6 +236,18 @@ impl ProjectileConfig
                 EffectZoneConfig::Continuous { cooldown_ms },
                 apply_projectile_effect::<T>,
             ),
+            ProjectileType::Pulse { cooldown_ms, .. } => {
+                if self.effect_animation.is_none() {
+                    tracing::error!("failed creating pulse projectile with animation {:?}; effect_animation \
+                        field is required but not set", self.animation);
+                    return;
+                }
+
+                EffectZone::<T>::new(
+                    EffectZoneConfig::ApplyAndRegenSingle { cooldown_ms },
+                    apply_projectile_effect::<T>,
+                )
+            }
             ProjectileType::Explosion { .. } => {
                 if self.effect_animation.is_none() {
                     tracing::error!("failed creating explosion projectile with animation {:?}; effect_animation \
