@@ -4,7 +4,7 @@
     "constants.caf.json": "constants",
     "power_ups/manifest.caf.json": "power_ups",
     "mob_data.caf.json": "mob_data",
-    "spawn_schedule.caf.json": "spawn_schedule",
+    "spawn_schedule/manifest.caf.json": "spawn_schedule",
     "ui/manifest.caf.json": "ui"
 }
 }

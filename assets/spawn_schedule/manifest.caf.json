@@ -1,0 +1,9 @@
+{
+"#manifest": {
+    "spawn_schedule/day1.caf.json": "spawn.day1",
+    "spawn_schedule/day2.caf.json": "spawn.day2",
+    "spawn_schedule/day3.caf.json": "spawn.day3",
+    "spawn_schedule/day4.caf.json": "spawn.day4",
+    "spawn_schedule/day5.caf.json": "spawn.day5"
+}
+}
