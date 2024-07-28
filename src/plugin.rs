@@ -83,6 +83,7 @@ impl Plugin for AppPlugin
                     primary_window: Some(Window {
                         title: "Surviving Today".to_string(),
                         window_theme: Some(WindowTheme::Dark),
+                        prevent_default_event_handling: true,
                         ..default()
                     }),
                     ..default()

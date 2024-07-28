@@ -157,7 +157,8 @@ fn insert_spawn_sequence(mut c: Commands, day: ReactRes<Day>, schedule: Res<Spaw
     let sch = &schedule.schedule;
     // If we run out of sequences, replay the last day.
     let sequence = sch
-        .get(day.get().saturating_sub(1))
+        .iter()
+        .find(|s| s.day == day.get())
         .or_else(|| sch.get(sch.len() - 1))
         .cloned()
         .unwrap_or_default();
@@ -254,7 +255,18 @@ impl Command for SpawnSchedule
                 .sort_unstable_by(|a, b| b.start_time_secs.cmp(&a.start_time_secs));
         }
 
-        w.insert_resource(self);
+        if let Some(mut schedule) = w.get_resource_mut::<SpawnSchedule>() {
+            for sequence in self.schedule.drain(..) {
+                let Some(insertion) = schedule.schedule.iter().position(|s| s.day == sequence.day) else {
+                    schedule.schedule.push(sequence);
+                    continue;
+                };
+                tracing::warn!("overwriting spawn sequence for day {}", sequence.day);
+                schedule.schedule[insertion] = sequence;
+            }
+        } else {
+            w.insert_resource(self);
+        }
     }
 }
 
