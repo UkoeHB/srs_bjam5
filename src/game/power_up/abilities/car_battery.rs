@@ -57,7 +57,7 @@ fn car_battery_placement(
     ProjectileConfig {
         projectile_type: ProjectileType::Continuous {
             damage,
-            cooldown_ms: cdr.calculate_cooldown((1000. / config.shock_pulse_frequency) as u64),
+            cooldown_ms: (1000. / config.shock_pulse_frequency) as u64,
         },
         velocity_tps: 0.,
         animation: config.animation.clone(),

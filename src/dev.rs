@@ -19,6 +19,7 @@ struct DevControls
     die_immediately: KeyCode,
     add_karma: KeyCode,
     get_power_up: KeyCode,
+    skip_power_up: KeyCode,
     add_exp: KeyCode,
     apply_damage: KeyCode,
 }
@@ -28,7 +29,7 @@ impl DevControls
     fn display(&self) -> String
     {
         // How to get this from the fields of self? Kind of a pain..
-        format!("DEV:\nSurvive(Z)\nDie(X)\n+Karma(F)\n+PowerUp(Q)\n+Exp(E)\n-Hp(C)")
+        format!("DEV:\nSurvive(Z)\nDie(X)\n+Karma(F)\n+PowerUp(Q)\nSkipPowerup(R)\n+Exp(E)\n-Hp(C)")
     }
 }
 
@@ -41,6 +42,7 @@ impl Default for DevControls
             die_immediately: KeyCode::KeyX,
             add_karma: KeyCode::KeyF,
             get_power_up: KeyCode::KeyQ,
+            skip_power_up: KeyCode::KeyR,
             add_exp: KeyCode::KeyE,
             apply_damage: KeyCode::KeyC,
         }
@@ -69,7 +71,7 @@ fn display_dev_controls(mut c: Commands, controls: Res<DevControls>)
 
 fn check_dev_commands(
     mut last_command: Local<Duration>,
-    time: Res<Time>,
+    time: Res<Time<Real>>,
     mut c: Commands,
     button_input: Res<ButtonInput<KeyCode>>,
     controls: Res<DevControls>,
@@ -95,6 +97,12 @@ fn check_dev_commands(
                 continue;
             }
             powerups.insert([PowerupSource::LevelUp]);
+        } else if *pressed == controls.skip_power_up {
+            if !powerups.is_handling_powerup() {
+                continue;
+            }
+            powerups.end_handling_powerup();
+            c.react().broadcast(CancelPowerup);
         } else if *pressed == controls.add_exp {
             let Ok((_, mut level, _)) = player.get_single_mut() else { continue };
             let required = level.exp_required() as usize;
@@ -115,6 +123,11 @@ fn check_dev_commands(
         *last_command = time.elapsed();
     }
 }
+
+//-------------------------------------------------------------------------------------------------------------------
+
+/// Reactive event for canceling powerups.
+pub struct CancelPowerup;
 
 //-------------------------------------------------------------------------------------------------------------------
 

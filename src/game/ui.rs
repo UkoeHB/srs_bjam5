@@ -214,6 +214,19 @@ fn spawn_power_up_ui(
                         time.unpause();
                     },
                 );
+
+                #[cfg(feature = "dev")]
+                {
+                    l.update_on(broadcast::<CancelPowerup>(), |_| {
+                        move |event: BroadcastEvent<CancelPowerup>,
+                              mut c: Commands,
+                              mut time: ResMut<Time<Virtual>>| {
+                            let Some(_) = event.try_read() else { return };
+                            c.entity(scene_id).despawn_recursive();
+                            time.unpause();
+                        }
+                    });
+                }
             });
         }
 

@@ -88,14 +88,14 @@ impl Passive
     {
         match *self {
             Self::Health => "Health",
-            Self::HealthRegen => "HealthRegen",
+            Self::HealthRegen => "Health Regen",
             Self::Armor => "Armor",
-            Self::CooldownReduction => "CooldownReduction",
-            Self::MoveSpeed => "MoveSpeed",
-            Self::CollectionRange => "CollectionRange",
-            Self::AreaSize => "AreaSize",
-            Self::DamageAmp => "DamageAmp",
-            Self::ExpAmp => "ExpAmp",
+            Self::CooldownReduction => "Cooldown Reduction",
+            Self::MoveSpeed => "Move Speed",
+            Self::CollectionRange => "Collection Range",
+            Self::AreaSize => "Area Size",
+            Self::DamageAmp => "Damage Amp",
+            Self::ExpAmp => "Exp Amp",
         }
     }
 }
