@@ -97,13 +97,17 @@ fn check_dev_commands(
             powerups.insert([PowerupSource::LevelUp]);
         } else if *pressed == controls.add_exp {
             let Ok((_, mut level, _)) = player.get_single_mut() else { continue };
-            let required = level.exp_required();
-            let levels = level.add_exp(required / 3 + required / 7 + 1);
+            let required = level.exp_required() as usize;
+            let levels = level.add_exp(required / 3 + required / 7 + 1, &ExpAmp::new(0));
             powerups.insert(levels.iter().map(|_| PowerupSource::LevelUp));
         } else if *pressed == controls.apply_damage {
             let Ok((entity, _, health)) = player.get_single_mut() else { continue };
-            let max = health.max;
-            damage.send(DamageEvent { target: entity, damage: max / 5 + max / 7 + 1 });
+            let max = health.max();
+            damage.send(DamageEvent {
+                source: Entity::PLACEHOLDER,
+                target: entity,
+                damage: max / 5 + max / 7 + 1,
+            });
         } else {
             continue;
         }

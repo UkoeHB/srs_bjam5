@@ -200,17 +200,16 @@ fn update_player_state_from_input(
 //-------------------------------------------------------------------------------------------------------------------
 
 fn update_player_transform_from_tick(
-    constants: ReactRes<GameConstants>,
     time: Res<Time>,
-    mut player: Query<(&mut Transform, &PlayerDirection, &Action), With<Player>>,
+    mut player: Query<(&mut Transform, &MoveSpeed, &PlayerDirection, &Action), With<Player>>,
 )
 {
-    let (mut player_transform, direction, action) = player.single_mut();
+    let (mut player_transform, speed, direction, action) = player.single_mut();
     let delta = time.delta();
 
     let translation_magnitude = match *action {
         Action::Standing => 0.,
-        Action::Running => constants.player_run_speed_tps * delta.as_secs_f32(),
+        Action::Running => (speed.current() as f32) * delta.as_secs_f32(),
     };
 
     let translation_direction = direction.to_unit_vector();
@@ -278,14 +277,14 @@ fn update_player_billboard(
 
     // Update exp bar
     if let Ok(mut transform) = transforms.get_mut(billboard.exp) {
-        let scale = (level.exp() as f32) / (level.exp_required().max(1) as f32);
+        let scale = (level.exp() as f32) / level.exp_required().max(1.);
         transform.scale.x = scale;
         transform.translation.x = -(1. - scale) * constants.exp_bar_size.x / 2.;
     }
 
     // Update hp bar
     if let Ok(mut transform) = transforms.get_mut(billboard.hp) {
-        let scale = (hp.current as f32) / (hp.max.max(1) as f32);
+        let scale = (hp.current() as f32) / (hp.max().max(1) as f32);
         transform.scale.x = scale;
         transform.translation.x = -(1. - scale) * constants.hp_bar_size.x / 2.;
     }
@@ -304,14 +303,23 @@ fn spawn_player(
     let mut billboard_entities = BillboardEntities::default();
     c.spawn((
         Player,
+        (
+            Health::new(constants.player_base_hp),
+            HealthRegen::new(0),
+            Armor::new(constants.player_base_armor),
+            CooldownReduction::new(0),
+            MoveSpeed::new(constants.player_run_speed_tps),
+            CollectionRange::new(constants.hoover_detection_range),
+            AreaSize::new(1.0),
+            DamageAmp::new(0),
+            ExpAmp::new(0),
+            Level::new(constants.player_exp_start, constants.player_exp_rate),
+        ),
         SpatialBundle::from_transform(Transform::default()),
         SpriteLayer::Objects,
         PlayerDirection::Up,
         Action::Standing,
         AabbSize(constants.player_size),
-        Health::from_max(constants.player_base_hp),
-        Armor::new(constants.player_base_armor),
-        Level::new(constants.player_exp_start, constants.player_exp_rate),
         AttractionSource::HighPriority,
         StateScoped(GameState::Play),
         BoundInMap,

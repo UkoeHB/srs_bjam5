@@ -35,13 +35,13 @@ fn update_beer_can_powerup(
     mut c: Commands,
     clock: Res<GameClock>,
     animations: Res<SpriteAnimations>,
-    mut player: Query<(&Transform, &mut BeerCanAbility), With<Player>>,
+    mut player: Query<(Entity, &Transform, &CooldownReduction, &AreaSize, &mut BeerCanAbility), With<Player>>,
     mobs: Query<&Transform, (With<Mob>, Without<Player>)>,
     player_powerups: ReactRes<PlayerPowerups>,
     config: Res<BeerCanConfig>,
 )
 {
-    let Ok((transform, mut ability)) = player.get_single_mut() else { return };
+    let Ok((player_entity, transform, cdr, area_size, mut ability)) = player.get_single_mut() else { return };
     let level = player_powerups.get(&config.name);
     if level == 0 {
         return;
@@ -95,12 +95,14 @@ fn update_beer_can_powerup(
         &mut c,
         &clock,
         &animations,
+        player_entity,
         player_loc + nearest_dir.rotation_from_x() * config.launch_offset,
         nearest_dir,
+        &area_size,
     );
 
     // Update cooldown.
-    ability.next_fire_time = time + config.get_cooldown(level);
+    ability.next_fire_time = time + config.get_cooldown(level, &cdr);
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -140,13 +142,19 @@ impl BeerCanConfig
         self.damage_by_level.get(level).cloned().unwrap_or_default()
     }
 
-    fn get_cooldown(&self, level: usize) -> Duration
+    fn get_cooldown(&self, level: usize, cdr: &CooldownReduction) -> Duration
     {
         let level = (level.saturating_sub(1)).min(self.cooldown_by_level_ms.len().saturating_sub(1));
-        self.cooldown_by_level_ms
+        let cooldown = self
+            .cooldown_by_level_ms
             .get(level)
-            .map(|cd| Duration::from_millis(*cd))
-            .unwrap_or_default()
+            .cloned()
+            .unwrap_or_default();
+
+        // Apply cdr.
+        let cooldown = cdr.calculate_cooldown(cooldown);
+
+        Duration::from_millis(cooldown)
     }
 }
 
@@ -175,7 +183,7 @@ impl Plugin for BeerCanPlugin
         app.register_command::<BeerCanConfig>()
             .init_resource::<BeerCanConfig>()
             .add_systems(PreUpdate, add_beercan_ability.run_if(in_state(PlayState::Day)))
-            .add_systems(Update, update_beer_can_powerup.in_set(PowerUpUpdateSet));
+            .add_systems(Update, update_beer_can_powerup.in_set(AbilitiesUpdateSet));
     }
 }
 

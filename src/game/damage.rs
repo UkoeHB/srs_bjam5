@@ -7,23 +7,28 @@ use crate::*;
 fn handle_damage_events(
     mut c: Commands,
     mut events: EventReader<DamageEvent>,
+    sources: Query<&DamageAmp>,
     mut targets: Query<(&mut Health, &Armor)>,
 )
 {
-    for DamageEvent { target, damage } in events.read() {
+    for DamageEvent { source, target, damage } in events.read() {
         let Ok((mut hp, armor)) = targets.get_mut(*target) else { continue };
 
         // Check if entity is already dead.
-        if hp.current == 0 {
+        if hp.current() == 0 {
             continue;
         }
 
         // Calculate damage to apply.
-        let damage = ((*damage as f32) * (100. / (armor.armor as f32 + 100.))) as usize;
-        hp.remove(damage);
+        let damage = sources
+            .get(*source)
+            .map(|a| a.calculate_damage(*damage as f32))
+            .unwrap_or(*damage as f32);
+        let damage = armor.calculate_damage(damage);
+        hp.remove(damage.round() as usize);
 
         // Check for entity death.
-        if hp.current == 0 {
+        if hp.current() == 0 {
             c.trigger_targets(EntityDeath, *target);
         }
     }
@@ -35,6 +40,7 @@ fn handle_damage_events(
 #[derive(Event, Debug, Copy, Clone)]
 pub struct DamageEvent
 {
+    pub source: Entity,
     pub target: Entity,
     pub damage: usize,
 }

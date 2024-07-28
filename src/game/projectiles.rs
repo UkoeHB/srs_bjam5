@@ -39,7 +39,7 @@ fn apply_projectile_effect_impl<T: Component>(
 
     match projectile.projectile_type {
         ProjectileType::SingleUse { damage } | ProjectileType::Continuous { damage, .. } => {
-            events.send(DamageEvent { target, damage });
+            events.send(DamageEvent { source: projectile.source, target, damage });
             if projectile.effect_animation.is_some() {
                 let mut ec = c.spawn_empty();
                 add_effect_animation(&mut ec, projectile, transform);
@@ -127,6 +127,17 @@ pub enum ProjectileType
     },
 }
 
+impl ProjectileType
+{
+    pub fn with_area_size(mut self, area_size: &AreaSize) -> Self
+    {
+        if let Self::Explosion { area, .. } = &mut self {
+            *area = area_size.calculate_area(*area);
+        }
+        self
+    }
+}
+
 impl Default for ProjectileType
 {
     fn default() -> Self
@@ -140,6 +151,7 @@ impl Default for ProjectileType
 #[derive(Component, Debug)]
 pub struct Projectile
 {
+    source: Entity,
     projectile_type: ProjectileType,
     effect_animation: Option<AnimationId>,
     effect_sprite_layer: Option<SpriteLayer>,
@@ -188,8 +200,10 @@ impl ProjectileConfig
         c: &mut Commands,
         clock: &GameClock,
         animations: &SpriteAnimations,
+        source: Entity,
         spawn_location: Vec2,
         direction: Dir2,
+        area_size: &AreaSize,
     )
     {
         let effect_zone = match self.projectile_type {
@@ -219,11 +233,14 @@ impl ProjectileConfig
 
         let rotation = Quat::from_rotation_z(direction.rotation_from_x().as_radians());
         let flip_x = direction.x < 0.;
+        let size = area_size.calculate_area(self.size);
+        let scale = Vec3 { x: size.x / self.size.x, y: size.y / self.size.y, z: 1.0 };
 
         c.spawn((
             effect_zone,
             Projectile {
-                projectile_type: self.projectile_type.clone(),
+                source,
+                projectile_type: self.projectile_type.clone().with_area_size(area_size),
                 effect_animation,
                 effect_sprite_layer: self.effect_sprite_layer,
                 velocity_tps: self.velocity_tps,
@@ -233,10 +250,12 @@ impl ProjectileConfig
                     .map(|l| clock.elapsed + Duration::from_millis(l)),
             },
             StateScoped(GameState::Play),
-            AabbSize(self.size),
+            AabbSize(size),
             PrevLocation(spawn_location),
             SpatialBundle::from_transform(
-                Transform::from_translation(spawn_location.extend(0.)).with_rotation(rotation),
+                Transform::from_translation(spawn_location.extend(0.))
+                    .with_rotation(rotation)
+                    .with_scale(scale),
             ),
             Sprite { flip_x, ..default() },
             self.sprite_layer.unwrap_or(SpriteLayer::Projectiles),

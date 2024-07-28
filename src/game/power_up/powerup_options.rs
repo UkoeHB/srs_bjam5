@@ -195,11 +195,6 @@ pub enum PowerupOption
 
 //-------------------------------------------------------------------------------------------------------------------
 
-#[derive(SystemSet, Hash, Eq, PartialEq, Debug, Copy, Clone)]
-pub struct PowerUpActivateSet;
-
-//-------------------------------------------------------------------------------------------------------------------
-
 pub struct PowerupOptionsPlugin;
 
 impl Plugin for PowerupOptionsPlugin

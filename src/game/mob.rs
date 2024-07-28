@@ -1,8 +1,10 @@
 use std::collections::HashMap;
+use std::time::Duration;
 
 use bevy::ecs::system::EntityCommands;
 use bevy::ecs::world::Command;
 use bevy::prelude::*;
+use bevy_cobweb::prelude::*;
 use bevy_cobweb_ui::prelude::*;
 use rand::Rng;
 use rand_chacha::ChaCha8Rng;
@@ -17,13 +19,13 @@ fn update_emitter_mobs(
     clock: Res<GameClock>,
     animations: Res<SpriteAnimations>,
     player: Query<&Transform, With<Player>>,
-    mut emitters: Query<(&mut Emitter, &Transform, &Attraction), (With<Mob>, Without<Player>)>,
+    mut emitters: Query<(Entity, &mut Emitter, &Transform, &Attraction), (With<Mob>, Without<Player>)>,
 )
 {
     let Ok(player_transform) = player.get_single() else { return };
     let time = clock.elapsed;
 
-    for (mut emitter, transform, attraction) in emitters.iter_mut() {
+    for (entity, mut emitter, transform, attraction) in emitters.iter_mut() {
         // Wait for emitters to stop moving.
         if !attraction.is_stopped() {
             continue;
@@ -39,9 +41,11 @@ fn update_emitter_mobs(
             &mut c,
             &clock,
             &animations,
+            entity,
             transform.translation.truncate(),
             Dir2::new((player_transform.translation - transform.translation).truncate())
                 .unwrap_or(Dir2::new_unchecked(Vec2::default().with_x(1.))),
+            &AreaSize::new(1.0),
         );
     }
 }
@@ -55,6 +59,68 @@ fn despawn_mobs_on_death(event: Trigger<EntityDeath>, mut c: Commands, mobs: Que
         return;
     }
     c.entity(entity).despawn_recursive();
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
+fn apply_collider_effect_impl(
+    In((source, target)): In<(Entity, Entity)>,
+    mut events: EventWriter<DamageEvent>,
+    colliders: Query<&Collider>,
+)
+{
+    let Ok(collider) = colliders.get(source) else { return };
+    events.send(DamageEvent { source, target, damage: collider.damage });
+}
+
+pub fn apply_collider_effect(collider: Entity, target: Entity, c: &mut Commands)
+{
+    c.syscall((collider, target), apply_collider_effect_impl);
+}
+
+/// Component for collider effects.
+#[derive(Component, Debug)]
+pub struct Collider
+{
+    pub damage: usize,
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
+/// Component for emitter mobs.
+#[derive(Component, Debug)]
+pub struct Emitter
+{
+    cooldown_ms: u64,
+    projectile: ProjectileConfig,
+
+    next_fire_time: Option<Duration>,
+}
+
+impl Emitter
+{
+    pub fn new(cooldown_ms: u64, projectile: ProjectileConfig) -> Self
+    {
+        Self { cooldown_ms, projectile, next_fire_time: None }
+    }
+
+    pub fn config(&self) -> &ProjectileConfig
+    {
+        &self.projectile
+    }
+
+    /// Returns true if the emitter should fire.
+    pub fn update_cooldown(&mut self, time: Duration) -> bool
+    {
+        if let Some(next) = self.next_fire_time {
+            if time < next {
+                return false;
+            }
+        }
+
+        self.next_fire_time = Some(time + Duration::from_millis(self.cooldown_ms));
+        true
+    }
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -156,7 +222,11 @@ impl MobType
                             }
 
                             // Send damage event.
-                            dmg_events.send(DamageEvent { target: player, damage: base_damage });
+                            dmg_events.send(DamageEvent {
+                                source: mob_entity,
+                                target: player,
+                                damage: base_damage,
+                            });
                         },
                     );
                     0.
@@ -216,7 +286,7 @@ impl MobData
             SpatialBundle::from_transform(entity_transform),
             SpriteLayer::Objects,
             AabbSize(self.hitbox),
-            Health::from_max(self.base_health),
+            Health::new(self.base_health),
             Armor::new(self.base_armor),
             Attraction::new(
                 player_entity,

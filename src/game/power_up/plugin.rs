@@ -5,7 +5,17 @@ use crate::*;
 //-------------------------------------------------------------------------------------------------------------------
 
 #[derive(SystemSet, Hash, Eq, PartialEq, Debug, Copy, Clone)]
-pub struct PowerUpUpdateSet;
+pub struct PassivesUpdateSet;
+
+//-------------------------------------------------------------------------------------------------------------------
+
+#[derive(SystemSet, Hash, Eq, PartialEq, Debug, Copy, Clone)]
+pub struct AbilitiesUpdateSet;
+
+//-------------------------------------------------------------------------------------------------------------------
+
+#[derive(SystemSet, Hash, Eq, PartialEq, Debug, Copy, Clone)]
+pub struct PowerUpActivateSet;
 
 //-------------------------------------------------------------------------------------------------------------------
 

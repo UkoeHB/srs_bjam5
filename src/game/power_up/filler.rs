@@ -32,7 +32,7 @@ impl FillerType
         match filler_type {
             Self::Health => {
                 let Ok(mut hp) = player.get_single_mut() else { return };
-                let missing = hp.max.saturating_sub(hp.current);
+                let missing = hp.missing();
                 let to_gain = ((missing as f32) * (data.get_amount(filler_type) as f32) / 100.).round() as usize;
                 hp.add(to_gain);
             }

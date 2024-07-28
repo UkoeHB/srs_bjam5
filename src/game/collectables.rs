@@ -73,25 +73,25 @@ fn apply_collectable_effect_impl(
     collectables: Query<&Collectable>,
     mut c: Commands,
     constants: ReactRes<GameConstants>,
-    mut player: Query<(&mut Level, &mut Health), With<Player>>,
+    mut player: Query<(&mut Level, &mut Health, &ExpAmp), With<Player>>,
     mut karma: ReactResMut<Karma>,
     mut powerups: ResMut<BufferedPowerUps>,
 )
 {
-    let Ok((mut level, mut health)) = player.get_single_mut() else { return };
+    let Ok((mut level, mut health, exp_amp)) = player.get_single_mut() else { return };
     let Ok(collectable) = collectables.get(collectable) else { return };
 
     // Handle type.
     match *collectable {
         Collectable::Exp(exp) => {
-            let levels = level.add_exp(exp);
+            let levels = level.add_exp(exp, &exp_amp);
             powerups.insert(levels.iter().map(|_| PowerupSource::LevelUp));
         }
         Collectable::Karma(k) => {
             karma.get_mut(&mut c).add(k);
         }
         Collectable::HealthPack => {
-            let hp = (constants.collectable_hp_max_health * (health.max as f32)).round() as usize;
+            let hp = (constants.collectable_hp_max_health * (health.max() as f32)).round() as usize;
             health.add(hp);
         }
     }
@@ -108,16 +108,17 @@ fn apply_collectable_effect(source: Entity, target: Entity, c: &mut Commands)
 fn handle_collectable_detection(
     mut c: Commands,
     constants: ReactRes<GameConstants>,
-    player: Query<(Entity, &Transform, &AabbSize), With<Player>>,
+    player: Query<(Entity, &CollectionRange, &Transform, &AabbSize), With<Player>>,
     collectables: Query<(Entity, &Collectable, &Transform, &AabbSize), Without<Attraction>>,
 )
 {
-    let Ok((player_entity, player_transform, player_size)) = player.get_single() else { return };
+    let Ok((player_entity, range, player_transform, player_size)) = player.get_single() else { return };
     let player_aabb = player_size.get_2d(player_transform);
 
     for (entity, collectable, collectable_transform, collectable_size) in collectables.iter() {
         // Get collectable's detection range if allowed.
-        let Some(detection_range) = collectable.get_detection_range(&constants, **collectable_size) else {
+        let Some(detection_range) = collectable.get_detection_range(range.current() as f32, **collectable_size)
+        else {
             continue;
         };
 
@@ -156,10 +157,10 @@ pub enum Collectable
 
 impl Collectable
 {
-    pub fn get_detection_range(&self, constants: &GameConstants, _size: Vec2) -> Option<Vec2>
+    pub fn get_detection_range(&self, range: f32, _size: Vec2) -> Option<Vec2>
     {
         match self {
-            Self::Exp(..) | Self::Karma(..) => Some(constants.hoover_detection_range),
+            Self::Exp(..) | Self::Karma(..) => Some(Vec2::splat(range)),
             Self::HealthPack => None,
         }
     }

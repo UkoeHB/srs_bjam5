@@ -8,20 +8,35 @@ use serde::{Deserialize, Serialize};
 
 use crate::*;
 
-// TODO:
-// Give player the car battery ability
+//-------------------------------------------------------------------------------------------------------------------
 
 fn car_battery_placement(
     mut c: Commands,
     clock: Res<GameClock>,
     animations: Res<SpriteAnimations>,
-    mut player: Query<(&mut CarBatteryAbility, &Transform, &PlayerDirection), With<Player>>,
+    mut player: Query<
+        (
+            Entity,
+            &mut CarBatteryAbility,
+            &CooldownReduction,
+            &AreaSize,
+            &Transform,
+            &PlayerDirection,
+        ),
+        With<Player>,
+    >,
     player_powerups: ReactRes<PlayerPowerups>,
     config: Res<CarBatteryConfig>,
 )
 {
-    let Ok((mut ability, Transform { translation: Vec3 { x: player_x, y: player_y, .. }, .. }, p_dir)) =
-        player.get_single_mut()
+    let Ok((
+        player_entity,
+        mut ability,
+        cdr,
+        area_size,
+        Transform { translation: Vec3 { x: player_x, y: player_y, .. }, .. },
+        p_dir,
+    )) = player.get_single_mut()
     else {
         return;
     };
@@ -42,7 +57,7 @@ fn car_battery_placement(
     ProjectileConfig {
         projectile_type: ProjectileType::Continuous {
             damage,
-            cooldown_ms: (1000. / config.shock_pulse_frequency) as u64,
+            cooldown_ms: cdr.calculate_cooldown((1000. / config.shock_pulse_frequency) as u64),
         },
         velocity_tps: 0.,
         animation: config.animation.clone(),
@@ -54,19 +69,25 @@ fn car_battery_placement(
         &mut c,
         &clock,
         &animations,
+        player_entity,
         Vec2 { x: *player_x, y: *player_y } + config.drop_offset * behind_player_dir,
         behind_player_dir,
+        &area_size,
     );
 
     // Update cooldown.
-    ability.next_drop_time = time + config.get_cooldown(level);
+    ability.next_drop_time = time + config.get_cooldown(level, &cdr);
 }
+
+//-------------------------------------------------------------------------------------------------------------------
 
 #[derive(Component, Debug, Default)]
 struct CarBatteryAbility
 {
     next_drop_time: Duration,
 }
+
+//-------------------------------------------------------------------------------------------------------------------
 
 #[derive(Resource, Default, Reflect, Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct CarBatteryConfig
@@ -92,13 +113,19 @@ impl CarBatteryConfig
         self.damage_by_level.get(level).cloned().unwrap_or_default()
     }
 
-    fn get_cooldown(&self, level: usize) -> Duration
+    fn get_cooldown(&self, level: usize, cdr: &CooldownReduction) -> Duration
     {
         let level = (level.saturating_sub(1)).min(self.cooldown_by_level_ms.len().saturating_sub(1));
-        self.cooldown_by_level_ms
+        let cooldown = self
+            .cooldown_by_level_ms
             .get(level)
-            .map(|cd| Duration::from_millis(*cd))
-            .unwrap_or_default()
+            .cloned()
+            .unwrap_or_default();
+
+        // Apply cdr.
+        let cooldown = cdr.calculate_cooldown(cooldown);
+
+        Duration::from_millis(cooldown)
     }
 }
 
@@ -126,6 +153,6 @@ impl Plugin for CarBatteryPlugin
     {
         app.register_command::<CarBatteryConfig>()
             .init_resource::<CarBatteryConfig>()
-            .add_systems(Update, car_battery_placement);
+            .add_systems(Update, car_battery_placement.in_set(AbilitiesUpdateSet));
     }
 }

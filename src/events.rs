@@ -1,5 +1,13 @@
 //! Contains all reactive events that can be emitted in the app.
 
+use bevy::prelude::*;
+
+//-------------------------------------------------------------------------------------------------------------------
+
+/// Observer event emitted when an entity with a `Health` component dies.
+#[derive(Debug, Clone, Copy, Event)]
+pub struct EntityDeath;
+
 //-------------------------------------------------------------------------------------------------------------------
 
 /// Reactive event emitted when entering `GameState::DayStart`.

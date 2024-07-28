@@ -41,7 +41,7 @@
         "drop_radius": 25.0,
         "collectable_max_vel": 300.0,
         "collectable_accel": 400.0,
-        "hoover_detection_range": {"x": 60, "y": 60},
+        "hoover_detection_range": 60,
         "collectable_hp_max_health": 0.4,
 
         "collectable_exp_texture": "$collectable_exp_texture",
@@ -57,7 +57,7 @@
         "player_size": "$player_sprite_size",
         "player_standing_animation": "$player_standing_animation",
 
-        "player_run_speed_tps": 111.0,
+        "player_run_speed_tps": 111,
         "player_base_hp": 100,
         "player_base_armor": 0,
         "player_exp_start": 4,

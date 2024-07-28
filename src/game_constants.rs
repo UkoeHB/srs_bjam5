@@ -22,7 +22,7 @@ pub struct GameConstants
     pub drop_radius: f32,
     pub collectable_max_vel: f32,
     pub collectable_accel: f32,
-    pub hoover_detection_range: Vec2,
+    pub hoover_detection_range: usize,
     pub collectable_hp_max_health: f32,
 
     pub collectable_exp_texture: String,
@@ -39,7 +39,7 @@ pub struct GameConstants
     pub player_standing_animation: String,
 
     /// Player run speed in transform units per second.
-    pub player_run_speed_tps: f32,
+    pub player_run_speed_tps: usize,
     pub player_base_hp: usize,
     pub player_base_armor: usize,
     pub player_exp_start: usize,
