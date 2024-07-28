@@ -50,7 +50,8 @@ fn car_battery_placement(
         return;
     }
 
-    let behind_player_dir = -Dir2::new_unchecked(p_dir.to_unit_vector());
+    let player_dir: Dir2 = (*p_dir).into();
+    let behind_player_dir = -player_dir;
 
     // Spawn projectile.
     let damage = config.get_damage(level);

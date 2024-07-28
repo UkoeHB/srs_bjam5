@@ -95,6 +95,14 @@ impl PlayerDirection
     }
 }
 
+impl Into<Dir2> for PlayerDirection
+{
+    fn into(self) -> Dir2
+    {
+        Dir2::new_unchecked(self.to_unit_vector())
+    }
+}
+
 //-------------------------------------------------------------------------------------------------------------------
 
 /// Component tracks the current state of the player.

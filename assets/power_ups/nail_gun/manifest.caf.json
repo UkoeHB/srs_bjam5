@@ -1,0 +1,47 @@
+{
+"#constants": {
+    "$texture": "power_ups/nail_gun/nail_gun.png",
+    "$icon": "power_ups/nail_gun/nail_gun_icon.png",
+    "$sprite_size": {"x": 6, "y": 1}
+},
+
+"#commands": {
+    "NailGunConfig": {
+        "name": "Nail Gun",
+        "description": "Fires nails rapidly in a cross pattern.",
+        "animation": "nail_gun",
+        "icon": "$icon",
+        "size": "$sprite_size",
+        "damage_by_level": [
+            2,
+            4,
+            7,
+            11,
+            15
+        ],
+        "cooldown_by_level_ms": [
+            750,
+            600,
+            475,
+            350,
+            250
+        ],
+        "velocity_tps": 200.0,
+        "launch_offset": {"x": 25.0, "y": 0.0}
+    },
+    "LoadImages": [[
+        {"image": "$icon"}
+    ]],
+    "LoadSpriteAnimations": [[
+        {
+            "name": "nail_gun",
+            "image": "$texture",
+            "size": "$sprite_size",
+            "columns": 1,
+            "rows": 1,
+            "frame_time": 10000,
+            "clips": [{"frames": {"Frames": [0]}}]
+        }
+    ]]
+}
+}

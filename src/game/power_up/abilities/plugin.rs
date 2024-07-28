@@ -10,7 +10,7 @@ impl Plugin for AbilitiesPlugin
 {
     fn build(&self, app: &mut App)
     {
-        app.add_plugins(BeerCanPlugin);
+        app.add_plugins(BeerCanPlugin).add_plugins(NailGunPlugin);
     }
 }
 

@@ -1,6 +1,7 @@
 {
 "#manifest": {
     "power_ups/beer_can/manifest.caf.json": "power_ups.beer_can",
+    "power_ups/nail_gun/manifest.caf.json": "power_ups.nail_gun",
 
     "power_ups/filler.caf.json": "power_ups.filler",
     "power_ups/passives.caf.json": "power_ups.passives"

@@ -25,7 +25,7 @@ fn handle_damage_events(
             .map(|a| a.calculate_damage(*damage as f32))
             .unwrap_or(*damage as f32);
         let damage = armor.calculate_damage(damage);
-        hp.remove(damage.round() as usize);
+        hp.remove(damage.round().max(1.) as usize);
 
         // Check for entity death.
         if hp.current() == 0 {
