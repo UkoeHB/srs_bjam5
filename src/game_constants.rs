@@ -79,12 +79,6 @@ pub struct GameConstants
     pub boundary_corner_texture: String,
     pub boundary_width: f32,
     pub boundary_length: f32,
-
-    pub loop1: String,
-    pub loop2: String,
-    pub loop3: String,
-    pub loop4: String,
-    pub loop5: String,
 }
 
 impl Command for GameConstants

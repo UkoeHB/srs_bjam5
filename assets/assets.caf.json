@@ -26,11 +26,11 @@
     ]],
     "SoundtrackDatabase": {
         "tracks": [
-            {"source": "$loop1", "volume": 0.5},
-            {"source": "$loop2", "volume": 0.5},
-            {"source": "$loop3", "volume": 0.5},
-            {"source": "$loop4", "volume": 0.5},
-            {"source": "$loop5", "volume": 0.5}
+            {"source": "audio/loop1.ogg", "volume": 0.5},
+            {"source": "audio/loop2.ogg", "volume": 0.5},
+            {"source": "audio/loop3.ogg", "volume": 0.5},
+            {"source": "audio/loop4.ogg", "volume": 0.5},
+            {"source": "audio/loop5.ogg", "volume": 0.5}
         ]
     }
 }

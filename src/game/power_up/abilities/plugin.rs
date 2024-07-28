@@ -12,7 +12,8 @@ impl Plugin for AbilitiesPlugin
     {
         app.add_plugins(BeerCanPlugin)
             .add_plugins(NailGunPlugin)
-            .add_plugins(CarBatteryPlugin);
+            .add_plugins(CarBatteryPlugin)
+            .add_plugins(LargeTirePlugin);
     }
 }
 

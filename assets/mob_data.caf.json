@@ -28,15 +28,6 @@
 "#commands": {
     "LoadSpriteAnimations": [[
         {
-            "name": "mob_imp",
-            "image": "$mob_animation_imp",
-            "size": "$mob_size_imp",
-            "columns": 2,
-            "rows": 1,
-            "frame_time": 415,
-            "clips": [{"frames": {"Row": 0}}]
-        },
-        {
             "name": "mob_dark_mage",
             "image": "$mob_animation_dark_mage",
             "size": "$mob_size_dark_mage",
@@ -170,8 +161,8 @@
         "mob_bomb": {
             "animation": "mob_bomb",
             "hitbox": "$mob_size_bomb",
-            "base_health": 40,
-            "base_armor": 10,
+            "base_health": 25,
+            "base_armor": 5,
             "base_speed_tps": 60.0,
             "auto_flip_sprite": true,
             "mob_type": {"OnDeath": {"Explode": {"base_damage": 15, "base_range": 75, "explosion_animation": "mob_bomb_explosion"}}},
