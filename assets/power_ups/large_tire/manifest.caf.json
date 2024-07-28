@@ -1,0 +1,47 @@
+{
+"#constants": {
+    "$texture": "power_ups/large_tire/large_tire.png",
+    "$icon": "power_ups/large_tire/large_tire_icon.png",
+    "$sprite_size": {"x": 25, "y": 40}
+},
+
+"#commands": {
+    "LargeTireConfig": {
+        "name": "Large Tire",
+        "description": "Rolls over enemies in a random direction.",
+        "animation": "large_tire",
+        "icon": "$icon",
+        "size": "$sprite_size",
+        "damage_by_level": [
+            35,
+            75,
+            150,
+            225,
+            350
+        ],
+        "cooldown_by_level_ms": [
+            3000,
+            2500,
+            2000,
+            1600,
+            1200
+        ],
+        "velocity_tps": 150.0,
+        "launch_offset": {"x": 35.0, "y": 0.0}
+    },
+    "LoadImages": [[
+        {"image": "$icon"}
+    ]],
+    "LoadSpriteAnimations": [[
+        {
+            "name": "large_tire",
+            "image": "$texture",
+            "size": "$sprite_size",
+            "columns": 3,
+            "rows": 1,
+            "frame_time": 250,
+            "clips": [{"frames": {"Frames": [0, 1, 2]}}]
+        }
+    ]]
+}
+}

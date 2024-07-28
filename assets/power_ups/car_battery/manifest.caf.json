@@ -18,16 +18,14 @@
             25,
             45,
             80,
-            140,
-            200
+            140
         ],
         "cooldown_by_level_ms": [
             3000,
             2500,
             2000,
             1600,
-            1200,
-            800
+            1200
         ],
         "drop_offset": 35.0,
         "shock_animation": "car_battery_shock",

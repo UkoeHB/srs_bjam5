@@ -4,9 +4,6 @@
 },
 
 "#constants": {
-    "$mob_animation_imp": "sprites/mob_imp_50_50.png",
-    "$mob_size_imp": {"x": 50, "y": 50},
-
     "$mob_animation_dark_mage": "sprites/mob_dark_mage.png",
     "$mob_size_dark_mage": {"x": 35, "y": 35},
     "$projectile_animation_dark_mage": "sprites/mob_dark_mage.png",
@@ -117,16 +114,18 @@
     ]],
 
     "MobDatabase": [{
-        "mob_imp": {
-            "animation": "mob_imp",
-            "hitbox": "$mob_size_imp",
-            "base_health": 10,
+        "mob_balloon": {
+            "animation": "mob_balloon",
+            "hitbox": "$mob_size_balloon",
+            "base_health": 20,
             "base_armor": 1,
-            "base_speed_tps": 80.0,
+            "base_speed_tps": 0.0,
             "auto_flip_sprite": false,
-            "mob_type": {"Collider": {"base_damage": 2, "base_cooldown_millis": 1000}},
+            "mob_type": {"Collider": {"base_damage": 0, "base_cooldown_millis": 5000}},
             "drops": [
-                [0.2, [[{"Exp": 1}]]]
+                [0.4, [["HealthPack"]]],
+                [0.4, [[{"Karma": 1}, {"Karma": 1}, {"Karma": 1}, {"Karma": 2}, {"Karma": 2}]]],
+                [0.1, [[{"Karma": 2}, {"Karma": 2}, {"Karma": 2}, {"Karma": 4}]]]
             ]
         },
         "mob_slime": {
@@ -136,7 +135,7 @@
             "base_armor": 1,
             "base_speed_tps": 50.0,
             "auto_flip_sprite": false,
-            "mob_type": {"Collider": {"base_damage": 10, "base_cooldown_millis": 500}},
+            "mob_type": {"Collider": {"base_damage": 1, "base_cooldown_millis": 500}},
             "drops": [
                 [0.4, [[{"Exp": 1}]]],
                 [0.01, [[{"Exp": 10}]]]
@@ -145,16 +144,16 @@
         "mob_dark_mage": {
             "animation": "mob_dark_mage",
             "hitbox": "$mob_size_dark_mage",
-            "base_health": 10,
-            "base_armor": 1,
+            "base_health": 75,
+            "base_armor": 20,
             "base_speed_tps": 40.0,
             "auto_flip_sprite": false,
             "mob_type": {
                 "Emitter": {
                     "base_fire_range": 300.0,
-                    "base_cooldown_millis": 1000,
+                    "base_cooldown_millis": 2500,
                     "projectile": {
-                        "projectile_type": {"SingleUse": {"damage": 10}},
+                        "projectile_type": {"SingleUse": {"damage": 5}},
                         "velocity_tps": 70.0,
                         "animation": "projectile_dark_mage",
                         "size": "$projectile_size_dark_mage",
@@ -171,42 +170,28 @@
         "mob_bomb": {
             "animation": "mob_bomb",
             "hitbox": "$mob_size_bomb",
-            "base_health": 10,
-            "base_armor": 1,
+            "base_health": 40,
+            "base_armor": 10,
             "base_speed_tps": 60.0,
             "auto_flip_sprite": true,
-            "mob_type": {"OnDeath": {"Explode": {"base_damage": 40, "base_range": 50, "explosion_animation": "mob_bomb_explosion"}}},
+            "mob_type": {"OnDeath": {"Explode": {"base_damage": 15, "base_range": 75, "explosion_animation": "mob_bomb_explosion"}}},
             "drops": [
                 [0.4, [[{"Exp": 2}]]],
                 [0.01, [[{"Exp": 10}]]]
             ]
         },
-        "mob_balloon": {
-            "animation": "mob_balloon",
-            "hitbox": "$mob_size_balloon",
-            "base_health": 5,
-            "base_armor": 1,
-            "base_speed_tps": 0.0,
-            "auto_flip_sprite": false,
-            "mob_type": {"Collider": {"base_damage": 0, "base_cooldown_millis": 500}},
-            "drops": [
-                [0.4, [["HealthPack"]]],
-                [0.4, [[{"Karma": 1}, {"Karma": 1}, {"Karma": 1}, {"Karma": 2}, {"Karma": 2}]]],
-                [0.1, [[{"Karma": 2}, {"Karma": 2}, {"Karma": 2}, {"Karma": 4}]]]
-            ]
-        },
         "mob_gargoyle": {
             "animation": "mob_gargoyle",
             "hitbox": "$mob_size_gargoyle",
-            "base_health": 100,
-            "base_armor": 25,
+            "base_health": 200,
+            "base_armor": 50,
             "base_speed_tps": 20.0,
             "auto_flip_sprite": true,
-            "mob_type": {"Collider": {"base_damage": 20, "base_cooldown_millis": 1500}},
+            "mob_type": {"Collider": {"base_damage": 20, "base_cooldown_millis": 2500}},
             "drops": [
                 [0.2, [[{"Exp": 3}]]],
-                [0.4, [[{"Exp": 5}]]],
-                [0.02, [[{"Karma": 1}, {"Karma": 2}]]]
+                [0.4, [[{"Exp": 6}]]],
+                [0.01, [[{"Exp": 10}]]]
             ]
         }
     }]
