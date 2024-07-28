@@ -266,7 +266,8 @@ impl ProjectileConfig
             .flatten();
 
         let rotation = Quat::from_rotation_z(direction.rotation_from_x().as_radians());
-        let flip_x = direction.x < 0.;
+        //let flip_x = direction.x < 0.;
+        let flip_x = false;
         let size = area_size.calculate_area(self.size);
         let scale = Vec3 { x: size.x / self.size.x, y: size.y / self.size.y, z: 1.0 };
 

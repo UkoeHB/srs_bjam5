@@ -37,10 +37,10 @@
             "name": "large_tire",
             "image": "$texture",
             "size": "$sprite_size",
-            "columns": 3,
+            "columns": 2,
             "rows": 1,
-            "frame_time": 250,
-            "clips": [{"frames": {"Frames": [0, 1, 2]}}]
+            "frame_time": 135,
+            "clips": [{"frames": {"Frames": [0, 1]}}]
         }
     ]]
 }

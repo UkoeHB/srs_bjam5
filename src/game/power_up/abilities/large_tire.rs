@@ -1,9 +1,11 @@
+use std::f32::consts::TAU;
 use std::time::Duration;
 
 use bevy::ecs::world::Command;
 use bevy::prelude::*;
 use bevy_cobweb::prelude::*;
 use bevy_cobweb_ui::prelude::*;
+use rand::Rng;
 use serde::{Deserialize, Serialize};
 
 use crate::*;
@@ -67,7 +69,8 @@ fn update_large_tire_powerup(
         animation: config.animation.clone(),
         size: config.size,
         ..default()
-    }.create_projectile::<Mob>(
+    }
+    .create_projectile::<Mob>(
         &mut c,
         &clock,
         &animations,

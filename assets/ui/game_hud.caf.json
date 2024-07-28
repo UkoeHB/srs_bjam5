@@ -133,7 +133,7 @@
 
     "icon": {
         "FlexStyle": {
-            "dims": {"width": {"Px": 34.0}},
+            "dims": {"width": {"Px": 34.0}, "max_height": {"Px": 34.0}},
             "flex": {"justify_self_cross": "Center"}
         },
         "Splat<Margin>": [{"Px": 2.0}],
