@@ -7,7 +7,7 @@
             "description": "Gain maximum health."
         },
         "HealthRegen": {
-            "bonuses": [2, 8, 16],
+            "bonuses": [1, 5, 10],
             "icon": "images/passive_health_regen_icon.png",
             "description": "Regenerate health every second."
         },

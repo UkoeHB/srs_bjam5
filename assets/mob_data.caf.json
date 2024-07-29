@@ -257,8 +257,8 @@
         "mob_gargoyle": {
             "animation": "mob_gargoyle",
             "hitbox": "$mob_size_gargoyle",
-            "base_health": 200,
-            "base_armor": 50,
+            "base_health": 250,
+            "base_armor": 100,
             "base_speed_tps": 20.0,
             "auto_flip_sprite": true,
             "mob_type": {"Collider": {"base_damage": 15, "base_cooldown_millis": 2500}},

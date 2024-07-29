@@ -4,7 +4,7 @@
     "$shock_texture": "power_ups/car_battery/car_battery_shock.png",
     "$icon": "power_ups/car_battery/car_battery_icon.png",
     "$sprite_size": {"x": 15, "y": 11},
-    "$shock_sprite_size": {"x": 30, "y": 30}
+    "$shock_sprite_size": {"x": 45, "y": 45}
 },
 
 "#commands": {
