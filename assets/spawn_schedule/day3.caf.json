@@ -4,14 +4,6 @@
         {
             "day": 3,
             "sequence": [
-                {
-                    "mob_name": "mob_balloon",
-                    "start_time_secs": 0,
-                    "duration_secs": 15,
-                    "ramp_up_fraction": 0.0,
-                    "total_quantity": 20,
-                    "max_clump_size": 1
-                }
             ]
         }
     ]}

@@ -352,7 +352,7 @@ fn spawn_player(
                             color: constants.level_tag_color,
                         },
                     ),
-                    text_anchor: Anchor::CenterLeft,
+                    text_anchor: Anchor::CenterRight,
                     transform: Transform { translation: tag_translation, scale: Vec3::ONE, ..default() },
                     ..default()
                 },

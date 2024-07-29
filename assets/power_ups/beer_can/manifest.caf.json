@@ -14,16 +14,16 @@
         "icon": "$icon",
         "size": "$sprite_size",
         "damage_by_level": [
-            10,
+            15,
             40,
-            110
+            90
         ],
         "cooldown_by_level_ms": [
-            2000,
-            1100,
-            400
+            1500,
+            850,
+            500
         ],
-        "detection_range": 250.0,
+        "detection_range": 225.0,
         "velocity_tps": 200.0,
         "launch_offset": {"x": 25.0, "y": 0.0},
         "explosion_animation": "beer_can_explosion",

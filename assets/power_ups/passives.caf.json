@@ -2,47 +2,47 @@
 "#commands": {
     "PassiveDatabase": [{
         "Health": {
-            "bonuses": [20, 40, 70, 110, 150],
+            "bonuses": [20, 70, 150],
             "icon": "images/passive_health_icon.png",
             "description": "Gain maximum health."
         },
         "HealthRegen": {
-            "bonuses": [3, 6, 10, 15, 23],
+            "bonuses": [3, 10, 23],
             "icon": "images/passive_health_regen_icon.png",
             "description": "Regenerate health every second."
         },
         "Armor": {
-            "bonuses": [5, 10, 20, 30, 50],
+            "bonuses": [5, 20, 50],
             "icon": "images/passive_armor_icon.png",
             "description": "Reduce incoming damage."
         },
         "CooldownReduction": {
-            "bonuses": [5, 10, 20, 30, 50],
+            "bonuses": [5, 20, 50],
             "icon": "images/passive_cdr_icon.png",
             "description": "Reduce ability cooldowns."
         },
         "MoveSpeed": {
-            "bonuses": [5, 13, 23, 35, 50],
+            "bonuses": [5, 23, 50],
             "icon": "images/passive_move_speed_icon.png",
             "description": "Increase movement speed."
         },
         "CollectionRange": {
-            "bonuses": [5, 12, 22, 35, 50],
+            "bonuses": [5, 22, 50],
             "icon": "images/passive_collection_range_icon.png",
             "description": "Increase range to collect exp and karma."
         },
         "AreaSize": {
-            "bonuses": [5, 12, 22, 35, 50],
+            "bonuses": [5, 22, 50],
             "icon": "images/passive_area_size_icon.png",
             "description": "Increase the size of ability effects."
         },
         "DamageAmp": {
-            "bonuses": [5, 10, 15, 25, 40],
+            "bonuses": [5, 15, 40],
             "icon": "images/passive_damage_icon.png",
             "description": "Amplify the damage of abilities."
         },
         "ExpAmp": {
-            "bonuses": [3, 7, 15, 23, 30],
+            "bonuses": [3, 15, 30],
             "icon": "images/passive_exp_amp_icon.png",
             "description": "Amplify the experience collected."
         }

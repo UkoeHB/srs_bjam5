@@ -5,21 +5,99 @@
             "day": 1,
             "sequence": [
                 {
-                    "mob_name": "mob_balloon",
                     "start_time_secs": 5,
                     "duration_secs": 300,
-                    "ramp_up_fraction": 0.3,
-                    "total_quantity": 30,
-                    "max_clump_size": 1
+                    "wave_cooldown_secs": 10,
+                    "min_alive": 7,
+                    "mobs_per_wave": [
+                        [1, "mob_balloon"]
+                    ]
                 },
 
                 {
-                    "mob_name": "mob_slime",
-                    "start_time_secs": 0,
+                    "start_time_secs": 1,
+                    "duration_secs": 3,
+                    "wave_cooldown_secs": 1,
+                    "min_alive": 1,
+                    "mobs_per_wave": [
+                        [1, "mob_slime"]
+                    ]
+                },
+
+                {
+                    "start_time_secs": 8,
+                    "duration_secs": 32,
+                    "wave_cooldown_secs": 4,
+                    "min_alive": 5,
+                    "mobs_per_wave": [
+                        [4, "mob_slime"]
+                    ]
+                },
+
+                {
+                    "start_time_secs": 40,
+                    "duration_secs": 40,
+                    "wave_cooldown_secs": 8,
+                    "min_alive": 10,
+                    "mobs_per_wave": [
+                        [10, "mob_slime"],
+                        [1, "mob_skull"]
+                    ]
+                },
+
+                {
+                    "start_time_secs": 80,
+                    "duration_secs": 40,
+                    "wave_cooldown_secs": 6,
+                    "min_alive": 20,
+                    "mobs_per_wave": [
+                        [14, "mob_slime"],
+                        [2, "mob_skull"]
+                    ]
+                },
+
+                {
+                    "start_time_secs": 120,
+                    "duration_secs": 40,
+                    "wave_cooldown_secs": 4,
+                    "min_alive": 30,
+                    "mobs_per_wave": [
+                        [23, "mob_slime"],
+                        [4, "mob_skull"]
+                    ]
+                },
+
+                {
+                    "start_time_secs": 160,
+                    "duration_secs": 60,
+                    "wave_cooldown_secs": 4,
+                    "min_alive": 35,
+                    "mobs_per_wave": [
+                        [25, "mob_slime"],
+                        [4, "mob_skull"]
+                    ]
+                },
+
+                {
+                    "start_time_secs": 220,
+                    "duration_secs": 60,
+                    "wave_cooldown_secs": 4,
+                    "min_alive": 45,
+                    "mobs_per_wave": [
+                        [30, "mob_slime"],
+                        [6, "mob_skull"]
+                    ]
+                },
+
+                {
+                    "start_time_secs": 280,
                     "duration_secs": 20,
-                    "ramp_up_fraction": 0.9,
-                    "total_quantity": 25,
-                    "max_clump_size": 2
+                    "wave_cooldown_secs": 3,
+                    "min_alive": 60,
+                    "mobs_per_wave": [
+                        [30, "mob_slime"],
+                        [6, "mob_skull"]
+                    ]
                 }
             ]
         }

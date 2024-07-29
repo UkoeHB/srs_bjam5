@@ -24,7 +24,8 @@ fn update_light(mut light: Query<&mut AmbientLight2d>, clock: Res<GameClock>, co
     // parabolas are fun sometimes i guess. desmos graph i used for tweaking: https://www.desmos.com/calculator/jxilotpz1s
     //light.brightness = (-3. * day_progress * day_progress) + (3. * day_progress) + 0.2;
     //light.brightness = (-2.47 * day_progress * day_progress) + (2.33 * day_progress) + 0.35;
-    light.brightness = (-2.3 * day_progress * day_progress) + (2.0 * day_progress) + 0.5;
+    //light.brightness = (-2.3 * day_progress * day_progress) + (2.0 * day_progress) + 0.5;
+    light.brightness = (-1.45 * day_progress * day_progress) + (1.45 * day_progress) + 0.64;
 }
 
 //-------------------------------------------------------------------------------------------------------------------

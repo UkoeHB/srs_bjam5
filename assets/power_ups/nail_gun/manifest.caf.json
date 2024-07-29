@@ -14,8 +14,8 @@
         "size": "$sprite_size",
         "damage_by_level": [
             5,
-            12,
-            25
+            11,
+            20
         ],
         "cooldown_by_level_ms": [
             750,

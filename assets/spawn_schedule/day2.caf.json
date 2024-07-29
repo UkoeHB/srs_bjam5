@@ -4,62 +4,6 @@
         {
             "day": 2,
             "sequence": [
-                {
-                    "mob_name": "mob_slime",
-                    "start_time_secs": 0,
-                    "duration_secs": 15,
-                    "ramp_up_fraction": 0.3,
-                    "total_quantity": 5,
-                    "max_clump_size": 3
-                },
-                {
-                    "mob_name": "mob_imp",
-                    "start_time_secs": 10,
-                    "duration_secs": 12,
-                    "ramp_up_fraction": 0.3,
-                    "total_quantity": 8,
-                    "max_clump_size": 4
-                },
-                {
-                    "mob_name": "mob_skull",
-                    "start_time_secs": 20,
-                    "duration_secs": 15,
-                    "ramp_up_fraction": 0.3,
-                    "total_quantity": 5,
-                    "max_clump_size": 2
-                },
-                {
-                    "mob_name": "mob_dark_mage",
-                    "start_time_secs": 10,
-                    "duration_secs": 10,
-                    "ramp_up_fraction": 0.3,
-                    "total_quantity": 5,
-                    "max_clump_size": 1
-                },
-                {
-                    "mob_name": "mob_bomb",
-                    "start_time_secs": 0,
-                    "duration_secs": 8,
-                    "ramp_up_fraction": 0.3,
-                    "total_quantity": 10,
-                    "max_clump_size": 1
-                },
-                {
-                    "mob_name": "mob_balloon",
-                    "start_time_secs": 0,
-                    "duration_secs": 15,
-                    "ramp_up_fraction": 0.3,
-                    "total_quantity": 20,
-                    "max_clump_size": 1
-                },
-                {
-                    "mob_name": "mob_gargoyle",
-                    "start_time_secs": 10,
-                    "duration_secs": 20,
-                    "ramp_up_fraction": 0.3,
-                    "total_quantity": 5,
-                    "max_clump_size": 2
-                }
             ]
         }
     ]}

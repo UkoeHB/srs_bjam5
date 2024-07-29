@@ -59,7 +59,7 @@
         "player_base_hp": 100,
         "player_base_armor": 0,
         "player_exp_start": 3,
-        "player_exp_rate": 4,
+        "player_exp_rate": 5,
 
         "starting_powerup": "Beer Can",
         "max_powerup_level": 3,

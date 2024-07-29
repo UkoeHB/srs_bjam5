@@ -271,6 +271,7 @@ impl MobData
         entity_transform: Transform,
         player_entity: Entity,
         animations: &SpriteAnimations,
+        event_id: usize,
     )
     {
         let offset = constants.mob_attraction_offset;
@@ -298,6 +299,7 @@ impl MobData
             ),
             StateScoped(GameState::Play),
             BoundInMap,
+            InSpawnEvent(event_id),
         ))
         .set_sprite_animation(&animations, &self.animation);
 

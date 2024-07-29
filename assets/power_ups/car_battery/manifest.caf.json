@@ -21,7 +21,7 @@
         "cooldown_by_level_ms": [
             3000,
             2000,
-            1200
+            1500
         ],
         "drop_offset": 35.0,
         "shock_animation": "car_battery_shock",
