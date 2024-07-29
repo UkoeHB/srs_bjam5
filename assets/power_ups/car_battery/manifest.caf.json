@@ -4,13 +4,13 @@
     "$shock_texture": "power_ups/car_battery/car_battery_shock.png",
     "$icon": "power_ups/car_battery/car_battery_icon.png",
     "$sprite_size": {"x": 15, "y": 11},
-    "$shock_sprite_size": {"x": 15, "y": 11}
+    "$shock_sprite_size": {"x": 30, "y": 30}
 },
 
 "#commands": {
     "CarBatteryConfig": {
         "name": "Car Battery",
-        "description": "Lobbed at furthest high health enemy. Electrocutes on landing.",
+        "description": "Lobs at highest health enemy in range. Electrocutes on landing.",
         "animation": "car_battery",
         "icon": "$icon",
         "size": "$sprite_size",
@@ -28,7 +28,7 @@
         "release_offset": 30.0,
         "shock_animation": "car_battery_shock",
         "throw_range": 200,
-        "velocity_tps": 200
+        "velocity_tps": 210
     },
     "LoadImages": [[
         {"image": "$icon"}
