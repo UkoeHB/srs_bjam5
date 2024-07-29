@@ -28,7 +28,12 @@
     "$mob_size_balloon": {"x": 16, "y": 28},
 
     "$mob_animation_gargoyle": "sprites/mob_gargoyle.png",
-    "$mob_size_gargoyle": {"x": 35, "y": 29}
+    "$mob_size_gargoyle": {"x": 35, "y": 29},
+
+    "$mob_animation_toad": "sprites/mob_toad.png",
+    "$mob_size_toad": {"x": 64, "y": 52},
+    "$projectile_animation_toad": "sprites/mob_toad.png",
+    "$projectile_size_toad": {"x": 16, "y": 16}
 },
 
 "#commands": {
@@ -125,6 +130,33 @@
             "rows": 1,
             "frame_time": 300,
             "clips": [{"frames": {"Row": 0}}]
+        },
+        {
+            "name": "mob_toad",
+            "image": "$mob_animation_toad",
+            "size": "$mob_size_toad",
+            "columns": 10,
+            "rows": 1,
+            "frame_time": 100,
+            "clips": [{"frames": {"Row": 0}}]
+        },
+        {
+            "name": "projectile_toad",
+            "image": "$projectile_animation_toad",
+            "size": "$projectile_size_toad",
+            "columns": 41,
+            "rows": 1,
+            "frame_time": 100,
+            "clips": [{"frames": {"Frame": 40}}]
+        },
+        {
+            "name": "projectile_dissipate_toad",
+            "image": "$projectile_animation_toad",
+            "size": "$projectile_size_toad",
+            "columns": 44,
+            "rows": 1,
+            "frame_time": 75,
+            "clips": [{"frames": {"Frames": [41, 42, 43]}}]
         }
     ]],
 
@@ -234,6 +266,36 @@
                 [0.2, [[{"Exp": 3}]]],
                 [0.6, [[{"Exp": 6}]]],
                 [0.01, [[{"Exp": 10}]]]
+            ]
+        },
+        "mob_toad": {
+            "animation": "mob_toad",
+            "hitbox": "$mob_size_toad",
+            "base_health": 500,
+            "base_armor": 100,
+            "base_speed_tps": 0.0,
+            "auto_flip_sprite": true,
+            "mob_type": {
+                "Emitter": {
+                    "base_fire_range": 400,
+                    "base_cooldown_millis": 1500,
+                    "projectile": {
+                        "projectile_type": {"SingleUse": {"damage": 8}},
+                        "velocity_tps": 50.0,
+                        "animation": "projectile_toad",
+                        "size": "$projectile_size_toad",
+                        "effect_animation": "projectile_dissipate_toad"
+                    }
+                }
+            },
+            "drops": [
+                [0.95, [[
+                    {"Exp": 50}, {"Exp": 20}, {"Exp": 10}, {"Exp": 5}, {"Exp": 2}, {"Exp": 2}, 
+                    {"Karma": 50}, {"Karma": 50}, {"Karma": 25}, {"Karma": 20}, {"Karma": 10}, 
+                    {"Karma": 5}, {"Karma": 2}, {"Karma": 2}, {"Karma": 1}, {"Karma": 1}
+                ]]],
+                [0.01, [[{"Karma": 300}]]],
+                [0.01, [[{"Exp": 200}]]]
             ]
         }
     }]
