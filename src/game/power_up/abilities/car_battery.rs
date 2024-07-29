@@ -126,7 +126,7 @@ fn car_battery_placement(
         return;
     }
 
-    // Find highest-health and furthest enemy in range.
+    // Find highest-health and closest enemy in range.
     // (health, distance squared, location)
     let player_loc = translation.truncate();
     let range_squared = config.throw_range * config.throw_range;
@@ -147,7 +147,7 @@ fn car_battery_placement(
             continue;
         }
 
-        if distance_squared <= best.1 {
+        if distance_squared >= best.1 {
             continue;
         }
 
