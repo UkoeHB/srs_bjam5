@@ -64,6 +64,13 @@
             },
 
             "text": {
+                "FlexStyle": {
+                    "flex": {
+                        "margin": {
+                            "left": {"Px": 3.0}
+                        }
+                    }
+                },
                 "TextLine": {}
             }
         },
@@ -86,6 +93,13 @@
             },
 
             "text": {
+                "FlexStyle": {
+                    "flex": {
+                        "margin": {
+                            "right": {"Px": 3.0}
+                        }
+                    }
+                },
                 "TextLine": {}
             }
         }
