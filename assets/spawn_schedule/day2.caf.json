@@ -83,7 +83,7 @@
                 },
 
                 {
-                    "start_time_secs": 220,
+                    "start_time_secs": 210,
                     "duration_secs": 60,
                     "wave_cooldown_secs": 4,
                     "min_alive": 75,
@@ -95,8 +95,8 @@
                 },
 
                 {
-                    "start_time_secs": 280,
-                    "duration_secs": 20,
+                    "start_time_secs": 270,
+                    "duration_secs": 30,
                     "wave_cooldown_secs": 3,
                     "min_alive": 100,
                     "mobs_per_wave": [

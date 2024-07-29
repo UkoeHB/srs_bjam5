@@ -13,7 +13,7 @@
             "padding": {"left": {"Percent": 15.0}, "right": {"Percent": 15.0}}
         }
     },
-    "BgColor": [{"Hsla": {"hue": 0.0, "saturation": 0.80, "lightness": 0.0, "alpha": 0.5}}]
+    "BgColor": [{"Hsla": {"hue": 0.0, "saturation": 0.80, "lightness": 0.0, "alpha": 0.0}}]
 },
 
 "filler_notification": {

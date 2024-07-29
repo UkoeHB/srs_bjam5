@@ -8,18 +8,12 @@ use crate::*;
 
 //-------------------------------------------------------------------------------------------------------------------
 
-fn apply_health_regen(
-    mut next: Local<Duration>,
-    clock: Res<GameClock>,
-    mut regen: Query<(&HealthRegen, &mut Health)>,
-)
+fn apply_health_regen(clock: Res<GameClock>, mut regen: Query<(&mut HealthRegen, &mut Health)>)
 {
-    if clock.elapsed < *next {
-        return;
-    }
-    *next += Duration::from_secs(1);
-
-    for (regen, mut health) in regen.iter_mut() {
+    for (mut regen, mut health) in regen.iter_mut() {
+        if !regen.try_next(clock.elapsed) {
+            continue;
+        }
         health.add(regen.current());
     }
 }
@@ -84,13 +78,15 @@ pub struct HealthRegen
 {
     base: usize,
     bonus: usize,
+
+    next: Duration,
 }
 
 impl HealthRegen
 {
     pub fn new(base: usize) -> Self
     {
-        Self { base, bonus: 0 }
+        Self { base, bonus: 0, next: Duration::default() }
     }
 
     pub fn current(&self) -> usize
@@ -101,6 +97,15 @@ impl HealthRegen
     pub fn set_bonus(&mut self, bonus: usize)
     {
         self.bonus = bonus;
+    }
+
+    fn try_next(&mut self, clock: Duration) -> bool
+    {
+        if clock < self.next {
+            return false;
+        }
+        self.next += Duration::from_secs(1);
+        true
     }
 }
 

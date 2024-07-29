@@ -2,8 +2,116 @@
 "#commands": {
     "SpawnSchedule": {"schedule": [
         {
-            "day": 0,
+            "day": 5,
             "sequence": [
+                {
+                    "start_time_secs": 5,
+                    "duration_secs": 300,
+                    "wave_cooldown_secs": 10,
+                    "min_alive": 8,
+                    "mobs_per_wave": [
+                        [1, "mob_balloon"]
+                    ]
+                },
+
+                {
+                    "start_time_secs": 0,
+                    "duration_secs": 8,
+                    "wave_cooldown_secs": 1,
+                    "min_alive": 4,
+                    "mobs_per_wave": [
+                        [2, "mob_slime"],
+                        [2, "mob_imp"]
+                    ]
+                },
+
+                {
+                    "start_time_secs": 8,
+                    "duration_secs": 24,
+                    "wave_cooldown_secs": 6,
+                    "min_alive": 15,
+                    "mobs_per_wave": [
+                        [10, "mob_slime"],
+                        [1, "mob_bomb"]
+                    ]
+                },
+
+                {
+                    "start_time_secs": 40,
+                    "duration_secs": 36,
+                    "wave_cooldown_secs": 6,
+                    "min_alive": 25,
+                    "mobs_per_wave": [
+                        [13, "mob_slime"],
+                        [4, "mob_skull"],
+                        [1, "mob_bomb"],
+                        [1, "mob_gargoyle"]
+                    ]
+                },
+
+                {
+                    "start_time_secs": 80,
+                    "duration_secs": 36,
+                    "wave_cooldown_secs": 3,
+                    "min_alive": 100,
+                    "mobs_per_wave": [
+                        [55, "mob_slime"]
+                    ]
+                },
+
+                {
+                    "start_time_secs": 120,
+                    "duration_secs": 36,
+                    "wave_cooldown_secs": 3,
+                    "min_alive": 80,
+                    "mobs_per_wave": [
+                        [40, "mob_skull"]
+                    ]
+                },
+
+                {
+                    "start_time_secs": 160,
+                    "duration_secs": 56,
+                    "wave_cooldown_secs": 2,
+                    "min_alive": 200,
+                    "mobs_per_wave": [
+                        [75, "mob_imp"]
+                    ]
+                },
+
+                {
+                    "start_time_secs": 220,
+                    "duration_secs": 8,
+                    "wave_cooldown_secs": 2,
+                    "min_alive": 90,
+                    "mobs_per_wave": [
+                        [45, "mob_bomb"]
+                    ]
+                },
+
+                {
+                    "start_time_secs": 240,
+                    "duration_secs": 1,
+                    "wave_cooldown_secs": 3,
+                    "min_alive": 1,
+                    "mobs_per_wave": [
+                        [3, "mob_toad"]
+                    ]
+                },
+                {
+                    "start_time_secs": 240,
+                    "duration_secs": 60,
+                    "wave_cooldown_secs": 3,
+                    "min_alive": 100,
+                    "mobs_per_wave": [
+                        [20, "mob_slime"],
+                        [20, "mob_imp"],
+                        [12, "mob_skull"],
+                        [6, "mob_dark_mage"],
+                        [1, "mob_gargoyle"],
+                        [4, "mob_gargoyle"]
+                    ]
+                }
             ]
         }
     ]}

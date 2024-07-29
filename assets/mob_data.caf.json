@@ -271,17 +271,17 @@
         "mob_toad": {
             "animation": "mob_toad",
             "hitbox": "$mob_size_toad",
-            "base_health": 500,
-            "base_armor": 100,
+            "base_health": 2000,
+            "base_armor": 400,
             "base_speed_tps": 0.0,
             "auto_flip_sprite": true,
             "mob_type": {
                 "Emitter": {
                     "base_fire_range": 400,
-                    "base_cooldown_millis": 1500,
+                    "base_cooldown_millis": 2500,
                     "projectile": {
-                        "projectile_type": {"SingleUse": {"damage": 8}},
-                        "velocity_tps": 50.0,
+                        "projectile_type": {"SingleUse": {"damage": 33}},
+                        "velocity_tps": 40.0,
                         "animation": "projectile_toad",
                         "size": "$projectile_size_toad",
                         "effect_animation": "projectile_dissipate_toad"

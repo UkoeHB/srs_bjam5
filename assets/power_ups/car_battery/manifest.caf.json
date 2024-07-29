@@ -10,7 +10,7 @@
 "#commands": {
     "CarBatteryConfig": {
         "name": "Car Battery",
-        "description": "Lobs at highest health enemy in range. Electrocutes on landing.",
+        "description": "Thrown at highest health enemy in range. Electrocutes on landing.",
         "animation": "car_battery",
         "icon": "$icon",
         "size": "$sprite_size",

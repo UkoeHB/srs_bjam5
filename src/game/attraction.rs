@@ -50,7 +50,7 @@ fn update_transforms_for_attraction(
             Vec3::default()
         };
 
-        sprite.flip_x = attraction.auto_flip_sprite && vector.x < 0.;
+        sprite.flip_x = attraction.auto_flip_sprite && initial_vector.x < 0.;
 
         // Move the entity toward its attraction source.
         let distance = attraction

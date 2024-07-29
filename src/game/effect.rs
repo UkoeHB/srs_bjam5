@@ -185,7 +185,7 @@ fn apply_effect_zones<T: Component>(
                         .find(|(entity, ..)| *entity == target)
                     {
                         *flag = true;
-                        if *next < time {
+                        if time < *next {
                             // Cooldown in effect, wait more.
                             continue;
                         }
