@@ -46,6 +46,7 @@ fn update_emitter_mobs(
             Dir2::new((player_transform.translation - transform.translation).truncate())
                 .unwrap_or(Dir2::new_unchecked(Vec2::default().with_x(1.))),
             &AreaSize::new(1.0),
+            None,
         );
     }
 }

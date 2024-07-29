@@ -226,36 +226,32 @@ impl ProjectileConfig
         spawn_location: Vec2,
         direction: Dir2,
         area_size: &AreaSize,
-    )
+        custom_applier: Option<fn(Entity, Entity, &mut Commands)>,
+    ) -> Option<Entity>
     {
+        let applier = custom_applier.unwrap_or(apply_projectile_effect::<T>);
         let effect_zone = match self.projectile_type {
-            ProjectileType::SingleUse { .. } => {
-                EffectZone::<T>::new(EffectZoneConfig::SelfDestruct, apply_projectile_effect::<T>)
+            ProjectileType::SingleUse { .. } => EffectZone::<T>::new(EffectZoneConfig::SelfDestruct, applier),
+            ProjectileType::Continuous { cooldown_ms, .. } => {
+                EffectZone::<T>::new(EffectZoneConfig::Continuous { cooldown_ms }, applier)
             }
-            ProjectileType::Continuous { cooldown_ms, .. } => EffectZone::<T>::new(
-                EffectZoneConfig::Continuous { cooldown_ms },
-                apply_projectile_effect::<T>,
-            ),
             ProjectileType::Pulse { cooldown_ms, .. } => {
                 if self.effect_animation.is_none() {
                     tracing::error!("failed creating pulse projectile with animation {:?}; effect_animation \
                         field is required but not set", self.animation);
-                    return;
+                    return None;
                 }
 
-                EffectZone::<T>::new(
-                    EffectZoneConfig::ApplyAndRegenSingle { cooldown_ms },
-                    apply_projectile_effect::<T>,
-                )
+                EffectZone::<T>::new(EffectZoneConfig::ApplyAndRegenSingle { cooldown_ms }, applier)
             }
             ProjectileType::Explosion { .. } => {
                 if self.effect_animation.is_none() {
                     tracing::error!("failed creating explosion projectile with animation {:?}; effect_animation \
                         field is required but not set", self.animation);
-                    return;
+                    return None;
                 }
 
-                EffectZone::<T>::new(EffectZoneConfig::SelfDestructSingle, apply_projectile_effect::<T>)
+                EffectZone::<T>::new(EffectZoneConfig::SelfDestructSingle, applier)
             }
         };
 
@@ -271,31 +267,34 @@ impl ProjectileConfig
         let size = area_size.calculate_area(self.size);
         let scale = Vec3 { x: size.x / self.size.x, y: size.y / self.size.y, z: 1.0 };
 
-        c.spawn((
-            effect_zone,
-            Projectile {
-                source,
-                projectile_type: self.projectile_type.clone().with_area_size(area_size),
-                effect_animation,
-                effect_sprite_layer: self.effect_sprite_layer,
-                velocity_tps: self.velocity_tps,
-                direction,
-                despawn_time: self
-                    .max_lifetime_ms
-                    .map(|l| clock.elapsed + Duration::from_millis(l)),
-            },
-            StateScoped(GameState::Play),
-            AabbSize(size),
-            PrevLocation(spawn_location),
-            SpatialBundle::from_transform(
-                Transform::from_translation(spawn_location.extend(0.))
-                    .with_rotation(rotation)
-                    .with_scale(scale),
-            ),
-            Sprite { flip_x, ..default() },
-            self.sprite_layer.unwrap_or(SpriteLayer::Projectiles),
-        ))
-        .set_sprite_animation(animations, &self.animation);
+        Some(
+            c.spawn((
+                effect_zone,
+                Projectile {
+                    source,
+                    projectile_type: self.projectile_type.clone().with_area_size(area_size),
+                    effect_animation,
+                    effect_sprite_layer: self.effect_sprite_layer,
+                    velocity_tps: self.velocity_tps,
+                    direction,
+                    despawn_time: self
+                        .max_lifetime_ms
+                        .map(|l| clock.elapsed + Duration::from_millis(l)),
+                },
+                StateScoped(GameState::Play),
+                AabbSize(size),
+                PrevLocation(spawn_location),
+                SpatialBundle::from_transform(
+                    Transform::from_translation(spawn_location.extend(0.))
+                        .with_rotation(rotation)
+                        .with_scale(scale),
+                ),
+                Sprite { flip_x, ..default() },
+                self.sprite_layer.unwrap_or(SpriteLayer::Projectiles),
+            ))
+            .set_sprite_animation(animations, &self.animation)
+            .id(),
+        )
     }
 }
 

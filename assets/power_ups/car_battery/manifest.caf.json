@@ -6,27 +6,29 @@
     "$sprite_size": {"x": 15, "y": 11},
     "$shock_sprite_size": {"x": 15, "y": 11}
 },
+
 "#commands": {
     "CarBatteryConfig": {
         "name": "Car Battery",
-        "description": "Sits on the ground and zaps nearby enemies.",
+        "description": "Lobbed at furthest high health enemy. Electrocutes on landing.",
         "animation": "car_battery",
         "icon": "$icon",
-        "size": "$shock_sprite_size",
+        "size": "$sprite_size",
+        "damage_size": "$shock_sprite_size",
         "damage_by_level": [
-            15,
-            45,
-            140
+            25,
+            55,
+            100
         ],
         "cooldown_by_level_ms": [
-            3000,
-            2000,
-            1500
+            2200,
+            1500,
+            800
         ],
-        "drop_offset": 35.0,
+        "release_offset": 30.0,
         "shock_animation": "car_battery_shock",
-        "shock_pulse_frequency": 0.7,
-        "duration_ms": 4000
+        "throw_range": 200,
+        "velocity_tps": 200
     },
     "LoadImages": [[
         {"image": "$icon"}

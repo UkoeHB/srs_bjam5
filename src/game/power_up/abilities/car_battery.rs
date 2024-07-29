@@ -2,11 +2,73 @@ use std::time::Duration;
 
 use bevy::ecs::world::Command;
 use bevy::prelude::*;
-use bevy_cobweb::react::ReactRes;
+use bevy_cobweb::prelude::*;
 use bevy_cobweb_ui::loading::CobwebAssetRegistrationAppExt;
 use serde::{Deserialize, Serialize};
 
 use crate::*;
+
+//-------------------------------------------------------------------------------------------------------------------
+
+fn apply_car_battery_damage_impl(
+    In((effect, target)): In<(Entity, Entity)>,
+    mut events: EventWriter<DamageEvent>,
+    damage: Query<&CarBatteryDamage>,
+    player: Query<Entity, With<Player>>,
+)
+{
+    let Ok(damage) = damage.get(effect) else { return };
+    let Ok(player_entity) = player.get_single() else { return };
+    events.send(DamageEvent { source: player_entity, target, damage: damage.0 });
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
+fn apply_car_battery_damage(effect: Entity, target: Entity, c: &mut Commands)
+{
+    c.syscall((effect, target), apply_car_battery_damage_impl);
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
+fn apply_car_battery_effect_impl(
+    In((projectile, target)): In<(Entity, Entity)>,
+    mut c: Commands,
+    animations: Res<SpriteAnimations>,
+    batteries: Query<(&Transform, &CarBattery)>,
+)
+{
+    let Ok((transform, battery)) = batteries.get(projectile) else { return };
+    if battery.target != target {
+        return;
+    }
+
+    // Clean up attractor and self.
+    c.entity(target).despawn_recursive();
+    c.entity(projectile).despawn_recursive();
+
+    // Spawn damaging effect.
+    c.spawn((
+        SpatialBundle::from_transform(*transform), //note: adopts sprite scaling from battery
+        StateScoped(GameState::Play),
+        DespawnOnAnimationCycle,
+        SpriteLayer::Projectiles,
+        EffectZone::<Mob>::new(
+            EffectZoneConfig::ApplyAndRegen { cooldown_ms: 1_000_000 },
+            apply_car_battery_damage,
+        ),
+        CarBatteryDamage(battery.damage),
+        AabbSize(battery.effect_size),
+    ))
+    .set_sprite_animation(&animations, &battery.animation);
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
+fn apply_car_battery_effect(projectile: Entity, target: Entity, c: &mut Commands)
+{
+    c.syscall((projectile, target), apply_car_battery_effect_impl);
+}
 
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -42,22 +104,15 @@ fn car_battery_placement(
             &CooldownReduction,
             &AreaSize,
             &Transform,
-            &PlayerDirection,
         ),
         With<Player>,
     >,
     player_powerups: ReactRes<PlayerPowerups>,
     config: Res<CarBatteryConfig>,
+    mobs: Query<(&Transform, &Health), With<Mob>>,
 )
 {
-    let Ok((
-        player_entity,
-        mut ability,
-        cdr,
-        area_size,
-        Transform { translation: Vec3 { x: player_x, y: player_y, .. }, .. },
-        p_dir,
-    )) = player.get_single_mut()
+    let Ok((player_entity, mut ability, cdr, area_size, Transform { translation, .. })) = player.get_single_mut()
     else {
         return;
     };
@@ -71,38 +126,107 @@ fn car_battery_placement(
         return;
     }
 
-    let player_dir: Dir2 = (*p_dir).into();
-    let behind_player_dir = -player_dir;
+    // Find highest-health and furthest enemy in range.
+    // (health, distance squared, location)
+    let player_loc = translation.truncate();
+    let range_squared = config.throw_range * config.throw_range;
+    let mut best: (usize, f32, Vec2) = (0, 0., player_loc);
+    for (transform, health) in mobs.iter() {
+        if health.current() < best.0 {
+            continue;
+        }
 
-    // Spawn projectile.
-    let damage = config.get_damage(level);
-    ProjectileConfig {
-        projectile_type: ProjectileType::Pulse {
-            damage,
-            cooldown_ms: (1000. / config.shock_pulse_frequency) as u64,
-            area: config.size,
-        },
+        let loc = transform.translation.truncate();
+        let distance_squared = (loc - player_loc).length_squared();
+        if distance_squared > range_squared {
+            continue;
+        }
+
+        if health.current() > best.0 {
+            best = (health.current(), distance_squared, loc);
+            continue;
+        }
+
+        if distance_squared <= best.1 {
+            continue;
+        }
+
+        best = (health.current(), distance_squared, loc);
+    }
+
+    // Don't do anything if no mobs found.
+    if best.0 == 0 {
+        return;
+    }
+    let target_dir = Dir2::new(best.2 - player_loc).unwrap_or(Dir2::new_unchecked(Vec2::default().with_x(1.)));
+
+    // Spawn attractor entity.
+    let attractor = c
+        .spawn((
+            SpatialBundle::from_transform(Transform::from_translation(best.2.extend(0.))),
+            AttractionSource::LowPriority,
+            BatteryAttractor,
+            AabbSize(Vec2::splat(1.)),
+        ))
+        .id();
+
+    // Spawn battery entity, attracted to attractor.
+    // - When battery effect hits the attractor entity, despawn it and the battery and spawn the battery's
+    //   electrocution effect.
+    let projectile = ProjectileConfig {
+        projectile_type: ProjectileType::Continuous { damage: 0, cooldown_ms: 1_000_000 },
         velocity_tps: 0.,
         animation: config.animation.clone(),
         size: config.size,
-        effect_animation: Some(config.shock_animation.clone()),
-        max_lifetime_ms: Some(config.duration_ms),
-        sprite_layer: Some(SpriteLayer::GroundEffect),
+        max_lifetime_ms: Some(10_000),
+        sprite_layer: Some(SpriteLayer::Projectiles),
         ..default()
     }
-    .create_projectile::<Mob>(
+    .create_projectile::<BatteryAttractor>(
         &mut c,
         &clock,
         &animations,
         player_entity,
-        Vec2 { x: *player_x, y: *player_y } + config.drop_offset * behind_player_dir,
+        player_loc + config.release_offset * target_dir,
         PlayerDirection::Right.into(),
         &area_size,
-    );
+        Some(apply_car_battery_effect),
+    )
+    .unwrap();
+    c.entity(projectile).insert((
+        CarBattery {
+            target: attractor,
+            animation: config.shock_animation.clone(),
+            damage: config.get_damage(level),
+            effect_size: area_size.calculate_area(config.damage_size),
+        },
+        Attraction::new(attractor, config.velocity_tps, 0., Vec2::default(), 0., false),
+    ));
 
     // Update cooldown.
     ability.next_drop_time = time + config.get_cooldown(level, &cdr);
 }
+
+//-------------------------------------------------------------------------------------------------------------------
+
+#[derive(Component)]
+struct BatteryAttractor;
+
+//-------------------------------------------------------------------------------------------------------------------
+
+#[derive(Component)]
+struct CarBattery
+{
+    target: Entity,
+    animation: String,
+    damage: usize,
+    effect_size: Vec2,
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
+#[derive(Component)]
+struct CarBatteryDamage(usize);
 
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -121,16 +245,19 @@ pub struct CarBatteryConfig
     pub description: String,
     pub animation: String,
     pub icon: String,
-    /// This is the size of the damage effect zone, not the battery itself.
+    /// Size of battery.
     pub size: Vec2,
     pub damage_by_level: Vec<usize>,
     pub cooldown_by_level_ms: Vec<u64>,
-    /// Offset relative to player from where the battery is dropped on the ground.
-    pub drop_offset: f32,
     pub shock_animation: String,
-    /// In Hz
-    pub shock_pulse_frequency: f32,
-    pub duration_ms: u64,
+
+    /// This is the size of the damage effect zone.
+    pub damage_size: Vec2,
+
+    /// Offset relative to player from where the battery is thrown.
+    pub release_offset: f32,
+    pub throw_range: f32,
+    pub velocity_tps: f32,
 }
 
 impl CarBatteryConfig
@@ -182,7 +309,8 @@ impl Plugin for CarBatteryPlugin
         app.register_command::<CarBatteryConfig>()
             .init_resource::<CarBatteryConfig>()
             .add_systems(PreUpdate, add_car_battery_ability.run_if(in_state(PlayState::Day)))
-            .add_systems(Update, car_battery_placement.in_set(AbilitiesUpdateSet));
+            .add_systems(Update, car_battery_placement.in_set(AbilitiesUpdateSet))
+            .add_effect_target::<BatteryAttractor>();
     }
 }
 

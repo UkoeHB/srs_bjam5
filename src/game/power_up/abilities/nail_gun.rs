@@ -77,6 +77,7 @@ fn update_nail_gun_powerup(
             player_loc + dir.rotation_from_x() * config.launch_offset,
             dir,
             &area_size,
+            None,
         );
     }
 

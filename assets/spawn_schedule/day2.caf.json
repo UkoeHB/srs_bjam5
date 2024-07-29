@@ -4,6 +4,107 @@
         {
             "day": 2,
             "sequence": [
+                {
+                    "start_time_secs": 5,
+                    "duration_secs": 300,
+                    "wave_cooldown_secs": 10,
+                    "min_alive": 8,
+                    "mobs_per_wave": [
+                        [1, "mob_balloon"]
+                    ]
+                },
+
+                {
+                    "start_time_secs": 0,
+                    "duration_secs": 8,
+                    "wave_cooldown_secs": 1,
+                    "min_alive": 4,
+                    "mobs_per_wave": [
+                        [3, "mob_slime"]
+                    ]
+                },
+
+                {
+                    "start_time_secs": 8,
+                    "duration_secs": 32,
+                    "wave_cooldown_secs": 6,
+                    "min_alive": 15,
+                    "mobs_per_wave": [
+                        [8, "mob_slime"],
+                        [1, "mob_skull"]
+                    ]
+                },
+
+                {
+                    "start_time_secs": 40,
+                    "duration_secs": 40,
+                    "wave_cooldown_secs": 8,
+                    "min_alive": 25,
+                    "mobs_per_wave": [
+                        [14, "mob_slime"],
+                        [1, "mob_dark_mage"]
+                    ]
+                },
+
+                {
+                    "start_time_secs": 80,
+                    "duration_secs": 40,
+                    "wave_cooldown_secs": 6,
+                    "min_alive": 30,
+                    "mobs_per_wave": [
+                        [16, "mob_slime"],
+                        [3, "mob_skull"],
+                        [1, "mob_dark_mage"]
+                    ]
+                },
+
+                {
+                    "start_time_secs": 120,
+                    "duration_secs": 40,
+                    "wave_cooldown_secs": 4,
+                    "min_alive": 45,
+                    "mobs_per_wave": [
+                        [18, "mob_slime"],
+                        [4, "mob_skull"],
+                        [2, "mob_dark_mage"]
+                    ]
+                },
+
+                {
+                    "start_time_secs": 160,
+                    "duration_secs": 60,
+                    "wave_cooldown_secs": 4,
+                    "min_alive": 60,
+                    "mobs_per_wave": [
+                        [25, "mob_slime"],
+                        [7, "mob_skull"],
+                        [3, "mob_dark_mage"]
+                    ]
+                },
+
+                {
+                    "start_time_secs": 220,
+                    "duration_secs": 60,
+                    "wave_cooldown_secs": 4,
+                    "min_alive": 75,
+                    "mobs_per_wave": [
+                        [30, "mob_slime"],
+                        [10, "mob_skull"],
+                        [5, "mob_dark_mage"]
+                    ]
+                },
+
+                {
+                    "start_time_secs": 280,
+                    "duration_secs": 20,
+                    "wave_cooldown_secs": 3,
+                    "min_alive": 100,
+                    "mobs_per_wave": [
+                        [45, "mob_slime"],
+                        [15, "mob_skull"],
+                        [8, "mob_dark_mage"]
+                    ]
+                }
             ]
         }
     ]}

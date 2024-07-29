@@ -82,10 +82,10 @@
                     "start_time_secs": 220,
                     "duration_secs": 60,
                     "wave_cooldown_secs": 4,
-                    "min_alive": 45,
+                    "min_alive": 55,
                     "mobs_per_wave": [
-                        [30, "mob_slime"],
-                        [6, "mob_skull"]
+                        [35, "mob_slime"],
+                        [7, "mob_skull"]
                     ]
                 },
 
@@ -93,10 +93,10 @@
                     "start_time_secs": 280,
                     "duration_secs": 20,
                     "wave_cooldown_secs": 3,
-                    "min_alive": 60,
+                    "min_alive": 70,
                     "mobs_per_wave": [
-                        [30, "mob_slime"],
-                        [6, "mob_skull"]
+                        [35, "mob_slime"],
+                        [8, "mob_skull"]
                     ]
                 }
             ]

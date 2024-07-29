@@ -2,7 +2,7 @@
 "#commands": {
     "SpawnSchedule": {"schedule": [
         {
-            "day": 3,
+            "day": 0,
             "sequence": [
             ]
         }

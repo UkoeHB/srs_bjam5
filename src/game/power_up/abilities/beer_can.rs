@@ -99,6 +99,7 @@ fn update_beer_can_powerup(
         player_loc + nearest_dir.rotation_from_x() * config.launch_offset,
         nearest_dir,
         &area_size,
+        None,
     );
 
     // Update cooldown.
