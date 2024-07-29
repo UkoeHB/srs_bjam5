@@ -7,7 +7,7 @@
             "description": "Gain maximum health."
         },
         "HealthRegen": {
-            "bonuses": [3, 10, 23],
+            "bonuses": [2, 8, 16],
             "icon": "images/passive_health_regen_icon.png",
             "description": "Regenerate health every second."
         },
@@ -26,11 +26,6 @@
             "icon": "images/passive_move_speed_icon.png",
             "description": "Increase movement speed."
         },
-        "CollectionRange": {
-            "bonuses": [5, 22, 50],
-            "icon": "images/passive_collection_range_icon.png",
-            "description": "Increase range to collect exp and karma."
-        },
         "AreaSize": {
             "bonuses": [5, 22, 50],
             "icon": "images/passive_area_size_icon.png",
@@ -47,5 +42,12 @@
             "description": "Amplify the experience collected."
         }
     }]
+},
+"#c: DISABLED UNTIL WE GET MORE ABILITIES FOR BALANCE": {
+    "CollectionRange": {
+        "bonuses": [5, 22, 50],
+        "icon": "images/passive_collection_range_icon.png",
+        "description": "Increase range to collect exp and karma."
+    }
 }
 }

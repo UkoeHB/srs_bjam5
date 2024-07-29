@@ -26,7 +26,7 @@
 
                 {
                     "start_time_secs": 8,
-                    "duration_secs": 32,
+                    "duration_secs": 28,
                     "wave_cooldown_secs": 4,
                     "min_alive": 5,
                     "mobs_per_wave": [
@@ -36,18 +36,18 @@
 
                 {
                     "start_time_secs": 40,
-                    "duration_secs": 40,
-                    "wave_cooldown_secs": 8,
+                    "duration_secs": 36,
+                    "wave_cooldown_secs": 6,
                     "min_alive": 10,
                     "mobs_per_wave": [
-                        [10, "mob_slime"],
+                        [8, "mob_slime"],
                         [1, "mob_skull"]
                     ]
                 },
 
                 {
                     "start_time_secs": 80,
-                    "duration_secs": 40,
+                    "duration_secs": 36,
                     "wave_cooldown_secs": 6,
                     "min_alive": 20,
                     "mobs_per_wave": [
@@ -58,7 +58,7 @@
 
                 {
                     "start_time_secs": 120,
-                    "duration_secs": 40,
+                    "duration_secs": 36,
                     "wave_cooldown_secs": 4,
                     "min_alive": 30,
                     "mobs_per_wave": [
@@ -69,7 +69,7 @@
 
                 {
                     "start_time_secs": 160,
-                    "duration_secs": 60,
+                    "duration_secs": 56,
                     "wave_cooldown_secs": 4,
                     "min_alive": 35,
                     "mobs_per_wave": [

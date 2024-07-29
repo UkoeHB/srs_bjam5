@@ -35,7 +35,7 @@ fn refresh_player_passives(
         mut armor,
         mut cdr,
         mut movespeed,
-        mut collection,
+        mut _collection,
         mut areasize,
         mut damageamp,
         mut expamp,
@@ -50,7 +50,7 @@ fn refresh_player_passives(
     armor.set_bonus(passives.get(Passive::Armor, &player));
     cdr.set_bonus(passives.get(Passive::CooldownReduction, &player));
     movespeed.set_bonus(passives.get(Passive::MoveSpeed, &player));
-    collection.set_bonus(passives.get(Passive::CollectionRange, &player));
+    //collection.set_bonus(passives.get(Passive::CollectionRange, &player));
     areasize.set_bonus(passives.get(Passive::AreaSize, &player));
     damageamp.set_bonus(passives.get(Passive::DamageAmp, &player));
     expamp.set_bonus(passives.get(Passive::ExpAmp, &player));
@@ -73,7 +73,8 @@ pub enum Passive
     /// Increases move speed. Calculated as `speed = base_speed * (1 + (move_speed / 100))`.
     MoveSpeed,
     /// Increases collection range for collectables.
-    CollectionRange,
+    // DISABLED UNTIL WE GET MORE ABILITIES
+    //CollectionRange,
     /// Increases size of area effects. Calculated as `area*(1 + (area_size / 100))`.
     AreaSize,
     /// Amplifies damage effects. Calculated as `damage*(1 + (damage_amp / 100))`.
@@ -92,7 +93,7 @@ impl Passive
             Self::Armor => "Armor",
             Self::CooldownReduction => "Ability Haste",
             Self::MoveSpeed => "Move Speed",
-            Self::CollectionRange => "Pickup Range",
+            //Self::CollectionRange => "Pickup Range",
             Self::AreaSize => "Area Size",
             Self::DamageAmp => "Damage Amp",
             Self::ExpAmp => "Exp Amp",

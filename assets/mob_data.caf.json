@@ -138,8 +138,8 @@
             "auto_flip_sprite": false,
             "mob_type": {"Collider": {"base_damage": 0, "base_cooldown_millis": 5000}},
             "drops": [
-                [0.2, [["HealthPack"]]],
-                [0.4, [[{"Karma": 1}, {"Karma": 1}, {"Karma": 1}, {"Karma": 2}, {"Karma": 2}]]],
+                [0.27, [["HealthPack"]]],
+                [0.3, [[{"Karma": 1}, {"Karma": 1}, {"Karma": 1}, {"Karma": 2}, {"Karma": 2}]]],
                 [0.2, [[{"Karma": 2}, {"Karma": 2}, {"Karma": 2}, {"Karma": 4}]]]
             ]
         },
