@@ -18,7 +18,7 @@
 
         "day": {
             "text": {
-                "TextLine": {"size": 50.0}
+                "TextLine": {"size": 50.0, "linebreak": "WordBoundary", "justify": "Center"}
             }
         },
 

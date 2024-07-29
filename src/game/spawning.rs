@@ -246,19 +246,18 @@ pub struct SpawnSchedule
     schedule: Vec<SpawnSequence>,
 }
 
+impl SpawnSchedule
+{
+    pub fn num_scheduled(&self) -> usize
+    {
+        self.schedule.len()
+    }
+}
+
 impl Command for SpawnSchedule
 {
     fn apply(mut self, w: &mut World)
     {
-        self.schedule.sort_unstable_by(|a, b| a.day.cmp(&b.day));
-        self.schedule.dedup_by(|a, b| {
-            let eq = a.day == b.day;
-            if eq {
-                tracing::warn!("removing spawn sequence with duplicate day {:?}", b);
-            }
-            eq
-        });
-
         // Sort in reverse order so removals are cheaper.
         for sequence in &mut self.schedule {
             sequence
@@ -278,6 +277,11 @@ impl Command for SpawnSchedule
         } else {
             w.insert_resource(self);
         }
+
+        // Sort so the last day is at the end.
+        w.resource_mut::<SpawnSchedule>()
+            .schedule
+            .sort_unstable_by(|a, b| a.day.cmp(&b.day));
     }
 }
 

@@ -15,8 +15,13 @@ fn spawn_day_start_ui(mut c: Commands, mut s: ResMut<SceneLoader>)
 
         l.edit("header::day::text", |l| {
             l.update_on(resource_mutation::<Day>(), |id| {
-                move |mut e: TextEditor, day: ReactRes<Day>| {
-                    write_text!(e, id, "Day {}", day.get());
+                move |mut e: TextEditor, day: ReactRes<Day>, spawnsched: Res<SpawnSchedule>| {
+                    // Hacky end condition.
+                    if day.get() > spawnsched.num_scheduled() {
+                        write_text!(e, id, "You reached the end of this jam game!\nThe last day will repeat.\nDay {}", day.get());
+                    } else {
+                        write_text!(e, id, "Day {}", day.get());
+                    }
                 }
             });
         });
