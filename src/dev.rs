@@ -1,6 +1,8 @@
-use std::time::Duration;
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use bevy::prelude::*;
+use bevy::render::view::screenshot::ScreenshotManager;
+use bevy::window::PrimaryWindow;
 use bevy_cobweb::prelude::*;
 use bevy_cobweb_ui::prelude::*;
 use bevy_cobweb_ui::sickle::prelude::*;
@@ -22,6 +24,8 @@ struct DevControls
     skip_power_up: KeyCode,
     add_exp: KeyCode,
     apply_damage: KeyCode,
+    screenshot: KeyCode,
+    show_hide_dev_controls: KeyCode,
 }
 
 impl DevControls
@@ -29,7 +33,8 @@ impl DevControls
     fn display(&self) -> String
     {
         // How to get this from the fields of self? Kind of a pain..
-        format!("DEV:\nSurvive(Z)\nDie(X)\n+Karma(F)\n+PowerUp(Q)\nSkipPowerup(R)\n+Exp(E)\n-Hp(C)")
+        format!("DEV:\nSurvive(Z)\nDie(X)\n+Karma(F)\n+PowerUp(Q)\n\
+            SkipPowerup(R)\n+Exp(E)\n-Hp(C)\nScreenshot(P)\nShowHideDev(H)")
     }
 }
 
@@ -45,6 +50,8 @@ impl Default for DevControls
             skip_power_up: KeyCode::KeyR,
             add_exp: KeyCode::KeyE,
             apply_damage: KeyCode::KeyC,
+            screenshot: KeyCode::KeyP,
+            show_hide_dev_controls: KeyCode::KeyH,
         }
     }
 }
@@ -55,6 +62,20 @@ fn display_dev_controls(mut c: Commands, controls: Res<DevControls>)
 {
     c.ui_builder(UiRoot).container(NodeBundle::default(), |ui| {
         ui.despawn_on_broadcast::<GameDayStart>();
+        ui.update_on(broadcast::<ToggleDevControls>(), |id| {
+            move |mut off: Local<bool>, event: BroadcastEvent<ToggleDevControls>, mut c: Commands| {
+                let Some(_) = event.try_read() else { return };
+                match *off {
+                    false => {
+                        c.entity(id).insert_reactive(DisplayControl::Hide);
+                    }
+                    true => {
+                        c.entity(id).insert_reactive(DisplayControl::Display);
+                    }
+                }
+                *off = !*off;
+            }
+        });
 
         ui.style()
             .height(Val::Vh(100.0))
@@ -79,6 +100,8 @@ fn check_dev_commands(
     mut powerups: ResMut<BufferedPowerUps>,
     mut player: Query<(Entity, &mut Level, &Health)>,
     mut damage: EventWriter<DamageEvent>,
+    main_window: Query<Entity, With<PrimaryWindow>>,
+    mut screenshot: ResMut<ScreenshotManager>,
 )
 {
     if *last_command + Duration::from_millis(150) > time.elapsed() {
@@ -116,6 +139,21 @@ fn check_dev_commands(
                 target: entity,
                 damage: max / 5 + max / 7 + 1,
             });
+        } else if *pressed == controls.screenshot {
+            let time = SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap_or_default();
+            let secs = time.as_secs() % 60;
+            let mins = (time.as_secs() / 60) % 60;
+            let hrs = ((time.as_secs() / 60) / 60) % 24;
+            let days = (((time.as_secs() / 60) / 60) / 24) % 365;
+            let year = (((time.as_secs() / 60) / 60) / 24) / 365 + 1970;
+            let path = format!("./screenshot-{}:{}:{:0>2}:{:0>2}:{:0>2}.png", year, days, hrs, mins, secs);
+            screenshot
+                .save_screenshot_to_disk(main_window.single(), path)
+                .unwrap();
+        } else if *pressed == controls.show_hide_dev_controls {
+            c.react().broadcast(ToggleDevControls);
         } else {
             continue;
         }
@@ -128,6 +166,9 @@ fn check_dev_commands(
 
 /// Reactive event for canceling powerups.
 pub struct CancelPowerup;
+
+/// Reactive event for toggling the display of dev controls.
+pub struct ToggleDevControls;
 
 //-------------------------------------------------------------------------------------------------------------------
 
