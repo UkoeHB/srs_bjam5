@@ -96,8 +96,8 @@ impl Plugin for DamagePlugin
 {
     fn build(&self, app: &mut App)
     {
-        app.add_event::<DamageEvent>()
-            .add_event::<EntityDeath>()
+        app.add_state_scoped_event::<DamageEvent>(PlayState::Day)
+            .add_state_scoped_event::<EntityDeath>(PlayState::Day)
             .configure_sets(
                 Update,
                 (DamageSet::DetectDamage, DamageSet::HandleDeaths, DamageSet::DespawnDead)

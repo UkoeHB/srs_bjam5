@@ -261,7 +261,7 @@ impl Plugin for MapPlugin
     fn build(&self, app: &mut App)
     {
         app.add_systems(
-            // Run all these systems on startup so the map does need to be regenerated every time.
+            // Run all these systems on startup so the map doesn't need to be regenerated every time.
             OnExit(GameState::Loading),
             (spawn_map, setup_map_boundary, spawn_map_controls).chain(),
         )

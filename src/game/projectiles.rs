@@ -311,8 +311,7 @@ impl Plugin for ProjectilePlugin
 {
     fn build(&self, app: &mut App)
     {
-        app.add_event::<DamageEvent>()
-            .add_systems(Update, update_projectile_transforms.in_set(ProjectileUpdateSet));
+        app.add_systems(Update, update_projectile_transforms.in_set(ProjectileUpdateSet));
     }
 }
 
