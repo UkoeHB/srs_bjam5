@@ -40,10 +40,6 @@ fn spawn_game_hud(mut c: Commands, mut s: ResMut<SceneLoader>, constants: ReactR
             });
         });
 
-        // todo: settings button
-
-        // todo: passive/active ability slots
-
         fn slot_builder<'a>(l: &mut LoadedScene<'a, '_, UiBuilder<'a, Entity>>, file: &LoadableRef, index: usize, target_ability_type: AbilityType) {
             l.load_scene(file.e("ability_slot_scene"), |l| {
                 let level_entity = l.get_entity("level").unwrap();

@@ -35,6 +35,7 @@ impl Plugin for DayEndPlugin
                 send_day_over,
             )
         });
+        //todo: this races with the game clock update, need to use ordered system sets
         app.add_systems(PreUpdate, check_day_end_condition.run_if(in_state(PlayState::Day)));
     }
 }

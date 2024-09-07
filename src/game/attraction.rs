@@ -178,13 +178,7 @@ impl Plugin for AttractionPlugin
 {
     fn build(&self, app: &mut App)
     {
-        app.add_systems(
-            Update,
-            (update_transforms_for_attraction)
-                .chain()
-                .in_set(AttractionUpdateSet)
-                .run_if(in_state(GameState::Play)),
-        );
+        app.add_systems(Update, update_transforms_for_attraction.in_set(AttractionUpdateSet));
     }
 }
 

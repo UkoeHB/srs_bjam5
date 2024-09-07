@@ -74,7 +74,7 @@ impl Plugin for GameCameraPlugin
 {
     fn build(&self, app: &mut App)
     {
-        app.add_systems(Update, (update_camera,).chain().in_set(CameraUpdateSet));
+        app.add_systems(Update, update_camera.in_set(CameraUpdateSet));
     }
 }
 

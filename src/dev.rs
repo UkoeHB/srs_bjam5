@@ -64,15 +64,14 @@ fn display_dev_controls(mut c: Commands, controls: Res<DevControls>)
         ui.despawn_on_broadcast::<GameDayStart>();
         ui.update_on(broadcast::<ToggleDevControls>(), |id| {
             move |mut off: Local<bool>, event: BroadcastEvent<ToggleDevControls>, mut c: Commands| {
-                let Some(_) = event.try_read() else { return };
-                match *off {
-                    false => {
-                        c.entity(id).insert_reactive(DisplayControl::Hide);
-                    }
-                    true => {
-                        c.entity(id).insert_reactive(DisplayControl::Display);
-                    }
-                }
+                if event.try_read().is_none() {
+                    return;
+                };
+                let next = match *off {
+                    false => DisplayControl::Hide,
+                    true => DisplayControl::Display,
+                };
+                c.entity(id).insert_reactive(next);
                 *off = !*off;
             }
         });
@@ -83,7 +82,7 @@ fn display_dev_controls(mut c: Commands, controls: Res<DevControls>)
             .justify_content(JustifyContent::Center);
 
         ui.container(NodeBundle::default(), |ui| {
-            ui.insert_derived(TextLine { text: controls.display(), ..default() });
+            ui.insert_derived(TextLine::from_text(controls.display()));
         });
     });
 }

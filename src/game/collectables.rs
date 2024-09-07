@@ -19,6 +19,7 @@ struct CollectableDropEvent
 
 //-------------------------------------------------------------------------------------------------------------------
 
+// PROBLEM: This event reader can theoretically contain stale events from the previous day.
 fn handle_collectable_drop_events(
     mut events: EventReader<CollectableDropEvent>,
     mut c: Commands,
@@ -235,7 +236,9 @@ impl Plugin for CollectablesPlugin
             .register_type::<Collectable>()
             .add_systems(
                 Update,
-                (handle_collectable_drop_events, handle_collectable_detection).in_set(CollectablesUpdateSet),
+                (handle_collectable_drop_events, handle_collectable_detection)
+                    .chain()
+                    .in_set(CollectablesUpdateSet),
             )
             .observe(handle_collectable_drops);
     }
