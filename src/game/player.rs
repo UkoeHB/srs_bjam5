@@ -300,6 +300,17 @@ fn update_player_billboard(
 
 //-------------------------------------------------------------------------------------------------------------------
 
+fn detect_player_death(mut c: Commands, mut events: EventReader<EntityDeath>, player: Query<Entity, With<Player>>)
+{
+    let player = player.single();
+    if !events.read().any(|event| **event == player) {
+        return;
+    }
+    c.react().broadcast(PlayerDied);
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
 fn spawn_player(
     mut c: Commands,
     constants: ReactRes<GameConstants>,
@@ -333,7 +344,6 @@ fn spawn_player(
         BoundInMap,
     ))
     .set_sprite_animation(&animations, &constants.player_standing_animation)
-    .observe(|_: Trigger<EntityDeath>, mut c: Commands| c.react().broadcast(PlayerDied))
     .with_children(|cb| {
         // Player level
         let tag_translation = vec3(
@@ -451,6 +461,7 @@ impl Plugin for PlayerPlugin
                     .chain()
                     .in_set(PlayerUpdateSet),
             )
+            .add_systems(Update, detect_player_death.in_set(DamageSet::HandleDeaths))
             .add_systems(
                 PostUpdate,
                 update_player_billboard

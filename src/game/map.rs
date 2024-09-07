@@ -12,6 +12,8 @@ use serde::{Deserialize, Serialize};
 
 use crate::*;
 
+//-------------------------------------------------------------------------------------------------------------------
+
 #[derive(Component)]
 pub struct BoundInMap;
 

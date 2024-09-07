@@ -5,8 +5,8 @@ use crate::*;
 //-------------------------------------------------------------------------------------------------------------------
 
 fn handle_damage_events(
-    mut c: Commands,
     mut events: EventReader<DamageEvent>,
+    mut deaths: EventWriter<EntityDeath>,
     sources: Query<&DamageAmp>,
     mut targets: Query<(&mut Health, &Armor)>,
 )
@@ -29,10 +29,32 @@ fn handle_damage_events(
 
         // Check for entity death.
         if hp.current() == 0 {
-            c.trigger_targets(EntityDeath, *target);
+            deaths.send(EntityDeath(*target));
         }
     }
 }
+
+//-------------------------------------------------------------------------------------------------------------------
+
+fn despawn_dead_entities(
+    mut c: Commands,
+    mut events: EventReader<EntityDeath>,
+    should_despawn: Query<(), With<DespawnOnDeath>>,
+)
+{
+    for EntityDeath(entity) in events.read() {
+        if !should_despawn.contains(*entity) {
+            continue;
+        }
+        c.entity(*entity).despawn_recursive();
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
+/// Marker components for entities that should despawn when receiving `EntityDeath` events.
+#[derive(Component, Debug)]
+pub struct DespawnOnDeath;
 
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -47,8 +69,24 @@ pub struct DamageEvent
 
 //-------------------------------------------------------------------------------------------------------------------
 
+/// Event emitted when an entity with a `Health` component dies.
+#[derive(Debug, Deref, Clone, Copy, Event)]
+pub struct EntityDeath(pub Entity);
+
+//-------------------------------------------------------------------------------------------------------------------
+
 #[derive(SystemSet, Hash, Eq, PartialEq, Debug, Copy, Clone)]
 pub struct DamageUpdateSet;
+
+//-------------------------------------------------------------------------------------------------------------------
+
+#[derive(SystemSet, Hash, Eq, PartialEq, Debug, Copy, Clone)]
+pub enum DamageSet
+{
+    DetectDamage,
+    HandleDeaths,
+    DespawnDead,
+}
 
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -59,7 +97,15 @@ impl Plugin for DamagePlugin
     fn build(&self, app: &mut App)
     {
         app.add_event::<DamageEvent>()
-            .add_systems(Update, handle_damage_events.in_set(DamageUpdateSet));
+            .add_event::<EntityDeath>()
+            .configure_sets(
+                Update,
+                (DamageSet::DetectDamage, DamageSet::HandleDeaths, DamageSet::DespawnDead)
+                    .chain()
+                    .in_set(DamageUpdateSet),
+            )
+            .add_systems(Update, handle_damage_events.in_set(DamageSet::DetectDamage))
+            .add_systems(Update, despawn_dead_entities.in_set(DamageSet::DespawnDead));
     }
 }
 

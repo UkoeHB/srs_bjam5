@@ -53,13 +53,44 @@ fn update_emitter_mobs(
 
 //-------------------------------------------------------------------------------------------------------------------
 
-fn despawn_mobs_on_death(event: Trigger<EntityDeath>, mut c: Commands, mobs: Query<(), With<Mob>>)
+/// On death, try to apply damage to the player. We do this manually so the damage is applied
+/// immediately instead of e.g. indirecting through a spawned exploder projectile.
+fn handle_exploder_deaths(
+    mut c: Commands,
+    mut deaths: EventReader<EntityDeath>,
+    mut dmg_events: EventWriter<DamageEvent>,
+    animations: Res<SpriteAnimations>,
+    exploders: Query<(Entity, &Exploder)>,
+    player: Query<(Entity, &Transform), With<Player>>,
+    mobs: Query<&Transform, Without<Player>>,
+)
 {
-    let entity = event.entity();
-    if !mobs.contains(entity) {
-        return;
+    for (mob_entity, exploder) in deaths
+        .read()
+        .filter_map(|death| exploders.get(**death).ok())
+    {
+        let Exploder { base_damage, base_range, explosion_animation } = exploder.clone();
+
+        // Spawn explosion effect.
+        let Ok(mob_transform) = mobs.get(mob_entity) else { continue };
+        c.spawn((
+            DespawnOnAnimationCycle,
+            SpatialBundle::from_transform(*mob_transform),
+            SpriteLayer::Objects,
+            StateScoped(GameState::Play),
+        ))
+        .set_sprite_animation(&animations, explosion_animation);
+
+        // Check if player is in range.
+        let Ok((player, player_transform)) = player.get_single() else { continue };
+        let distance = (player_transform.translation - mob_transform.translation).length();
+        if distance > base_range {
+            continue;
+        }
+
+        // Send damage event.
+        dmg_events.send(DamageEvent { source: mob_entity, target: player, damage: base_damage });
     }
-    c.entity(entity).despawn_recursive();
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -122,6 +153,17 @@ impl Emitter
         self.next_fire_time = Some(time + Duration::from_millis(self.cooldown_ms));
         true
     }
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
+/// Component for mobs that explode on death.
+#[derive(Component, Clone, Debug)]
+pub struct Exploder
+{
+    base_damage: usize,
+    base_range: f32,
+    explosion_animation: String,
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -195,41 +237,7 @@ impl MobType
             }
             Self::OnDeath(on_death) => match on_death {
                 MobOnDeathType::Explode { base_damage, base_range, explosion_animation } => {
-                    // On death, try to apply damage to the player. We do this manually so the damage is applied
-                    // immediately instead of e.g. indirecting through a spawned exploder projectile.
-                    let mob_entity = ec.id();
-                    ec.observe(
-                        move |_: Trigger<EntityDeath>,
-                              mut c: Commands,
-                              mut dmg_events: EventWriter<DamageEvent>,
-                              animations: Res<SpriteAnimations>,
-                              player: Query<(Entity, &Transform), With<Player>>,
-                              mobs: Query<&Transform, Without<Player>>| {
-                            // Spawn explosion effect.
-                            let Ok(mob_transform) = mobs.get(mob_entity) else { return };
-                            c.spawn((
-                                DespawnOnAnimationCycle,
-                                SpatialBundle::from_transform(*mob_transform),
-                                SpriteLayer::Objects,
-                                StateScoped(GameState::Play),
-                            ))
-                            .set_sprite_animation(&animations, explosion_animation.clone());
-
-                            // Check if player is in range.
-                            let Ok((player, player_transform)) = player.get_single() else { return };
-                            let distance = (player_transform.translation - mob_transform.translation).length();
-                            if distance > base_range {
-                                return;
-                            }
-
-                            // Send damage event.
-                            dmg_events.send(DamageEvent {
-                                source: mob_entity,
-                                target: player,
-                                damage: base_damage,
-                            });
-                        },
-                    );
+                    ec.insert(Exploder { base_damage, base_range, explosion_animation });
                     0.
                 }
             },
@@ -298,6 +306,7 @@ impl MobData
                 stop_distance,
                 self.auto_flip_sprite,
             ),
+            DespawnOnDeath,
             StateScoped(GameState::Play),
             BoundInMap,
             InSpawnEvent(event_id),
@@ -360,7 +369,7 @@ impl Plugin for MobPlugin
         app.register_command::<MobDatabase>()
             .init_resource::<MobDatabase>()
             .add_systems(Update, update_emitter_mobs.in_set(MobUpdateSet))
-            .observe(despawn_mobs_on_death);
+            .add_systems(Update, handle_exploder_deaths.in_set(DamageSet::HandleDeaths));
     }
 }
 

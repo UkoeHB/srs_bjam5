@@ -10,27 +10,24 @@ use crate::*;
 
 //-------------------------------------------------------------------------------------------------------------------
 
-#[derive(Event, Debug)]
-struct CollectableDropEvent
-{
-    location: Vec2,
-    drop: CollectableDrop,
-}
-
-//-------------------------------------------------------------------------------------------------------------------
-
-// PROBLEM: This event reader can theoretically contain stale events from the previous day.
-fn handle_collectable_drop_events(
-    mut events: EventReader<CollectableDropEvent>,
+/// Finds dead entities with `CollectableDrop` and spawns the drop.
+///
+/// Only considers entities that emit `EntityDeath` events. If a new kind of droppable entity is introduced then
+/// that must be handled separately.
+fn handle_collectable_drops(
+    mut deaths: EventReader<EntityDeath>,
     mut c: Commands,
     mut rng: ResMut<GameRng>,
     images: Res<ImageMap>,
     constants: ReactRes<GameConstants>,
+    drops: Query<(&CollectableDrop, &Transform)>,
 )
 {
-    for CollectableDropEvent { location, drop } in events.read() {
-        let rng = rng.rng();
-        let radius = constants.drop_radius;
+    let rng = rng.rng();
+    let radius = constants.drop_radius;
+
+    for (drop, transform) in deaths.read().filter_map(|death| drops.get(**death).ok()) {
+        let location = transform.translation.truncate();
 
         for collectable in drop.iter() {
             // Select random nearby location to drop it.
@@ -39,32 +36,12 @@ fn handle_collectable_drop_events(
                 y: rng.gen_range(-radius..radius),
             }
             .clamp_length(0., radius);
-            let location = *location + offset;
+            let location = location + offset;
 
             // Drop it.
             collectable.spawn(&mut c, &constants, &images, location);
         }
     }
-}
-
-//-------------------------------------------------------------------------------------------------------------------
-
-fn handle_collectable_drops(
-    trigger: Trigger<OnRemove, CollectableDrop>,
-    mut events: EventWriter<CollectableDropEvent>,
-    mut drops: Query<(&mut CollectableDrop, &Transform)>,
-)
-{
-    let entity = trigger.entity();
-    let Ok((drop, transform)) = drops.get_mut(entity) else {
-        tracing::error!("dropping entity missing");
-        return;
-    };
-
-    // Hack: use an event indirection because bevy is broken and can't spawn entities in an observer without
-    // panicking.
-    let drop = std::mem::take(drop.into_inner());
-    events.send(CollectableDropEvent { location: transform.translation.truncate(), drop });
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -232,15 +209,9 @@ impl Plugin for CollectablesPlugin
 {
     fn build(&self, app: &mut App)
     {
-        app.add_event::<CollectableDropEvent>()
-            .register_type::<Collectable>()
-            .add_systems(
-                Update,
-                (handle_collectable_drop_events, handle_collectable_detection)
-                    .chain()
-                    .in_set(CollectablesUpdateSet),
-            )
-            .observe(handle_collectable_drops);
+        app.register_type::<Collectable>()
+            .add_systems(Update, handle_collectable_detection.in_set(CollectablesUpdateSet))
+            .add_systems(Update, handle_collectable_drops.in_set(DamageSet::HandleDeaths));
     }
 }
 
