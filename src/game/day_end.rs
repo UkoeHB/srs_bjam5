@@ -5,10 +5,9 @@ use crate::*;
 
 //-------------------------------------------------------------------------------------------------------------------
 
-// Forwards game day end conditions as GameDayOver.
-fn send_day_over(mut c: Commands)
+fn handle_day_over(mut c: Commands)
 {
-    c.react().broadcast(GameDayOver);
+    c.set_state(PlayState::DayOver);
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -32,7 +31,7 @@ impl Plugin for DayEndPlugin
         app.react(|rc| {
             rc.on_persistent(
                 (broadcast::<PlayerDied>(), broadcast::<PlayerSurvived>()),
-                send_day_over,
+                handle_day_over,
             )
         });
         //todo: this races with the game clock update, need to use ordered system sets

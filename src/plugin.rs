@@ -2,7 +2,6 @@ use std::fmt::Debug;
 
 use bevy::asset::AssetMetaCheck;
 use bevy::prelude::*;
-use bevy::state::state::FreelyMutableState;
 use bevy::window::WindowTheme;
 use bevy_cobweb::prelude::*;
 use bevy_cobweb_ui::prelude::*;
@@ -14,11 +13,11 @@ use crate::*;
 
 //-------------------------------------------------------------------------------------------------------------------
 
-fn set_state<T: FreelyMutableState + Debug>(state: T) -> impl FnMut(ResMut<NextState<T>>)
+fn broadcast_event<T: Clone + Send + Sync + 'static>(state: &'static str, event: T) -> impl FnMut(Commands)
 {
-    move |mut next: ResMut<NextState<T>>| {
-        tracing::info!("entering state {:?}", state);
-        next.set(state.clone());
+    move |mut c: Commands| {
+        tracing::info!("entered state {}", state);
+        c.react().broadcast(event.clone());
     }
 }
 
@@ -26,7 +25,7 @@ fn set_state<T: FreelyMutableState + Debug>(state: T) -> impl FnMut(ResMut<NextS
 
 fn handle_loading_done(mut c: Commands)
 {
-    c.react().broadcast(GameDayStart);
+    c.set_state(GameState::DayStart);
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -114,9 +113,15 @@ impl Plugin for AppPlugin
         .enable_state_scoped_entities::<GameState>()
         .add_systems(Startup, setup_camera)
         .add_systems(OnEnter(LoadState::Done), handle_loading_done)
-        .react(|rc| rc.on_persistent(broadcast::<GameDayStart>(), set_state(GameState::DayStart)))
-        .react(|rc| rc.on_persistent(broadcast::<GamePlay>(), set_state(GameState::Play)))
-        .react(|rc| rc.on_persistent(broadcast::<GameDayOver>(), set_state(PlayState::DayOver)));
+        .add_systems(
+            OnEnter(GameState::DayStart),
+            broadcast_event("GameState::DayStart", GameDayStart),
+        )
+        .add_systems(OnEnter(GameState::Play), broadcast_event("GameState::Play", GamePlay))
+        .add_systems(
+            OnEnter(PlayState::DayOver),
+            broadcast_event("PlayState::DayOver", GameDayOver),
+        );
 
         #[cfg(feature = "dev")]
         {

@@ -38,7 +38,7 @@ fn spawn_day_start_ui(mut c: Commands, mut s: ResMut<SceneLoader>)
 
         l.edit("footer::start_button", |l| {
             l.on_pressed(|mut c: Commands| {
-                c.react().broadcast(GamePlay);
+                c.set_state(GameState::Play);
             });
         });
     });

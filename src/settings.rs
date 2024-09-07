@@ -236,7 +236,7 @@ impl Plugin for SettingsPlugin
 {
     fn build(&self, app: &mut App)
     {
-        app.add_systems(OnExit(LoadState::Loading), setup_settings)
+        app.add_systems(OnExit(GameState::Loading), setup_settings)
             .react(|rc| rc.on_persistent(broadcast::<ToggleSettings>(), handle_toggle_settings))
             .react(|rc| rc.on_persistent(broadcast::<ToggleSettingsOn>(), spawn_settings_menu))
             .add_systems(PostUpdate, detect_silder_change);

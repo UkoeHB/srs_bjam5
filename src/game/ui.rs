@@ -7,6 +7,58 @@ use crate::*;
 
 //-------------------------------------------------------------------------------------------------------------------
 
+fn game_hud_slot_builder<'a>(
+    l: &mut LoadedScene<'a, '_, UiBuilder<'a, Entity>>,
+    file: &LoadableRef,
+    index: usize,
+    target_ability_type: AbilityType,
+)
+{
+    l.load_scene(file.e("ability_slot_scene"), |l| {
+        let level_entity = l.get_entity("level").unwrap();
+        let level_text_entity = l.get_entity("level::text").unwrap();
+
+        l.edit("icon", |l| {
+            l.update_on(resource_mutation::<PlayerPowerups>(),
+                |id| move |
+                    mut c: Commands,
+                    mut e: TextEditor,
+                    player_powerups: ReactRes<PlayerPowerups>,
+                    powerup_bank: Res<PowerupBank>
+                | {
+                    // Find the current powerup corresponding to this slot.
+                    let Some((_, (info, level))) = player_powerups
+                        .iter()
+                        .filter_map(|l| {
+                            let Some(info) = powerup_bank.get(&l.name) else {
+                                tracing::error!("player powerups has powerup {} not known to powerup bank", l.name);
+                                return None;
+                            };
+                            if info.ability_type != target_ability_type {
+                                return None;
+                            }
+                            Some((info, l))
+                        })
+                        .enumerate()
+                        .find(|(i, _)| *i == index)
+                    else {
+                        return;
+                    };
+
+                    // Update level text.
+                    c.entity(level_entity).insert_reactive(DisplayControl::Display);
+                    write_text!(e, level_text_entity, "{}", level.level);
+
+                    // Update icon.
+                    c.entity(id).insert_derived(LoadedUiImage{ texture: info.icon.clone(), ..default() });
+                }
+            );
+        });
+    });
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
 fn spawn_game_hud(mut c: Commands, mut s: ResMut<SceneLoader>, constants: ReactRes<GameConstants>)
 {
     let file = LoadableRef::from_file("ui.game_hud");
@@ -40,59 +92,15 @@ fn spawn_game_hud(mut c: Commands, mut s: ResMut<SceneLoader>, constants: ReactR
             });
         });
 
-        fn slot_builder<'a>(l: &mut LoadedScene<'a, '_, UiBuilder<'a, Entity>>, file: &LoadableRef, index: usize, target_ability_type: AbilityType) {
-            l.load_scene(file.e("ability_slot_scene"), |l| {
-                let level_entity = l.get_entity("level").unwrap();
-                let level_text_entity = l.get_entity("level::text").unwrap();
-
-                l.edit("icon", |l| {
-                    l.update_on(resource_mutation::<PlayerPowerups>(),
-                        |id| move |
-                            mut c: Commands,
-                            mut e: TextEditor,
-                            player_powerups: ReactRes<PlayerPowerups>,
-                            powerup_bank: Res<PowerupBank>
-                        | {
-                            // Find the current powerup corresponding to this slot.
-                            let Some((_, (info, level))) = player_powerups
-                                .iter()
-                                .filter_map(|l| {
-                                    let Some(info) = powerup_bank.get(&l.name) else {
-                                        tracing::error!("player powerups has powerup {} not known to powerup bank", l.name);
-                                        return None;
-                                    };
-                                    if info.ability_type != target_ability_type {
-                                        return None;
-                                    }
-                                    Some((info, l))
-                                })
-                                .enumerate()
-                                .find(|(i, _)| *i == index)
-                            else {
-                                return;
-                            };
-
-                            // Update level text.
-                            c.entity(level_entity).insert_reactive(DisplayControl::Display);
-                            write_text!(e, level_text_entity, "{}", level.level);
-
-                            // Update icon.
-                            c.entity(id).insert_derived(LoadedUiImage{ texture: info.icon.clone(), ..default() });
-                        }
-                    );
-                });
-            });
-        }
-
         l.edit("footer::passives::slots", |l| {
             for i in 0..constants.num_passive_slots {
-                slot_builder(l, &file, i, AbilityType::Passive);
+                game_hud_slot_builder(l, &file, i, AbilityType::Passive);
             }
         });
 
         l.edit("footer::actives::slots", |l| {
             for i in 0..constants.num_passive_slots {
-                slot_builder(l, &file, i, AbilityType::Active);
+                game_hud_slot_builder(l, &file, i, AbilityType::Active);
             }
         });
     });
@@ -242,7 +250,7 @@ fn spawn_day_failed_ui(mut c: Commands, mut s: ResMut<SceneLoader>)
 
         l.edit("window::today_again_button", |l| {
             l.on_pressed(|mut c: Commands| {
-                c.react().broadcast(GameDayStart);
+                c.set_state(GameState::DayStart);
             });
         });
     });
@@ -259,13 +267,13 @@ fn spawn_day_survived_ui(mut c: Commands, mut s: ResMut<SceneLoader>)
         l.edit("window::tomorrow_button", |l| {
             l.on_pressed(|mut c: Commands, mut day: ReactResMut<Day>| {
                 day.get_mut(&mut c).increment();
-                c.react().broadcast(GameDayStart);
+                c.set_state(GameState::DayStart);
             });
         });
 
         l.edit("window::today_again_button", |l| {
             l.on_pressed(|mut c: Commands| {
-                c.react().broadcast(GameDayStart);
+                c.set_state(GameState::DayStart);
             });
         });
     });
