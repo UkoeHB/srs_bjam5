@@ -2,6 +2,7 @@ use std::fmt::Debug;
 
 use bevy::asset::AssetMetaCheck;
 use bevy::prelude::*;
+use bevy::state::state::FreelyMutableState;
 use bevy::window::WindowTheme;
 use bevy_cobweb::prelude::*;
 use bevy_cobweb_ui::prelude::*;
@@ -30,7 +31,7 @@ fn handle_loading_done(mut c: Commands)
 
 //-------------------------------------------------------------------------------------------------------------------
 
-#[derive(States, Default, Debug, Copy, Clone, Eq, PartialEq, Hash)]
+#[derive(Default, Debug, Copy, Clone, Eq, PartialEq, Hash)]
 pub enum GameState
 {
     #[default]
@@ -38,6 +39,27 @@ pub enum GameState
     DayStart,
     Play,
 }
+
+impl SubStates for GameState
+{
+    type SourceStates = Option<LoadState>;
+
+    fn should_exist(sources: Self::SourceStates) -> Option<Self>
+    {
+        match sources {
+            Some(LoadState::Loading) => Some(Self::Loading),
+            Some(LoadState::Done) => Some(Self::DayStart),
+            None => None,
+        }
+    }
+}
+
+impl States for GameState
+{
+    const DEPENDENCY_DEPTH: usize = <GameState as SubStates>::SourceStates::SET_DEPENDENCY_DEPTH + 1;
+}
+
+impl FreelyMutableState for GameState {}
 
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -108,7 +130,7 @@ impl Plugin for AppPlugin
         // Load all assets
         .load("manifest.caf.json")
         // Misc setup and game management
-        .init_state::<GameState>()
+        .add_sub_state::<GameState>()
         .add_sub_state::<PlayState>()
         .enable_state_scoped_entities::<GameState>()
         .add_systems(Startup, setup_camera)
